@@ -29,14 +29,15 @@ class Upsample(nn.Module):
 
         if inference:
 
-            #B = x.data.size(0)
-            #C = x.data.size(1)
-            #H = x.data.size(2)
-            #W = x.data.size(3)
+            # B = x.data.size(0)
+            # C = x.data.size(1)
+            # H = x.data.size(2)
+            # W = x.data.size(3)
 
-            return x.view(x.size(0), x.size(1), x.size(2), 1, x.size(3), 1).\
-                    expand(x.size(0), x.size(1), x.size(2), target_size[2] // x.size(2), x.size(3), target_size[3] // x.size(3)).\
-                    contiguous().view(x.size(0), x.size(1), target_size[2], target_size[3])
+            return x.view(x.size(0), x.size(1), x.size(2), 1, x.size(3), 1). \
+                expand(x.size(0), x.size(1), x.size(2), target_size[2] // x.size(2), x.size(3),
+                       target_size[3] // x.size(3)). \
+                contiguous().view(x.size(0), x.size(1), target_size[2], target_size[3])
         else:
             return F.interpolate(x, size=(target_size[2], target_size[3]), mode='nearest')
 
@@ -123,200 +124,17 @@ class DownSample1(nn.Module):
         self.conv8 = Conv_Bn_Activation(128, 64, 1, 1, 'mish')
 
     def forward(self, input, tt, mr):
-        usingcuda = False
-        # ----------------------------------------------------------------
-        tmp_input = torch.clone(input)
-        with profile(
-                activities=
-                [
-                    ProfilerActivity.CPU
-                ] if not usingcuda else
-                [
-                    ProfilerActivity.CPU,
-                    ProfilerActivity.CUDA
-                ],
-                profile_memory=True, record_shapes=True
-        ) as prof:
-            with record_function("model_inference"):
-                self.conv1(tmp_input)
-        prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d1_conv1", prof_report, usingcuda)
-
-        tt.tic("d1_conv1")
         x1 = self.conv1(input)
-        tt.toc("d1_conv1")
-        # ----------------------------------------------------------------
-
-        # ----------------------------------------------------------------
-        tmp_input = torch.clone(x1)
-        with profile(
-                activities=
-                [
-                    ProfilerActivity.CPU
-                ] if not usingcuda else
-                [
-                    ProfilerActivity.CPU,
-                    ProfilerActivity.CUDA
-                ],
-                profile_memory=True, record_shapes=True
-        ) as prof:
-            with record_function("model_inference"):
-                self.conv2(tmp_input)
-        prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d1_conv2", prof_report, usingcuda)
-
-        tt.tic("d1_conv2")
         x2 = self.conv2(x1)
-        tt.toc("d1_conv2")
-        # ----------------------------------------------------------------
-
-        # ----------------------------------------------------------------
-        tmp_input = torch.clone(x2)
-        with profile(
-                activities=
-                [
-                    ProfilerActivity.CPU
-                ] if not usingcuda else
-                [
-                    ProfilerActivity.CPU,
-                    ProfilerActivity.CUDA
-                ],
-                profile_memory=True, record_shapes=True
-        ) as prof:
-            with record_function("model_inference"):
-                self.conv3(tmp_input)
-        prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d1_conv3", prof_report, usingcuda)
-
-        tt.tic("d1_conv3")
         x3 = self.conv3(x2)
-        tt.toc("d1_conv3")
-        # ----------------------------------------------------------------
-
-        # route -2
-        # ----------------------------------------------------------------
-        tmp_input = torch.clone(x2)
-        with profile(
-                activities=
-                [
-                    ProfilerActivity.CPU
-                ] if not usingcuda else
-                [
-                    ProfilerActivity.CPU,
-                    ProfilerActivity.CUDA
-                ],
-                profile_memory=True, record_shapes=True
-        ) as prof:
-            with record_function("model_inference"):
-                self.conv4(tmp_input)
-        prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d1_conv4", prof_report, usingcuda)
-
-        tt.tic("d1_conv4")
         x4 = self.conv4(x2)
-        tt.toc("d1_conv4")
-        # ----------------------------------------------------------------
-
-        # ----------------------------------------------------------------
-        tmp_input = torch.clone(x4)
-        with profile(
-                activities=
-                [
-                    ProfilerActivity.CPU
-                ] if not usingcuda else
-                [
-                    ProfilerActivity.CPU,
-                    ProfilerActivity.CUDA
-                ],
-                profile_memory=True, record_shapes=True
-        ) as prof:
-            with record_function("model_inference"):
-                self.conv5(tmp_input)
-        prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d1_conv5", prof_report, usingcuda)
-
-        tt.tic("d1_conv5")
         x5 = self.conv5(x4)
-        tt.toc("d1_conv5")
-        # ----------------------------------------------------------------
-
-        # ----------------------------------------------------------------
-        tmp_input = torch.clone(x5)
-        with profile(
-                activities=
-                [
-                    ProfilerActivity.CPU
-                ] if not usingcuda else
-                [
-                    ProfilerActivity.CPU,
-                    ProfilerActivity.CUDA
-                ],
-                profile_memory=True, record_shapes=True
-        ) as prof:
-            with record_function("model_inference"):
-                temp = self.conv6(tmp_input)
-                temp = temp + x4
-        prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d1_conv6", prof_report, usingcuda)
-
-        tt.tic("d1_conv6")
         x6 = self.conv6(x5)
         # shortcut -3
         x6 = x6 + x4
-        tt.toc("d1_conv6")
-        # ----------------------------------------------------------------
-
-        # ----------------------------------------------------------------
-        tmp_input = torch.clone(x6)
-        with profile(
-                activities=
-                [
-                    ProfilerActivity.CPU
-                ] if not usingcuda else
-                [
-                    ProfilerActivity.CPU,
-                    ProfilerActivity.CUDA
-                ],
-                profile_memory=True, record_shapes=True
-        ) as prof:
-            with record_function("model_inference"):
-                temp = self.conv7(tmp_input)
-                temp = torch.cat([temp, x3], dim=1)
-
-        prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d1_conv7", prof_report, usingcuda)
-
-        tt.tic("d1_conv7")
         x7 = self.conv7(x6)
-        # [route]
-        # layers = -1, -7
         x7 = torch.cat([x7, x3], dim=1)
-        tt.toc("d1_conv7")
-        # ----------------------------------------------------------------
-
-        # ----------------------------------------------------------------
-        tmp_input = torch.clone(x7)
-        with profile(
-                activities=
-                [
-                    ProfilerActivity.CPU
-                ] if not usingcuda else
-                [
-                    ProfilerActivity.CPU,
-                    ProfilerActivity.CUDA
-                ],
-                profile_memory=True, record_shapes=True
-        ) as prof:
-            with record_function("model_inference"):
-                self.conv8(tmp_input)
-        prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d1_conv8", prof_report, usingcuda)
-
-        tt.tic("d1_conv8")
         x8 = self.conv8(x7)
-        tt.toc("d1_conv8")
-        # ----------------------------------------------------------------
-
         return x8
 
 
@@ -336,156 +154,15 @@ class DownSample2(nn.Module):
         self.conv5 = Conv_Bn_Activation(128, 128, 1, 1, 'mish')
 
     def forward(self, input, tt, mr):
-        usingcuda = False
-        # ----------------------------------------------------------------
-        tmp_input = torch.clone(input)
-        with profile(
-                activities=
-                [
-                    ProfilerActivity.CPU
-                ] if not usingcuda else
-                [
-                    ProfilerActivity.CPU,
-                    ProfilerActivity.CUDA
-                ],
-                profile_memory=True, record_shapes=True
-        ) as prof:
-            with record_function("model_inference"):
-                self.conv1(tmp_input)
-        prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d2_conv1", prof_report, usingcuda)
-
-        tt.tic("d2_conv1")
         x1 = self.conv1(input)
-        tt.toc("d2_conv1")
-        # ----------------------------------------------------------------
-
-        # ----------------------------------------------------------------
-        tmp_input = torch.clone(x1)
-        with profile(
-                activities=
-                [
-                    ProfilerActivity.CPU
-                ] if not usingcuda else
-                [
-                    ProfilerActivity.CPU,
-                    ProfilerActivity.CUDA
-                ],
-                profile_memory=True, record_shapes=True
-        ) as prof:
-            with record_function("model_inference"):
-                self.conv2(tmp_input)
-        prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d2_conv2", prof_report, usingcuda)
-
-        tt.tic("d2_conv2")
         x2 = self.conv2(x1)
-        tt.toc("d2_conv2")
-        # ----------------------------------------------------------------
-
-        # ----------------------------------------------------------------
-        tmp_input = torch.clone(x1)
-        with profile(
-                activities=
-                [
-                    ProfilerActivity.CPU
-                ] if not usingcuda else
-                [
-                    ProfilerActivity.CPU,
-                    ProfilerActivity.CUDA
-                ],
-                profile_memory=True, record_shapes=True
-        ) as prof:
-            with record_function("model_inference"):
-                self.conv3(tmp_input)
-        prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d2_conv3", prof_report, usingcuda)
-
-        tt.tic("d2_conv3")
         x3 = self.conv3(x1)
-        tt.toc("d2_conv3")
-        # ----------------------------------------------------------------
 
-        # ----------------------------------------------------------------
-        tmp_input = torch.clone(x3)
-        with profile(
-                activities=
-                [
-                    ProfilerActivity.CPU
-                ] if not usingcuda else
-                [
-                    ProfilerActivity.CPU,
-                    ProfilerActivity.CUDA
-                ],
-                profile_memory=True, record_shapes=True
-        ) as prof:
-            with record_function("model_inference"):
-                self.resblock(tmp_input)
-        prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d2_resblock", prof_report, usingcuda)
-
-        tt.tic("d2_resblock")
         r = self.resblock(x3)
-        tt.toc("d2_resblock")
-        # ----------------------------------------------------------------
-
-        # ----------------------------------------------------------------
-        tmp_input = torch.clone(r)
-        with profile(
-                activities=
-                [
-                    ProfilerActivity.CPU
-                ] if not usingcuda else
-                [
-                    ProfilerActivity.CPU,
-                    ProfilerActivity.CUDA
-                ],
-                profile_memory=True, record_shapes=True
-        ) as prof:
-            with record_function("model_inference"):
-                temp = self.conv4(tmp_input)
-                temp = torch.cat([temp, x2], dim=1)
-        prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d2_conv4", prof_report, usingcuda)
-
-        tt.tic("d2_conv4")
         x4 = self.conv4(r)
+
         x4 = torch.cat([x4, x2], dim=1)
-        tt.toc("d2_conv4")
-        # ----------------------------------------------------------------
-
-        # ----------------------------------------------------------------
-        tmp_input = torch.clone(x4)
-        with profile(
-                activities=
-                [
-                    ProfilerActivity.CPU
-                ] if not usingcuda else
-                [
-                    ProfilerActivity.CPU,
-                    ProfilerActivity.CUDA
-                ],
-                profile_memory=True, record_shapes=True
-        ) as prof:
-            with record_function("model_inference"):
-                temp = self.conv5(tmp_input)
-        prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d2_conv5", prof_report, usingcuda)
-
-        tt.tic("d2_conv5")
         x5 = self.conv5(x4)
-        tt.toc("d2_conv5")
-        # ----------------------------------------------------------------
-
-        # x1 = self.conv1(input)
-        # x2 = self.conv2(x1)
-        # x3 = self.conv3(x1)
-        #
-        # r = self.resblock(x3)
-        # x4 = self.conv4(r)
-        #
-        # x4 = torch.cat([x4, x2], dim=1)
-        # x5 = self.conv5(x4)
         return x5
 
 
@@ -501,156 +178,15 @@ class DownSample3(nn.Module):
         self.conv5 = Conv_Bn_Activation(256, 256, 1, 1, 'mish')
 
     def forward(self, input, tt, mr):
-        usingcuda = False
-        # ----------------------------------------------------------------
-        tmp_input = torch.clone(input)
-        with profile(
-                activities=
-                [
-                    ProfilerActivity.CPU
-                ] if not usingcuda else
-                [
-                    ProfilerActivity.CPU,
-                    ProfilerActivity.CUDA
-                ],
-                profile_memory=True, record_shapes=True
-        ) as prof:
-            with record_function("model_inference"):
-                self.conv1(tmp_input)
-        prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d3_conv1", prof_report, usingcuda)
-
-        tt.tic("d3_conv1")
         x1 = self.conv1(input)
-        tt.toc("d3_conv1")
-        # ----------------------------------------------------------------
-
-        # ----------------------------------------------------------------
-        tmp_input = torch.clone(x1)
-        with profile(
-                activities=
-                [
-                    ProfilerActivity.CPU
-                ] if not usingcuda else
-                [
-                    ProfilerActivity.CPU,
-                    ProfilerActivity.CUDA
-                ],
-                profile_memory=True, record_shapes=True
-        ) as prof:
-            with record_function("model_inference"):
-                self.conv2(tmp_input)
-        prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d3_conv2", prof_report, usingcuda)
-
-        tt.tic("d3_conv2")
         x2 = self.conv2(x1)
-        tt.toc("d3_conv2")
-        # ----------------------------------------------------------------
-
-        # ----------------------------------------------------------------
-        tmp_input = torch.clone(x1)
-        with profile(
-                activities=
-                [
-                    ProfilerActivity.CPU
-                ] if not usingcuda else
-                [
-                    ProfilerActivity.CPU,
-                    ProfilerActivity.CUDA
-                ],
-                profile_memory=True, record_shapes=True
-        ) as prof:
-            with record_function("model_inference"):
-                self.conv3(tmp_input)
-        prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d3_conv3", prof_report, usingcuda)
-
-        tt.tic("d3_conv3")
         x3 = self.conv3(x1)
-        tt.toc("d3_conv3")
-        # ----------------------------------------------------------------
 
-        # ----------------------------------------------------------------
-        tmp_input = torch.clone(x3)
-        with profile(
-                activities=
-                [
-                    ProfilerActivity.CPU
-                ] if not usingcuda else
-                [
-                    ProfilerActivity.CPU,
-                    ProfilerActivity.CUDA
-                ],
-                profile_memory=True, record_shapes=True
-        ) as prof:
-            with record_function("model_inference"):
-                self.resblock(tmp_input)
-        prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d3_resblock", prof_report, usingcuda)
-
-        tt.tic("d3_resblock")
         r = self.resblock(x3)
-        tt.toc("d3_resblock")
-        # ----------------------------------------------------------------
-
-        # ----------------------------------------------------------------
-        tmp_input = torch.clone(r)
-        with profile(
-                activities=
-                [
-                    ProfilerActivity.CPU
-                ] if not usingcuda else
-                [
-                    ProfilerActivity.CPU,
-                    ProfilerActivity.CUDA
-                ],
-                profile_memory=True, record_shapes=True
-        ) as prof:
-            with record_function("model_inference"):
-                temp = self.conv4(tmp_input)
-                temp = torch.cat([temp, x2], dim=1)
-        prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d3_conv4", prof_report, usingcuda)
-
-        tt.tic("d3_conv4")
         x4 = self.conv4(r)
+
         x4 = torch.cat([x4, x2], dim=1)
-        tt.toc("d3_conv4")
-        # ----------------------------------------------------------------
-
-        # ----------------------------------------------------------------
-        tmp_input = torch.clone(x4)
-        with profile(
-                activities=
-                [
-                    ProfilerActivity.CPU
-                ] if not usingcuda else
-                [
-                    ProfilerActivity.CPU,
-                    ProfilerActivity.CUDA
-                ],
-                profile_memory=True, record_shapes=True
-        ) as prof:
-            with record_function("model_inference"):
-                temp = self.conv5(tmp_input)
-        prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d3_conv5", prof_report, usingcuda)
-
-        tt.tic("d3_conv5")
         x5 = self.conv5(x4)
-        tt.toc("d3_conv5")
-        # ----------------------------------------------------------------
-
-        # x1 = self.conv1(input)
-        # x2 = self.conv2(x1)
-        # x3 = self.conv3(x1)
-        #
-        # r = self.resblock(x3)
-        # x4 = self.conv4(r)
-        #
-        # x4 = torch.cat([x4, x2], dim=1)
-        # x5 = self.conv5(x4)
         return x5
 
 
@@ -666,156 +202,15 @@ class DownSample4(nn.Module):
         self.conv5 = Conv_Bn_Activation(512, 512, 1, 1, 'mish')
 
     def forward(self, input, tt, mr):
-        usingcuda = False
-        # ----------------------------------------------------------------
-        tmp_input = torch.clone(input)
-        with profile(
-                activities=
-                [
-                    ProfilerActivity.CPU
-                ] if not usingcuda else
-                [
-                    ProfilerActivity.CPU,
-                    ProfilerActivity.CUDA
-                ],
-                profile_memory=True, record_shapes=True
-        ) as prof:
-            with record_function("model_inference"):
-                self.conv1(tmp_input)
-        prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d4_conv1", prof_report, usingcuda)
-
-        tt.tic("d4_conv1")
         x1 = self.conv1(input)
-        tt.toc("d4_conv1")
-        # ----------------------------------------------------------------
-
-        # ----------------------------------------------------------------
-        tmp_input = torch.clone(x1)
-        with profile(
-                activities=
-                [
-                    ProfilerActivity.CPU
-                ] if not usingcuda else
-                [
-                    ProfilerActivity.CPU,
-                    ProfilerActivity.CUDA
-                ],
-                profile_memory=True, record_shapes=True
-        ) as prof:
-            with record_function("model_inference"):
-                self.conv2(tmp_input)
-        prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d4_conv2", prof_report, usingcuda)
-
-        tt.tic("d4_conv2")
         x2 = self.conv2(x1)
-        tt.toc("d4_conv2")
-        # ----------------------------------------------------------------
-
-        # ----------------------------------------------------------------
-        tmp_input = torch.clone(x1)
-        with profile(
-                activities=
-                [
-                    ProfilerActivity.CPU
-                ] if not usingcuda else
-                [
-                    ProfilerActivity.CPU,
-                    ProfilerActivity.CUDA
-                ],
-                profile_memory=True, record_shapes=True
-        ) as prof:
-            with record_function("model_inference"):
-                self.conv3(tmp_input)
-        prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d4_conv3", prof_report, usingcuda)
-
-        tt.tic("d4_conv3")
         x3 = self.conv3(x1)
-        tt.toc("d4_conv3")
-        # ----------------------------------------------------------------
 
-        # ----------------------------------------------------------------
-        tmp_input = torch.clone(x3)
-        with profile(
-                activities=
-                [
-                    ProfilerActivity.CPU
-                ] if not usingcuda else
-                [
-                    ProfilerActivity.CPU,
-                    ProfilerActivity.CUDA
-                ],
-                profile_memory=True, record_shapes=True
-        ) as prof:
-            with record_function("model_inference"):
-                self.resblock(tmp_input)
-        prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d4_resblock", prof_report, usingcuda)
-
-        tt.tic("d4_resblock")
         r = self.resblock(x3)
-        tt.toc("d4_resblock")
-        # ----------------------------------------------------------------
-
-        # ----------------------------------------------------------------
-        tmp_input = torch.clone(r)
-        with profile(
-                activities=
-                [
-                    ProfilerActivity.CPU
-                ] if not usingcuda else
-                [
-                    ProfilerActivity.CPU,
-                    ProfilerActivity.CUDA
-                ],
-                profile_memory=True, record_shapes=True
-        ) as prof:
-            with record_function("model_inference"):
-                temp = self.conv4(tmp_input)
-                temp = torch.cat([temp, x2], dim=1)
-        prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d4_conv4", prof_report, usingcuda)
-
-        tt.tic("d4_conv4")
         x4 = self.conv4(r)
+
         x4 = torch.cat([x4, x2], dim=1)
-        tt.toc("d4_conv4")
-        # ----------------------------------------------------------------
-
-        # ----------------------------------------------------------------
-        tmp_input = torch.clone(x4)
-        with profile(
-                activities=
-                [
-                    ProfilerActivity.CPU
-                ] if not usingcuda else
-                [
-                    ProfilerActivity.CPU,
-                    ProfilerActivity.CUDA
-                ],
-                profile_memory=True, record_shapes=True
-        ) as prof:
-            with record_function("model_inference"):
-                temp = self.conv5(tmp_input)
-        prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d4_conv5", prof_report, usingcuda)
-
-        tt.tic("d4_conv5")
         x5 = self.conv5(x4)
-        tt.toc("d4_conv5")
-        # ----------------------------------------------------------------
-
-        # x1 = self.conv1(input)
-        # x2 = self.conv2(x1)
-        # x3 = self.conv3(x1)
-        #
-        # r = self.resblock(x3)
-        # x4 = self.conv4(r)
-        #
-        # x4 = torch.cat([x4, x2], dim=1)
-        # x5 = self.conv5(x4)
         return x5
 
 
@@ -831,156 +226,15 @@ class DownSample5(nn.Module):
         self.conv5 = Conv_Bn_Activation(1024, 1024, 1, 1, 'mish')
 
     def forward(self, input, tt, mr):
-        usingcuda = False
-        # ----------------------------------------------------------------
-        tmp_input = torch.clone(input)
-        with profile(
-                activities=
-                [
-                    ProfilerActivity.CPU
-                ] if not usingcuda else
-                [
-                    ProfilerActivity.CPU,
-                    ProfilerActivity.CUDA
-                ],
-                profile_memory=True, record_shapes=True
-        ) as prof:
-            with record_function("model_inference"):
-                self.conv1(tmp_input)
-        prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d5_conv1", prof_report, usingcuda)
-
-        tt.tic("d5_conv1")
         x1 = self.conv1(input)
-        tt.toc("d5_conv1")
-        # ----------------------------------------------------------------
-
-        # ----------------------------------------------------------------
-        tmp_input = torch.clone(x1)
-        with profile(
-                activities=
-                [
-                    ProfilerActivity.CPU
-                ] if not usingcuda else
-                [
-                    ProfilerActivity.CPU,
-                    ProfilerActivity.CUDA
-                ],
-                profile_memory=True, record_shapes=True
-        ) as prof:
-            with record_function("model_inference"):
-                self.conv2(tmp_input)
-        prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d5_conv2", prof_report, usingcuda)
-
-        tt.tic("d5_conv2")
         x2 = self.conv2(x1)
-        tt.toc("d5_conv2")
-        # ----------------------------------------------------------------
-
-        # ----------------------------------------------------------------
-        tmp_input = torch.clone(x1)
-        with profile(
-                activities=
-                [
-                    ProfilerActivity.CPU
-                ] if not usingcuda else
-                [
-                    ProfilerActivity.CPU,
-                    ProfilerActivity.CUDA
-                ],
-                profile_memory=True, record_shapes=True
-        ) as prof:
-            with record_function("model_inference"):
-                self.conv3(tmp_input)
-        prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d5_conv3", prof_report, usingcuda)
-
-        tt.tic("d5_conv3")
         x3 = self.conv3(x1)
-        tt.toc("d5_conv3")
-        # ----------------------------------------------------------------
 
-        # ----------------------------------------------------------------
-        tmp_input = torch.clone(x3)
-        with profile(
-                activities=
-                [
-                    ProfilerActivity.CPU
-                ] if not usingcuda else
-                [
-                    ProfilerActivity.CPU,
-                    ProfilerActivity.CUDA
-                ],
-                profile_memory=True, record_shapes=True
-        ) as prof:
-            with record_function("model_inference"):
-                self.resblock(tmp_input)
-        prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d5_resblock", prof_report, usingcuda)
-
-        tt.tic("d5_resblock")
         r = self.resblock(x3)
-        tt.toc("d5_resblock")
-        # ----------------------------------------------------------------
-
-        # ----------------------------------------------------------------
-        tmp_input = torch.clone(r)
-        with profile(
-                activities=
-                [
-                    ProfilerActivity.CPU
-                ] if not usingcuda else
-                [
-                    ProfilerActivity.CPU,
-                    ProfilerActivity.CUDA
-                ],
-                profile_memory=True, record_shapes=True
-        ) as prof:
-            with record_function("model_inference"):
-                temp = self.conv4(tmp_input)
-                temp = torch.cat([temp, x2], dim=1)
-        prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d5_conv4", prof_report, usingcuda)
-
-        tt.tic("d5_conv4")
         x4 = self.conv4(r)
+
         x4 = torch.cat([x4, x2], dim=1)
-        tt.toc("d5_conv4")
-        # ----------------------------------------------------------------
-
-        # ----------------------------------------------------------------
-        tmp_input = torch.clone(x4)
-        with profile(
-                activities=
-                [
-                    ProfilerActivity.CPU
-                ] if not usingcuda else
-                [
-                    ProfilerActivity.CPU,
-                    ProfilerActivity.CUDA
-                ],
-                profile_memory=True, record_shapes=True
-        ) as prof:
-            with record_function("model_inference"):
-                temp = self.conv5(tmp_input)
-        prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d5_conv5", prof_report, usingcuda)
-
-        tt.tic("d5_conv5")
         x5 = self.conv5(x4)
-        tt.toc("d5_conv5")
-        # ----------------------------------------------------------------
-
-        # x1 = self.conv1(input)
-        # x2 = self.conv2(x1)
-        # x3 = self.conv3(x1)
-        #
-        # r = self.resblock(x3)
-        # x4 = self.conv4(r)
-        #
-        # x4 = torch.cat([x4, x2], dim=1)
-        # x5 = self.conv5(x4)
         return x5
 
 
@@ -1026,6 +280,7 @@ class Neck(nn.Module):
         self.conv20 = Conv_Bn_Activation(256, 128, 1, 1, 'leaky')
 
     def forward(self, input, downsample4, downsample3, tt, mr, inference=False):
+
         x1 = self.conv1(input)
         x2 = self.conv2(x1)
         x3 = self.conv3(x2)
@@ -1077,9 +332,9 @@ class Yolov4Head(nn.Module):
         self.conv2 = Conv_Bn_Activation(256, output_ch, 1, 1, 'linear', bn=False, bias=True)
 
         self.yolo1 = YoloLayer(
-                                anchor_mask=[0, 1, 2], num_classes=n_classes,
-                                anchors=[12, 16, 19, 36, 40, 28, 36, 75, 76, 55, 72, 146, 142, 110, 192, 243, 459, 401],
-                                num_anchors=9, stride=8)
+            anchor_mask=[0, 1, 2], num_classes=n_classes,
+            anchors=[12, 16, 19, 36, 40, 28, 36, 75, 76, 55, 72, 146, 142, 110, 192, 243, 459, 401],
+            num_anchors=9, stride=8)
 
         # R -4
         self.conv3 = Conv_Bn_Activation(128, 256, 3, 2, 'leaky')
@@ -1092,11 +347,11 @@ class Yolov4Head(nn.Module):
         self.conv8 = Conv_Bn_Activation(512, 256, 1, 1, 'leaky')
         self.conv9 = Conv_Bn_Activation(256, 512, 3, 1, 'leaky')
         self.conv10 = Conv_Bn_Activation(512, output_ch, 1, 1, 'linear', bn=False, bias=True)
-        
+
         self.yolo2 = YoloLayer(
-                                anchor_mask=[3, 4, 5], num_classes=n_classes,
-                                anchors=[12, 16, 19, 36, 40, 28, 36, 75, 76, 55, 72, 146, 142, 110, 192, 243, 459, 401],
-                                num_anchors=9, stride=16)
+            anchor_mask=[3, 4, 5], num_classes=n_classes,
+            anchors=[12, 16, 19, 36, 40, 28, 36, 75, 76, 55, 72, 146, 142, 110, 192, 243, 459, 401],
+            num_anchors=9, stride=16)
 
         # R -4
         self.conv11 = Conv_Bn_Activation(256, 512, 3, 2, 'leaky')
@@ -1109,47 +364,532 @@ class Yolov4Head(nn.Module):
         self.conv16 = Conv_Bn_Activation(1024, 512, 1, 1, 'leaky')
         self.conv17 = Conv_Bn_Activation(512, 1024, 3, 1, 'leaky')
         self.conv18 = Conv_Bn_Activation(1024, output_ch, 1, 1, 'linear', bn=False, bias=True)
-        
+
         self.yolo3 = YoloLayer(
-                                anchor_mask=[6, 7, 8], num_classes=n_classes,
-                                anchors=[12, 16, 19, 36, 40, 28, 36, 75, 76, 55, 72, 146, 142, 110, 192, 243, 459, 401],
-                                num_anchors=9, stride=32)
+            anchor_mask=[6, 7, 8], num_classes=n_classes,
+            anchors=[12, 16, 19, 36, 40, 28, 36, 75, 76, 55, 72, 146, 142, 110, 192, 243, 459, 401],
+            num_anchors=9, stride=32)
 
     def forward(self, input1, input2, input3, tt, mr):
+        usingcuda = False
+        # ----------------------------------------------------------------
+        tmp_input = torch.clone(input1)
+        with profile(
+                activities=
+                [
+                    ProfilerActivity.CPU
+                ] if not usingcuda else
+                [
+                    ProfilerActivity.CPU,
+                    ProfilerActivity.CUDA
+                ],
+                profile_memory=True, record_shapes=True
+        ) as prof:
+            with record_function("model_inference"):
+                self.conv1(tmp_input)
+        prof_report = str(prof.key_averages().table()).split("\n")
+        mr.get_mem("conv1", prof_report, usingcuda)
+
+        tt.tic("conv1")
         x1 = self.conv1(input1)
+        tt.toc("conv1")
+        # ----------------------------------------------------------------
+
+        # ----------------------------------------------------------------
+        tmp_input = torch.clone(x1)
+        with profile(
+                activities=
+                [
+                    ProfilerActivity.CPU
+                ] if not usingcuda else
+                [
+                    ProfilerActivity.CPU,
+                    ProfilerActivity.CUDA
+                ],
+                profile_memory=True, record_shapes=True
+        ) as prof:
+            with record_function("model_inference"):
+                self.conv2(tmp_input)
+        prof_report = str(prof.key_averages().table()).split("\n")
+        mr.get_mem("conv2", prof_report, usingcuda)
+
+        tt.tic("conv2")
         x2 = self.conv2(x1)
+        tt.toc("conv2")
+        # ----------------------------------------------------------------
 
+        # ----------------------------------------------------------------
+        tmp_input = torch.clone(input1)
+        with profile(
+                activities=
+                [
+                    ProfilerActivity.CPU
+                ] if not usingcuda else
+                [
+                    ProfilerActivity.CPU,
+                    ProfilerActivity.CUDA
+                ],
+                profile_memory=True, record_shapes=True
+        ) as prof:
+            with record_function("model_inference"):
+                self.conv3(tmp_input)
+        prof_report = str(prof.key_averages().table()).split("\n")
+        mr.get_mem("conv3", prof_report, usingcuda)
+
+        tt.tic("conv3")
         x3 = self.conv3(input1)
-        # R -1 -16
+        tt.toc("conv3")
+        # ----------------------------------------------------------------
         x3 = torch.cat([x3, input2], dim=1)
+        # ----------------------------------------------------------------
+        tmp_input = torch.clone(x3)
+        with profile(
+                activities=
+                [
+                    ProfilerActivity.CPU
+                ] if not usingcuda else
+                [
+                    ProfilerActivity.CPU,
+                    ProfilerActivity.CUDA
+                ],
+                profile_memory=True, record_shapes=True
+        ) as prof:
+            with record_function("model_inference"):
+                self.conv4(tmp_input)
+        prof_report = str(prof.key_averages().table()).split("\n")
+        mr.get_mem("conv4", prof_report, usingcuda)
+
+        tt.tic("conv4")
         x4 = self.conv4(x3)
+        tt.toc("conv4")
+        # ----------------------------------------------------------------
+
+        # ----------------------------------------------------------------
+        tmp_input = torch.clone(x4)
+        with profile(
+                activities=
+                [
+                    ProfilerActivity.CPU
+                ] if not usingcuda else
+                [
+                    ProfilerActivity.CPU,
+                    ProfilerActivity.CUDA
+                ],
+                profile_memory=True, record_shapes=True
+        ) as prof:
+            with record_function("model_inference"):
+                self.conv5(tmp_input)
+        prof_report = str(prof.key_averages().table()).split("\n")
+        mr.get_mem("conv5", prof_report, usingcuda)
+
+        tt.tic("conv5")
         x5 = self.conv5(x4)
+        tt.toc("conv5")
+        # ----------------------------------------------------------------
+
+        # ----------------------------------------------------------------
+        tmp_input = torch.clone(x5)
+        with profile(
+                activities=
+                [
+                    ProfilerActivity.CPU
+                ] if not usingcuda else
+                [
+                    ProfilerActivity.CPU,
+                    ProfilerActivity.CUDA
+                ],
+                profile_memory=True, record_shapes=True
+        ) as prof:
+            with record_function("model_inference"):
+                self.conv6(tmp_input)
+        prof_report = str(prof.key_averages().table()).split("\n")
+        mr.get_mem("conv6", prof_report, usingcuda)
+
+        tt.tic("conv6")
         x6 = self.conv6(x5)
+        tt.toc("conv6")
+        # ----------------------------------------------------------------
+
+        # ----------------------------------------------------------------
+        tmp_input = torch.clone(x6)
+        with profile(
+                activities=
+                [
+                    ProfilerActivity.CPU
+                ] if not usingcuda else
+                [
+                    ProfilerActivity.CPU,
+                    ProfilerActivity.CUDA
+                ],
+                profile_memory=True, record_shapes=True
+        ) as prof:
+            with record_function("model_inference"):
+                self.conv7(tmp_input)
+        prof_report = str(prof.key_averages().table()).split("\n")
+        mr.get_mem("conv7", prof_report, usingcuda)
+
+        tt.tic("conv7")
         x7 = self.conv7(x6)
+        tt.toc("conv7")
+        # ----------------------------------------------------------------
+
+        # ----------------------------------------------------------------
+        tmp_input = torch.clone(x7)
+        with profile(
+                activities=
+                [
+                    ProfilerActivity.CPU
+                ] if not usingcuda else
+                [
+                    ProfilerActivity.CPU,
+                    ProfilerActivity.CUDA
+                ],
+                profile_memory=True, record_shapes=True
+        ) as prof:
+            with record_function("model_inference"):
+                self.conv8(tmp_input)
+        prof_report = str(prof.key_averages().table()).split("\n")
+        mr.get_mem("conv8", prof_report, usingcuda)
+
+        tt.tic("conv8")
         x8 = self.conv8(x7)
+        tt.toc("conv8")
+        # ----------------------------------------------------------------
+
+        # ----------------------------------------------------------------
+        tmp_input = torch.clone(x8)
+        with profile(
+                activities=
+                [
+                    ProfilerActivity.CPU
+                ] if not usingcuda else
+                [
+                    ProfilerActivity.CPU,
+                    ProfilerActivity.CUDA
+                ],
+                profile_memory=True, record_shapes=True
+        ) as prof:
+            with record_function("model_inference"):
+                self.conv9(tmp_input)
+        prof_report = str(prof.key_averages().table()).split("\n")
+        mr.get_mem("conv9", prof_report, usingcuda)
+
+        tt.tic("conv9")
         x9 = self.conv9(x8)
+        tt.toc("conv9")
+        # ----------------------------------------------------------------
+
+        # ----------------------------------------------------------------
+        tmp_input = torch.clone(x9)
+        with profile(
+                activities=
+                [
+                    ProfilerActivity.CPU
+                ] if not usingcuda else
+                [
+                    ProfilerActivity.CPU,
+                    ProfilerActivity.CUDA
+                ],
+                profile_memory=True, record_shapes=True
+        ) as prof:
+            with record_function("model_inference"):
+                self.conv10(tmp_input)
+        prof_report = str(prof.key_averages().table()).split("\n")
+        mr.get_mem("conv10", prof_report, usingcuda)
+
+        tt.tic("conv10")
         x10 = self.conv10(x9)
+        tt.toc("conv10")
+        # ----------------------------------------------------------------
 
-        # R -4
+        # ----------------------------------------------------------------
+        tmp_input = torch.clone(x8)
+        with profile(
+                activities=
+                [
+                    ProfilerActivity.CPU
+                ] if not usingcuda else
+                [
+                    ProfilerActivity.CPU,
+                    ProfilerActivity.CUDA
+                ],
+                profile_memory=True, record_shapes=True
+        ) as prof:
+            with record_function("model_inference"):
+                self.conv11(tmp_input)
+        prof_report = str(prof.key_averages().table()).split("\n")
+        mr.get_mem("conv11", prof_report, usingcuda)
+
+        tt.tic("conv11")
         x11 = self.conv11(x8)
-        # R -1 -37
+        tt.toc("conv11")
+        # ----------------------------------------------------------------
         x11 = torch.cat([x11, input3], dim=1)
+        # ----------------------------------------------------------------
+        tmp_input = torch.clone(x11)
+        with profile(
+                activities=
+                [
+                    ProfilerActivity.CPU
+                ] if not usingcuda else
+                [
+                    ProfilerActivity.CPU,
+                    ProfilerActivity.CUDA
+                ],
+                profile_memory=True, record_shapes=True
+        ) as prof:
+            with record_function("model_inference"):
+                self.conv12(tmp_input)
+        prof_report = str(prof.key_averages().table()).split("\n")
+        mr.get_mem("conv12", prof_report, usingcuda)
 
+        tt.tic("conv12")
         x12 = self.conv12(x11)
+        tt.toc("conv12")
+        # ----------------------------------------------------------------
+
+        # ----------------------------------------------------------------
+        tmp_input = torch.clone(x12)
+        with profile(
+                activities=
+                [
+                    ProfilerActivity.CPU
+                ] if not usingcuda else
+                [
+                    ProfilerActivity.CPU,
+                    ProfilerActivity.CUDA
+                ],
+                profile_memory=True, record_shapes=True
+        ) as prof:
+            with record_function("model_inference"):
+                self.conv13(tmp_input)
+        prof_report = str(prof.key_averages().table()).split("\n")
+        mr.get_mem("conv13", prof_report, usingcuda)
+
+        tt.tic("conv13")
         x13 = self.conv13(x12)
+        tt.toc("conv13")
+        # ----------------------------------------------------------------
+
+        # ----------------------------------------------------------------
+        tmp_input = torch.clone(x13)
+        with profile(
+                activities=
+                [
+                    ProfilerActivity.CPU
+                ] if not usingcuda else
+                [
+                    ProfilerActivity.CPU,
+                    ProfilerActivity.CUDA
+                ],
+                profile_memory=True, record_shapes=True
+        ) as prof:
+            with record_function("model_inference"):
+                self.conv14(tmp_input)
+        prof_report = str(prof.key_averages().table()).split("\n")
+        mr.get_mem("conv14", prof_report, usingcuda)
+
+        tt.tic("conv14")
         x14 = self.conv14(x13)
+        tt.toc("conv14")
+        # ----------------------------------------------------------------
+
+        # ----------------------------------------------------------------
+        tmp_input = torch.clone(x14)
+        with profile(
+                activities=
+                [
+                    ProfilerActivity.CPU
+                ] if not usingcuda else
+                [
+                    ProfilerActivity.CPU,
+                    ProfilerActivity.CUDA
+                ],
+                profile_memory=True, record_shapes=True
+        ) as prof:
+            with record_function("model_inference"):
+                self.conv15(tmp_input)
+        prof_report = str(prof.key_averages().table()).split("\n")
+        mr.get_mem("conv15", prof_report, usingcuda)
+
+        tt.tic("conv15")
         x15 = self.conv15(x14)
+        tt.toc("conv15")
+        # ----------------------------------------------------------------
+        x15 = torch.cat([x15, up], dim=1)
+
+        # ----------------------------------------------------------------
+        tmp_input = torch.clone(x15)
+        with profile(
+                activities=
+                [
+                    ProfilerActivity.CPU
+                ] if not usingcuda else
+                [
+                    ProfilerActivity.CPU,
+                    ProfilerActivity.CUDA
+                ],
+                profile_memory=True, record_shapes=True
+        ) as prof:
+            with record_function("model_inference"):
+                self.conv16(tmp_input)
+        prof_report = str(prof.key_averages().table()).split("\n")
+        mr.get_mem("conv16", prof_report, usingcuda)
+
+        tt.tic("conv16")
         x16 = self.conv16(x15)
+        tt.toc("conv16")
+        # ----------------------------------------------------------------
+
+        # ----------------------------------------------------------------
+        tmp_input = torch.clone(x16)
+        with profile(
+                activities=
+                [
+                    ProfilerActivity.CPU
+                ] if not usingcuda else
+                [
+                    ProfilerActivity.CPU,
+                    ProfilerActivity.CUDA
+                ],
+                profile_memory=True, record_shapes=True
+        ) as prof:
+            with record_function("model_inference"):
+                self.conv17(tmp_input)
+        prof_report = str(prof.key_averages().table()).split("\n")
+        mr.get_mem("conv17", prof_report, usingcuda)
+
+        tt.tic("conv17")
         x17 = self.conv17(x16)
+        tt.toc("conv17")
+        # ----------------------------------------------------------------
+
+        # ----------------------------------------------------------------
+        tmp_input = torch.clone(x17)
+        with profile(
+                activities=
+                [
+                    ProfilerActivity.CPU
+                ] if not usingcuda else
+                [
+                    ProfilerActivity.CPU,
+                    ProfilerActivity.CUDA
+                ],
+                profile_memory=True, record_shapes=True
+        ) as prof:
+            with record_function("model_inference"):
+                self.conv18(tmp_input)
+        prof_report = str(prof.key_averages().table()).split("\n")
+        mr.get_mem("conv18", prof_report, usingcuda)
+
+        tt.tic("conv18")
         x18 = self.conv18(x17)
-        
+        tt.toc("conv18")
+        # ----------------------------------------------------------------
+
+        # x1 = self.conv1(input1)
+        # x2 = self.conv2(x1)
+        #
+        # x3 = self.conv3(input1)
+        # # R -1 -16
+        # x3 = torch.cat([x3, input2], dim=1)
+        # x4 = self.conv4(x3)
+        # x5 = self.conv5(x4)
+        # x6 = self.conv6(x5)
+        # x7 = self.conv7(x6)
+        # x8 = self.conv8(x7)
+        # x9 = self.conv9(x8)
+        # x10 = self.conv10(x9)
+        #
+        # # R -4
+        # x11 = self.conv11(x8)
+        # # R -1 -37
+        # x11 = torch.cat([x11, input3], dim=1)
+        #
+        # x12 = self.conv12(x11)
+        # x13 = self.conv13(x12)
+        # x14 = self.conv14(x13)
+        # x15 = self.conv15(x14)
+        # x16 = self.conv16(x15)
+        # x17 = self.conv17(x16)
+        # x18 = self.conv18(x17)
+
         if self.inference:
+            # ----------------------------------------------------------------
+            tmp_input = torch.clone(x2)
+            with profile(
+                    activities=
+                    [
+                        ProfilerActivity.CPU
+                    ] if not usingcuda else
+                    [
+                        ProfilerActivity.CPU,
+                        ProfilerActivity.CUDA
+                    ],
+                    profile_memory=True, record_shapes=True
+            ) as prof:
+                with record_function("model_inference"):
+                    self.yolo1(tmp_input)
+            prof_report = str(prof.key_averages().table()).split("\n")
+            mr.get_mem("yolo1", prof_report, usingcuda)
+
+            tt.tic("yolo1")
             y1 = self.yolo1(x2)
+            tt.toc("yolo1")
+            # ----------------------------------------------------------------
+
+            # ----------------------------------------------------------------
+            tmp_input = torch.clone(x10)
+            with profile(
+                    activities=
+                    [
+                        ProfilerActivity.CPU
+                    ] if not usingcuda else
+                    [
+                        ProfilerActivity.CPU,
+                        ProfilerActivity.CUDA
+                    ],
+                    profile_memory=True, record_shapes=True
+            ) as prof:
+                with record_function("model_inference"):
+                    self.yolo2(tmp_input)
+            prof_report = str(prof.key_averages().table()).split("\n")
+            mr.get_mem("yolo2", prof_report, usingcuda)
+
+            tt.tic("yolo2")
             y2 = self.yolo2(x10)
+            tt.toc("yolo2")
+            # ----------------------------------------------------------------
+
+            # ----------------------------------------------------------------
+            tmp_input = torch.clone(x18)
+            with profile(
+                    activities=
+                    [
+                        ProfilerActivity.CPU
+                    ] if not usingcuda else
+                    [
+                        ProfilerActivity.CPU,
+                        ProfilerActivity.CUDA
+                    ],
+                    profile_memory=True, record_shapes=True
+            ) as prof:
+                with record_function("model_inference"):
+                    self.yolo3(tmp_input)
+            prof_report = str(prof.key_averages().table()).split("\n")
+            mr.get_mem("yolo3", prof_report, usingcuda)
+
+            tt.tic("yolo3")
             y3 = self.yolo3(x18)
+            tt.toc("yolo3")
+            # ----------------------------------------------------------------
+
+            # y1 = self.yolo1(x2)
+            # y2 = self.yolo2(x10)
+            # y3 = self.yolo3(x18)
 
             return get_region_boxes([y1, y2, y3])
-        
+
         else:
             return [x2, x10, x18]
 
@@ -1179,7 +919,7 @@ class Yolov4(nn.Module):
             # 2. overwrite entries in the existing state dict
             model_dict.update(pretrained_dict)
             _model.load_state_dict(model_dict)
-        
+
         # head
         self.head = Yolov4Head(output_ch, n_classes, inference)
 
@@ -1406,7 +1146,7 @@ if __name__ == "__main__":
     from tool.torch_utils import do_detect
 
     for i in range(2):  # This 'for' loop is for speed check
-                        # Because the first iteration is usually longer
+        # Because the first iteration is usually longer
         boxes = do_detect(model, sized, 0.4, 0.6, use_cuda)
 
     if namesfile == None:
