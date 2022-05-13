@@ -97,7 +97,7 @@ class MemRec(object):
         plt.xlabel("layernames")
         plt.xticks(rotation=45, ha="right")
         plt.ylabel("avg_mem_self_cpu (mb)")
-        plt.savefig("layer-avg_mem_self_cpu.png")
+        plt.savefig("layer-avg_mem_self_cpu_neck.png")
 
         layernames = []
         avg_mems = []
@@ -115,7 +115,7 @@ class MemRec(object):
         plt.xlabel("layernames")
         plt.xticks(rotation=45, ha="right")
         plt.ylabel("avg_mem_cpu (mb)")
-        plt.savefig("layer-avg_mem_cpu.png")
+        plt.savefig("layer-avg_mem_cpu_neck.png")
 
         if self.mem_cuda:
             layernames = []
@@ -134,7 +134,7 @@ class MemRec(object):
             plt.xlabel("layernames")
             plt.xticks(rotation=45, ha="right")
             plt.ylabel("avg_mem_self_cuda")
-            plt.savefig("layer-avg_mem_self_cuda.png")
+            plt.savefig("layer-avg_mem_self_cuda_neck.png")
 
             layernames = []
             avg_mems = []
@@ -152,7 +152,7 @@ class MemRec(object):
             plt.xlabel("layernames")
             plt.xticks(rotation=45, ha="right")
             plt.ylabel("avg_mem_cuda")
-            plt.savefig("layer-avg_mem_cuda.png")
+            plt.savefig("layer-avg_mem_cuda_neck.png")
 
 
 def parse_prof_table(prof_report):

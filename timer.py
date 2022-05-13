@@ -40,4 +40,4 @@ class Clock(object):
         plt.xlabel("layernames")
         plt.xticks(rotation=45, ha="right")
         plt.ylabel("avg_times (s)")
-        plt.savefig("layer-avg_time.png")
+        plt.savefig("layer-avg_time_neck.png")
