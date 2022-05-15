@@ -122,8 +122,7 @@ class DownSample1(nn.Module):
         # layers = -1, -7
         self.conv8 = Conv_Bn_Activation(128, 64, 1, 1, 'mish')
 
-    def forward(self, input, tt, mr):
-        usingcuda = False
+    def forward(self, input, tt, mr, usingcuda=False):
         # ----------------------------------------------------------------
         tmp_input = torch.clone(input)
         with profile(
@@ -254,18 +253,16 @@ class DownSample1(nn.Module):
                 profile_memory=True, record_shapes=True
         ) as prof:
             with record_function("model_inference"):
-                temp = self.conv6(tmp_input)
-                temp = temp + x4
+                self.conv6(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         mr.get_mem("d1_conv6", prof_report, usingcuda)
 
         tt.tic("d1_conv6")
         x6 = self.conv6(x5)
-        # shortcut -3
-        x6 = x6 + x4
         tt.toc("d1_conv6")
         # ----------------------------------------------------------------
-
+        # shortcut -3
+        x6 = x6 + x4
         # ----------------------------------------------------------------
         tmp_input = torch.clone(x6)
         with profile(
@@ -280,20 +277,18 @@ class DownSample1(nn.Module):
                 profile_memory=True, record_shapes=True
         ) as prof:
             with record_function("model_inference"):
-                temp = self.conv7(tmp_input)
-                temp = torch.cat([temp, x3], dim=1)
+                self.conv7(tmp_input)
 
         prof_report = str(prof.key_averages().table()).split("\n")
         mr.get_mem("d1_conv7", prof_report, usingcuda)
 
         tt.tic("d1_conv7")
         x7 = self.conv7(x6)
+        tt.toc("d1_conv7")
+        # ----------------------------------------------------------------
         # [route]
         # layers = -1, -7
         x7 = torch.cat([x7, x3], dim=1)
-        tt.toc("d1_conv7")
-        # ----------------------------------------------------------------
-
         # ----------------------------------------------------------------
         tmp_input = torch.clone(x7)
         with profile(
@@ -335,8 +330,7 @@ class DownSample2(nn.Module):
         # r -1 -10
         self.conv5 = Conv_Bn_Activation(128, 128, 1, 1, 'mish')
 
-    def forward(self, input, tt, mr):
-        usingcuda = False
+    def forward(self, input, tt, mr, usingcuda=False):
         # ----------------------------------------------------------------
         tmp_input = torch.clone(input)
         with profile(
@@ -443,17 +437,16 @@ class DownSample2(nn.Module):
                 profile_memory=True, record_shapes=True
         ) as prof:
             with record_function("model_inference"):
-                temp = self.conv4(tmp_input)
-                temp = torch.cat([temp, x2], dim=1)
+                self.conv4(tmp_input)
+                
         prof_report = str(prof.key_averages().table()).split("\n")
         mr.get_mem("d2_conv4", prof_report, usingcuda)
 
         tt.tic("d2_conv4")
         x4 = self.conv4(r)
-        x4 = torch.cat([x4, x2], dim=1)
         tt.toc("d2_conv4")
         # ----------------------------------------------------------------
-
+        x4 = torch.cat([x4, x2], dim=1)
         # ----------------------------------------------------------------
         tmp_input = torch.clone(x4)
         with profile(
@@ -468,7 +461,7 @@ class DownSample2(nn.Module):
                 profile_memory=True, record_shapes=True
         ) as prof:
             with record_function("model_inference"):
-                temp = self.conv5(tmp_input)
+                self.conv5(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         mr.get_mem("d2_conv5", prof_report, usingcuda)
 
@@ -500,8 +493,7 @@ class DownSample3(nn.Module):
         self.conv4 = Conv_Bn_Activation(128, 128, 1, 1, 'mish')
         self.conv5 = Conv_Bn_Activation(256, 256, 1, 1, 'mish')
 
-    def forward(self, input, tt, mr):
-        usingcuda = False
+    def forward(self, input, tt, mr, usingcuda=False):
         # ----------------------------------------------------------------
         tmp_input = torch.clone(input)
         with profile(
@@ -608,17 +600,16 @@ class DownSample3(nn.Module):
                 profile_memory=True, record_shapes=True
         ) as prof:
             with record_function("model_inference"):
-                temp = self.conv4(tmp_input)
-                temp = torch.cat([temp, x2], dim=1)
+                self.conv4(tmp_input)
+                
         prof_report = str(prof.key_averages().table()).split("\n")
         mr.get_mem("d3_conv4", prof_report, usingcuda)
 
         tt.tic("d3_conv4")
         x4 = self.conv4(r)
-        x4 = torch.cat([x4, x2], dim=1)
         tt.toc("d3_conv4")
         # ----------------------------------------------------------------
-
+        x4 = torch.cat([x4, x2], dim=1)
         # ----------------------------------------------------------------
         tmp_input = torch.clone(x4)
         with profile(
@@ -633,7 +624,7 @@ class DownSample3(nn.Module):
                 profile_memory=True, record_shapes=True
         ) as prof:
             with record_function("model_inference"):
-                temp = self.conv5(tmp_input)
+                self.conv5(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         mr.get_mem("d3_conv5", prof_report, usingcuda)
 
@@ -665,8 +656,7 @@ class DownSample4(nn.Module):
         self.conv4 = Conv_Bn_Activation(256, 256, 1, 1, 'mish')
         self.conv5 = Conv_Bn_Activation(512, 512, 1, 1, 'mish')
 
-    def forward(self, input, tt, mr):
-        usingcuda = False
+    def forward(self, input, tt, mr, usingcuda=False):
         # ----------------------------------------------------------------
         tmp_input = torch.clone(input)
         with profile(
@@ -773,17 +763,15 @@ class DownSample4(nn.Module):
                 profile_memory=True, record_shapes=True
         ) as prof:
             with record_function("model_inference"):
-                temp = self.conv4(tmp_input)
-                temp = torch.cat([temp, x2], dim=1)
+                self.conv4(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         mr.get_mem("d4_conv4", prof_report, usingcuda)
 
         tt.tic("d4_conv4")
         x4 = self.conv4(r)
-        x4 = torch.cat([x4, x2], dim=1)
         tt.toc("d4_conv4")
         # ----------------------------------------------------------------
-
+        x4 = torch.cat([x4, x2], dim=1)
         # ----------------------------------------------------------------
         tmp_input = torch.clone(x4)
         with profile(
@@ -798,7 +786,7 @@ class DownSample4(nn.Module):
                 profile_memory=True, record_shapes=True
         ) as prof:
             with record_function("model_inference"):
-                temp = self.conv5(tmp_input)
+                self.conv5(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         mr.get_mem("d4_conv5", prof_report, usingcuda)
 
@@ -830,8 +818,7 @@ class DownSample5(nn.Module):
         self.conv4 = Conv_Bn_Activation(512, 512, 1, 1, 'mish')
         self.conv5 = Conv_Bn_Activation(1024, 1024, 1, 1, 'mish')
 
-    def forward(self, input, tt, mr):
-        usingcuda = False
+    def forward(self, input, tt, mr, usingcuda=False):
         # ----------------------------------------------------------------
         tmp_input = torch.clone(input)
         with profile(
@@ -938,17 +925,15 @@ class DownSample5(nn.Module):
                 profile_memory=True, record_shapes=True
         ) as prof:
             with record_function("model_inference"):
-                temp = self.conv4(tmp_input)
-                temp = torch.cat([temp, x2], dim=1)
+                self.conv4(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         mr.get_mem("d5_conv4", prof_report, usingcuda)
 
         tt.tic("d5_conv4")
         x4 = self.conv4(r)
-        x4 = torch.cat([x4, x2], dim=1)
         tt.toc("d5_conv4")
         # ----------------------------------------------------------------
-
+        x4 = torch.cat([x4, x2], dim=1)
         # ----------------------------------------------------------------
         tmp_input = torch.clone(x4)
         with profile(
@@ -963,7 +948,7 @@ class DownSample5(nn.Module):
                 profile_memory=True, record_shapes=True
         ) as prof:
             with record_function("model_inference"):
-                temp = self.conv5(tmp_input)
+                self.conv5(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         mr.get_mem("d5_conv5", prof_report, usingcuda)
 
@@ -1025,7 +1010,7 @@ class Neck(nn.Module):
         self.conv19 = Conv_Bn_Activation(128, 256, 3, 1, 'leaky')
         self.conv20 = Conv_Bn_Activation(256, 128, 1, 1, 'leaky')
 
-    def forward(self, input, downsample4, downsample3, tt, mr, inference=False):
+    def forward(self, input, downsample4, downsample3, tt, mr, inference=False, usingcuda=False):
         x1 = self.conv1(input)
         x2 = self.conv2(x1)
         x3 = self.conv3(x2)
@@ -1115,7 +1100,7 @@ class Yolov4Head(nn.Module):
                                 anchors=[12, 16, 19, 36, 40, 28, 36, 75, 76, 55, 72, 146, 142, 110, 192, 243, 459, 401],
                                 num_anchors=9, stride=32)
 
-    def forward(self, input1, input2, input3, tt, mr):
+    def forward(self, input1, input2, input3, tt, mr, usingcuda=False):
         x1 = self.conv1(input1)
         x2 = self.conv2(x1)
 
@@ -1191,173 +1176,6 @@ class Yolov4(nn.Module):
         d5 = self.down5(d4, tt, mr)
         x20, x13, x6 = self.neck(d5, d4, d3, tt, mr)
         output = self.head(x20, x13, x6, tt, mr)
-
-        # usingcuda = False
-        # # ----------------------------------------------------------------
-        # tmp_input = torch.clone(input)
-        # with profile(
-        #         activities=
-        #         [
-        #             ProfilerActivity.CPU
-        #         ] if not usingcuda else
-        #         [
-        #             ProfilerActivity.CPU,
-        #             ProfilerActivity.CUDA
-        #         ],
-        #         profile_memory=True, record_shapes=True
-        # ) as prof:
-        #     with record_function("model_inference"):
-        #         self.down1(tmp_input)
-        # prof_report = str(prof.key_averages().table()).split("\n")
-        # mr.get_mem("d1", prof_report, usingcuda)
-        #
-        # tt.tic("d1")
-        # d1 = self.down1(input)
-        # tt.toc("d1")
-        # # ----------------------------------------------------------------
-        #
-        # # ----------------------------------------------------------------
-        # tmp_input = torch.clone(d1)
-        # with profile(
-        #         activities=
-        #         [
-        #             ProfilerActivity.CPU
-        #         ] if not usingcuda else
-        #         [
-        #             ProfilerActivity.CPU,
-        #             ProfilerActivity.CUDA
-        #         ],
-        #         profile_memory=True, record_shapes=True
-        # ) as prof:
-        #     with record_function("model_inference"):
-        #         self.down2(tmp_input)
-        # prof_report = str(prof.key_averages().table()).split("\n")
-        # mr.get_mem("d2", prof_report, usingcuda)
-        #
-        # tt.tic("d2")
-        # d2 = self.down2(d1)
-        # tt.toc("d2")
-        # # ----------------------------------------------------------------
-        #
-        # # ----------------------------------------------------------------
-        # tmp_input = torch.clone(d2)
-        # with profile(
-        #         activities=
-        #         [
-        #             ProfilerActivity.CPU
-        #         ] if not usingcuda else
-        #         [
-        #             ProfilerActivity.CPU,
-        #             ProfilerActivity.CUDA
-        #         ],
-        #         profile_memory=True, record_shapes=True
-        # ) as prof:
-        #     with record_function("model_inference"):
-        #         self.down3(tmp_input)
-        # prof_report = str(prof.key_averages().table()).split("\n")
-        # mr.get_mem("d3", prof_report, usingcuda)
-        #
-        # tt.tic("d3")
-        # d3 = self.down3(d2)
-        # tt.toc("d3")
-        # # ----------------------------------------------------------------
-        #
-        # # ----------------------------------------------------------------
-        # tmp_input = torch.clone(d3)
-        # with profile(
-        #         activities=
-        #         [
-        #             ProfilerActivity.CPU
-        #         ] if not usingcuda else
-        #         [
-        #             ProfilerActivity.CPU,
-        #             ProfilerActivity.CUDA
-        #         ],
-        #         profile_memory=True, record_shapes=True
-        # ) as prof:
-        #     with record_function("model_inference"):
-        #         self.down4(tmp_input)
-        # prof_report = str(prof.key_averages().table()).split("\n")
-        # mr.get_mem("d4", prof_report, usingcuda)
-        #
-        # tt.tic("d4")
-        # d4 = self.down4(d3)
-        # tt.toc("d4")
-        # # ----------------------------------------------------------------
-        #
-        # # ----------------------------------------------------------------
-        # tmp_input = torch.clone(d4)
-        # with profile(
-        #         activities=
-        #         [
-        #             ProfilerActivity.CPU
-        #         ] if not usingcuda else
-        #         [
-        #             ProfilerActivity.CPU,
-        #             ProfilerActivity.CUDA
-        #         ],
-        #         profile_memory=True, record_shapes=True
-        # ) as prof:
-        #     with record_function("model_inference"):
-        #         self.down5(tmp_input)
-        # prof_report = str(prof.key_averages().table()).split("\n")
-        # mr.get_mem("d5", prof_report, usingcuda)
-        #
-        # tt.tic("d5")
-        # d5 = self.down5(d4)
-        # tt.toc("d5")
-        # # ----------------------------------------------------------------
-        #
-        # # ----------------------------------------------------------------
-        # tmp_input3 = torch.clone(d3)
-        # tmp_input4 = torch.clone(d4)
-        # tmp_input5 = torch.clone(d5)
-        # with profile(
-        #         activities=
-        #         [
-        #             ProfilerActivity.CPU
-        #         ] if not usingcuda else
-        #         [
-        #             ProfilerActivity.CPU,
-        #             ProfilerActivity.CUDA
-        #         ],
-        #         profile_memory=True, record_shapes=True
-        # ) as prof:
-        #     with record_function("model_inference"):
-        #         self.neck(tmp_input5, tmp_input4, tmp_input3)
-        # prof_report = str(prof.key_averages().table()).split("\n")
-        # mr.get_mem("neck", prof_report, usingcuda)
-        #
-        # tt.tic("neck")
-        # x20, x13, x6 = self.neck(d5, d4, d3)
-        # tt.toc("neck")
-        # # ----------------------------------------------------------------
-        #
-        # # ----------------------------------------------------------------
-        # tmp_input3 = torch.clone(x20)
-        # tmp_input4 = torch.clone(x13)
-        # tmp_input5 = torch.clone(x6)
-        # with profile(
-        #         activities=
-        #         [
-        #             ProfilerActivity.CPU
-        #         ] if not usingcuda else
-        #         [
-        #             ProfilerActivity.CPU,
-        #             ProfilerActivity.CUDA
-        #         ],
-        #         profile_memory=True, record_shapes=True
-        # ) as prof:
-        #     with record_function("model_inference"):
-        #         self.head(tmp_input3, tmp_input4, tmp_input5)
-        # prof_report = str(prof.key_averages().table()).split("\n")
-        # mr.get_mem("head", prof_report, usingcuda)
-        #
-        # tt.tic("head")
-        # output = self.head(x20, x13, x6)
-        # tt.toc("head")
-        # # ----------------------------------------------------------------
-
         return output
 
 
