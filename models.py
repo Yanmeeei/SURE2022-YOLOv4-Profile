@@ -29,14 +29,15 @@ class Upsample(nn.Module):
 
         if inference:
 
-            #B = x.data.size(0)
-            #C = x.data.size(1)
-            #H = x.data.size(2)
-            #W = x.data.size(3)
+            # B = x.data.size(0)
+            # C = x.data.size(1)
+            # H = x.data.size(2)
+            # W = x.data.size(3)
 
-            return x.view(x.size(0), x.size(1), x.size(2), 1, x.size(3), 1).\
-                    expand(x.size(0), x.size(1), x.size(2), target_size[2] // x.size(2), x.size(3), target_size[3] // x.size(3)).\
-                    contiguous().view(x.size(0), x.size(1), target_size[2], target_size[3])
+            return x.view(x.size(0), x.size(1), x.size(2), 1, x.size(3), 1). \
+                expand(x.size(0), x.size(1), x.size(2), target_size[2] // x.size(2), x.size(3),
+                       target_size[3] // x.size(3)). \
+                contiguous().view(x.size(0), x.size(1), target_size[2], target_size[3])
         else:
             return F.interpolate(x, size=(target_size[2], target_size[3]), mode='nearest')
 
@@ -438,7 +439,7 @@ class DownSample2(nn.Module):
         ) as prof:
             with record_function("model_inference"):
                 self.conv4(tmp_input)
-                
+
         prof_report = str(prof.key_averages().table()).split("\n")
         mr.get_mem("d2_conv4", prof_report, usingcuda)
 
@@ -601,7 +602,7 @@ class DownSample3(nn.Module):
         ) as prof:
             with record_function("model_inference"):
                 self.conv4(tmp_input)
-                
+
         prof_report = str(prof.key_averages().table()).split("\n")
         mr.get_mem("d3_conv4", prof_report, usingcuda)
 
@@ -1062,9 +1063,9 @@ class Yolov4Head(nn.Module):
         self.conv2 = Conv_Bn_Activation(256, output_ch, 1, 1, 'linear', bn=False, bias=True)
 
         self.yolo1 = YoloLayer(
-                                anchor_mask=[0, 1, 2], num_classes=n_classes,
-                                anchors=[12, 16, 19, 36, 40, 28, 36, 75, 76, 55, 72, 146, 142, 110, 192, 243, 459, 401],
-                                num_anchors=9, stride=8)
+            anchor_mask=[0, 1, 2], num_classes=n_classes,
+            anchors=[12, 16, 19, 36, 40, 28, 36, 75, 76, 55, 72, 146, 142, 110, 192, 243, 459, 401],
+            num_anchors=9, stride=8)
 
         # R -4
         self.conv3 = Conv_Bn_Activation(128, 256, 3, 2, 'leaky')
@@ -1077,11 +1078,11 @@ class Yolov4Head(nn.Module):
         self.conv8 = Conv_Bn_Activation(512, 256, 1, 1, 'leaky')
         self.conv9 = Conv_Bn_Activation(256, 512, 3, 1, 'leaky')
         self.conv10 = Conv_Bn_Activation(512, output_ch, 1, 1, 'linear', bn=False, bias=True)
-        
+
         self.yolo2 = YoloLayer(
-                                anchor_mask=[3, 4, 5], num_classes=n_classes,
-                                anchors=[12, 16, 19, 36, 40, 28, 36, 75, 76, 55, 72, 146, 142, 110, 192, 243, 459, 401],
-                                num_anchors=9, stride=16)
+            anchor_mask=[3, 4, 5], num_classes=n_classes,
+            anchors=[12, 16, 19, 36, 40, 28, 36, 75, 76, 55, 72, 146, 142, 110, 192, 243, 459, 401],
+            num_anchors=9, stride=16)
 
         # R -4
         self.conv11 = Conv_Bn_Activation(256, 512, 3, 2, 'leaky')
@@ -1094,11 +1095,11 @@ class Yolov4Head(nn.Module):
         self.conv16 = Conv_Bn_Activation(1024, 512, 1, 1, 'leaky')
         self.conv17 = Conv_Bn_Activation(512, 1024, 3, 1, 'leaky')
         self.conv18 = Conv_Bn_Activation(1024, output_ch, 1, 1, 'linear', bn=False, bias=True)
-        
+
         self.yolo3 = YoloLayer(
-                                anchor_mask=[6, 7, 8], num_classes=n_classes,
-                                anchors=[12, 16, 19, 36, 40, 28, 36, 75, 76, 55, 72, 146, 142, 110, 192, 243, 459, 401],
-                                num_anchors=9, stride=32)
+            anchor_mask=[6, 7, 8], num_classes=n_classes,
+            anchors=[12, 16, 19, 36, 40, 28, 36, 75, 76, 55, 72, 146, 142, 110, 192, 243, 459, 401],
+            num_anchors=9, stride=32)
 
     def forward(self, input1, input2, input3, tt, mr, usingcuda=False):
         x1 = self.conv1(input1)
@@ -1127,14 +1128,14 @@ class Yolov4Head(nn.Module):
         x16 = self.conv16(x15)
         x17 = self.conv17(x16)
         x18 = self.conv18(x17)
-        
+
         if self.inference:
             y1 = self.yolo1(x2)
             y2 = self.yolo2(x10)
             y3 = self.yolo3(x18)
 
             return get_region_boxes([y1, y2, y3])
-        
+
         else:
             return [x2, x10, x18]
 
@@ -1164,18 +1165,18 @@ class Yolov4(nn.Module):
             # 2. overwrite entries in the existing state dict
             model_dict.update(pretrained_dict)
             _model.load_state_dict(model_dict)
-        
+
         # head
         self.head = Yolov4Head(output_ch, n_classes, inference)
 
-    def forward(self, input, tt, mr):
-        d1 = self.down1(input, tt, mr)
-        d2 = self.down2(d1, tt, mr)
-        d3 = self.down3(d2, tt, mr)
-        d4 = self.down4(d3, tt, mr)
-        d5 = self.down5(d4, tt, mr)
-        x20, x13, x6 = self.neck(d5, d4, d3, tt, mr)
-        output = self.head(x20, x13, x6, tt, mr)
+    def forward(self, input, tt, mr, usingcuda=False):
+        d1 = self.down1(input, tt, mr, usingcuda)
+        d2 = self.down2(d1, tt, mr, usingcuda)
+        d3 = self.down3(d2, tt, mr, usingcuda)
+        d4 = self.down4(d3, tt, mr, usingcuda)
+        d5 = self.down5(d4, tt, mr, usingcuda)
+        x20, x13, x6 = self.neck(d5, d4, d3, tt, mr, usingcuda)
+        output = self.head(x20, x13, x6, tt, mr, usingcuda)
         return output
 
 
@@ -1224,7 +1225,7 @@ if __name__ == "__main__":
     from tool.torch_utils import do_detect
 
     for i in range(2):  # This 'for' loop is for speed check
-                        # Because the first iteration is usually longer
+        # Because the first iteration is usually longer
         boxes = do_detect(model, sized, 0.4, 0.6, use_cuda)
 
     if namesfile == None:
