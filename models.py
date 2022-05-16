@@ -370,8 +370,7 @@ class Yolov4Head(nn.Module):
             anchors=[12, 16, 19, 36, 40, 28, 36, 75, 76, 55, 72, 146, 142, 110, 192, 243, 459, 401],
             num_anchors=9, stride=32)
 
-    def forward(self, input1, input2, input3, tt, mr):
-        usingcuda = False
+    def forward(self, input1, input2, input3, tt, mr, usingcuda=False):
         # ----------------------------------------------------------------
         tmp_input = torch.clone(input1)
         with profile(
@@ -922,180 +921,14 @@ class Yolov4(nn.Module):
         # head
         self.head = Yolov4Head(output_ch, n_classes, inference)
 
-    def forward(self, input, tt, mr):
+    def forward(self, input, tt, mr, usingcuda=False):
         d1 = self.down1(input, tt, mr)
         d2 = self.down2(d1, tt, mr)
         d3 = self.down3(d2, tt, mr)
         d4 = self.down4(d3, tt, mr)
         d5 = self.down5(d4, tt, mr)
         x20, x13, x6 = self.neck(d5, d4, d3, tt, mr)
-        output = self.head(x20, x13, x6, tt, mr)
-
-        # usingcuda = False
-        # # ----------------------------------------------------------------
-        # tmp_input = torch.clone(input)
-        # with profile(
-        #         activities=
-        #         [
-        #             ProfilerActivity.CPU
-        #         ] if not usingcuda else
-        #         [
-        #             ProfilerActivity.CPU,
-        #             ProfilerActivity.CUDA
-        #         ],
-        #         profile_memory=True, record_shapes=True
-        # ) as prof:
-        #     with record_function("model_inference"):
-        #         self.down1(tmp_input)
-        # prof_report = str(prof.key_averages().table()).split("\n")
-        # mr.get_mem("d1", prof_report, usingcuda)
-        #
-        # tt.tic("d1")
-        # d1 = self.down1(input)
-        # tt.toc("d1")
-        # # ----------------------------------------------------------------
-        #
-        # # ----------------------------------------------------------------
-        # tmp_input = torch.clone(d1)
-        # with profile(
-        #         activities=
-        #         [
-        #             ProfilerActivity.CPU
-        #         ] if not usingcuda else
-        #         [
-        #             ProfilerActivity.CPU,
-        #             ProfilerActivity.CUDA
-        #         ],
-        #         profile_memory=True, record_shapes=True
-        # ) as prof:
-        #     with record_function("model_inference"):
-        #         self.down2(tmp_input)
-        # prof_report = str(prof.key_averages().table()).split("\n")
-        # mr.get_mem("d2", prof_report, usingcuda)
-        #
-        # tt.tic("d2")
-        # d2 = self.down2(d1)
-        # tt.toc("d2")
-        # # ----------------------------------------------------------------
-        #
-        # # ----------------------------------------------------------------
-        # tmp_input = torch.clone(d2)
-        # with profile(
-        #         activities=
-        #         [
-        #             ProfilerActivity.CPU
-        #         ] if not usingcuda else
-        #         [
-        #             ProfilerActivity.CPU,
-        #             ProfilerActivity.CUDA
-        #         ],
-        #         profile_memory=True, record_shapes=True
-        # ) as prof:
-        #     with record_function("model_inference"):
-        #         self.down3(tmp_input)
-        # prof_report = str(prof.key_averages().table()).split("\n")
-        # mr.get_mem("d3", prof_report, usingcuda)
-        #
-        # tt.tic("d3")
-        # d3 = self.down3(d2)
-        # tt.toc("d3")
-        # # ----------------------------------------------------------------
-        #
-        # # ----------------------------------------------------------------
-        # tmp_input = torch.clone(d3)
-        # with profile(
-        #         activities=
-        #         [
-        #             ProfilerActivity.CPU
-        #         ] if not usingcuda else
-        #         [
-        #             ProfilerActivity.CPU,
-        #             ProfilerActivity.CUDA
-        #         ],
-        #         profile_memory=True, record_shapes=True
-        # ) as prof:
-        #     with record_function("model_inference"):
-        #         self.down4(tmp_input)
-        # prof_report = str(prof.key_averages().table()).split("\n")
-        # mr.get_mem("d4", prof_report, usingcuda)
-        #
-        # tt.tic("d4")
-        # d4 = self.down4(d3)
-        # tt.toc("d4")
-        # # ----------------------------------------------------------------
-        #
-        # # ----------------------------------------------------------------
-        # tmp_input = torch.clone(d4)
-        # with profile(
-        #         activities=
-        #         [
-        #             ProfilerActivity.CPU
-        #         ] if not usingcuda else
-        #         [
-        #             ProfilerActivity.CPU,
-        #             ProfilerActivity.CUDA
-        #         ],
-        #         profile_memory=True, record_shapes=True
-        # ) as prof:
-        #     with record_function("model_inference"):
-        #         self.down5(tmp_input)
-        # prof_report = str(prof.key_averages().table()).split("\n")
-        # mr.get_mem("d5", prof_report, usingcuda)
-        #
-        # tt.tic("d5")
-        # d5 = self.down5(d4)
-        # tt.toc("d5")
-        # # ----------------------------------------------------------------
-        #
-        # # ----------------------------------------------------------------
-        # tmp_input3 = torch.clone(d3)
-        # tmp_input4 = torch.clone(d4)
-        # tmp_input5 = torch.clone(d5)
-        # with profile(
-        #         activities=
-        #         [
-        #             ProfilerActivity.CPU
-        #         ] if not usingcuda else
-        #         [
-        #             ProfilerActivity.CPU,
-        #             ProfilerActivity.CUDA
-        #         ],
-        #         profile_memory=True, record_shapes=True
-        # ) as prof:
-        #     with record_function("model_inference"):
-        #         self.neck(tmp_input5, tmp_input4, tmp_input3)
-        # prof_report = str(prof.key_averages().table()).split("\n")
-        # mr.get_mem("neck", prof_report, usingcuda)
-        #
-        # tt.tic("neck")
-        # x20, x13, x6 = self.neck(d5, d4, d3)
-        # tt.toc("neck")
-        # # ----------------------------------------------------------------
-        #
-        # # ----------------------------------------------------------------
-        # tmp_input3 = torch.clone(x20)
-        # tmp_input4 = torch.clone(x13)
-        # tmp_input5 = torch.clone(x6)
-        # with profile(
-        #         activities=
-        #         [
-        #             ProfilerActivity.CPU
-        #         ] if not usingcuda else
-        #         [
-        #             ProfilerActivity.CPU,
-        #             ProfilerActivity.CUDA
-        #         ],
-        #         profile_memory=True, record_shapes=True
-        # ) as prof:
-        #     with record_function("model_inference"):
-        #         self.head(tmp_input3, tmp_input4, tmp_input5)
-        # prof_report = str(prof.key_averages().table()).split("\n")
-        # mr.get_mem("head", prof_report, usingcuda)
-        #
-        # tt.tic("head")
-        # output = self.head(x20, x13, x6)
-        # tt.toc("head")
-        # # ----------------------------------------------------------------
+        output = self.head(x20, x13, x6, tt, mr, usingcuda)
 
         return output
 
