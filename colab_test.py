@@ -1,8 +1,9 @@
-import torch
-from models import Yolov4, YoloLayer, Yolov4Head
 
-from timer import Clock
-from memorizer import MemRec
+import torch
+from drive/My Drive/ColabNotebooks/SURE2022/pytorch-YOLOv4-master/models import Yolov4, YoloLayer, Yolov4Head
+
+from drive/My Drive/ColabNotebooks/SURE2022/pytorch-YOLOv4-master/timer import Clock
+from drive/My Drive/ColabNotebooks/SURE2022/pytorch-YOLOv4-master/memorizer import MemRec
 
 tt = Clock()
 mr = MemRec()
