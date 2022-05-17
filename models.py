@@ -5,8 +5,7 @@ import torch.nn.functional as F
 from tool.torch_utils import *
 from tool.yolo_layer import YoloLayer
 
-from timer import Clock
-from memorizer import MemRec
+from profilerwrapper import ProfilerWrapper
 from torch.profiler import profile, record_function, ProfilerActivity
 
 
@@ -123,8 +122,11 @@ class DownSample1(nn.Module):
         # layers = -1, -7
         self.conv8 = Conv_Bn_Activation(128, 64, 1, 1, 'mish')
 
-    def forward(self, input, tt, mr, usingcuda=False):
+    def forward(self, input, prof_wrapper, usingcuda=False):
+        prof_wrapper.scale.weight(tensor_src="input", data=input)
+
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="input", src="user_input", dest="d1_conv1")
         tmp_input = torch.clone(input)
         with profile(
                 activities=
@@ -140,14 +142,17 @@ class DownSample1(nn.Module):
             with record_function("model_inference"):
                 self.conv1(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d1_conv1", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("d1_conv1", prof_report, usingcuda)
 
-        tt.tic("d1_conv1")
+        prof_wrapper.tt.tic("d1_conv1")
         x1 = self.conv1(input)
-        tt.toc("d1_conv1")
+        prof_wrapper.tt.toc("d1_conv1")
+
+        prof_wrapper.scale.weight(tensor_src="d1_conv1", data=x1)
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x1", src="d1_conv1", dest="d1_conv2")
         tmp_input = torch.clone(x1)
         with profile(
                 activities=
@@ -163,14 +168,16 @@ class DownSample1(nn.Module):
             with record_function("model_inference"):
                 self.conv2(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d1_conv2", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("d1_conv2", prof_report, usingcuda)
 
-        tt.tic("d1_conv2")
+        prof_wrapper.tt.tic("d1_conv2")
         x2 = self.conv2(x1)
-        tt.toc("d1_conv2")
+        prof_wrapper.tt.toc("d1_conv2")
+        prof_wrapper.scale.weight(tensor_src="d1_conv2", data=x2)
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x2", src="d1_conv2", dest="d1_conv3")
         tmp_input = torch.clone(x2)
         with profile(
                 activities=
@@ -186,15 +193,17 @@ class DownSample1(nn.Module):
             with record_function("model_inference"):
                 self.conv3(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d1_conv3", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("d1_conv3", prof_report, usingcuda)
 
-        tt.tic("d1_conv3")
+        prof_wrapper.tt.tic("d1_conv3")
         x3 = self.conv3(x2)
-        tt.toc("d1_conv3")
+        prof_wrapper.tt.toc("d1_conv3")
+        prof_wrapper.scale.weight(tensor_src="d1_conv3", data=x3)
         # ----------------------------------------------------------------
 
         # route -2
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x2", src="d1_conv2", dest="d1_conv4")
         tmp_input = torch.clone(x2)
         with profile(
                 activities=
@@ -210,11 +219,12 @@ class DownSample1(nn.Module):
             with record_function("model_inference"):
                 self.conv4(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d1_conv4", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("d1_conv4", prof_report, usingcuda)
 
-        tt.tic("d1_conv4")
+        prof_wrapper.tt.tic("d1_conv4")
         x4 = self.conv4(x2)
-        tt.toc("d1_conv4")
+        prof_wrapper.tt.toc("d1_conv4")
+        prof_wrapper.scale.weight(tensor_src="d1_conv4", data=x4)
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
@@ -233,11 +243,11 @@ class DownSample1(nn.Module):
             with record_function("model_inference"):
                 self.conv5(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d1_conv5", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("d1_conv5", prof_report, usingcuda)
 
-        tt.tic("d1_conv5")
+        prof_wrapper.tt.tic("d1_conv5")
         x5 = self.conv5(x4)
-        tt.toc("d1_conv5")
+        prof_wrapper.tt.toc("d1_conv5")
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
@@ -256,11 +266,11 @@ class DownSample1(nn.Module):
             with record_function("model_inference"):
                 self.conv6(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d1_conv6", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("d1_conv6", prof_report, usingcuda)
 
-        tt.tic("d1_conv6")
+        prof_wrapper.tt.tic("d1_conv6")
         x6 = self.conv6(x5)
-        tt.toc("d1_conv6")
+        prof_wrapper.tt.toc("d1_conv6")
         # ----------------------------------------------------------------
         # shortcut -3
         x6 = x6 + x4
@@ -281,11 +291,11 @@ class DownSample1(nn.Module):
                 self.conv7(tmp_input)
 
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d1_conv7", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("d1_conv7", prof_report, usingcuda)
 
-        tt.tic("d1_conv7")
+        prof_wrapper.tt.tic("d1_conv7")
         x7 = self.conv7(x6)
-        tt.toc("d1_conv7")
+        prof_wrapper.tt.toc("d1_conv7")
         # ----------------------------------------------------------------
         # [route]
         # layers = -1, -7
@@ -306,11 +316,11 @@ class DownSample1(nn.Module):
             with record_function("model_inference"):
                 self.conv8(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d1_conv8", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("d1_conv8", prof_report, usingcuda)
 
-        tt.tic("d1_conv8")
+        prof_wrapper.tt.tic("d1_conv8")
         x8 = self.conv8(x7)
-        tt.toc("d1_conv8")
+        prof_wrapper.tt.toc("d1_conv8")
         # ----------------------------------------------------------------
 
         return x8
@@ -331,7 +341,7 @@ class DownSample2(nn.Module):
         # r -1 -10
         self.conv5 = Conv_Bn_Activation(128, 128, 1, 1, 'mish')
 
-    def forward(self, input, tt, mr, usingcuda=False):
+    def forward(self, input, prof_wrapper, usingcuda=False):
         # ----------------------------------------------------------------
         tmp_input = torch.clone(input)
         with profile(
@@ -348,11 +358,11 @@ class DownSample2(nn.Module):
             with record_function("model_inference"):
                 self.conv1(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d2_conv1", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("d2_conv1", prof_report, usingcuda)
 
-        tt.tic("d2_conv1")
+        prof_wrapper.tt.tic("d2_conv1")
         x1 = self.conv1(input)
-        tt.toc("d2_conv1")
+        prof_wrapper.tt.toc("d2_conv1")
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
@@ -371,11 +381,11 @@ class DownSample2(nn.Module):
             with record_function("model_inference"):
                 self.conv2(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d2_conv2", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("d2_conv2", prof_report, usingcuda)
 
-        tt.tic("d2_conv2")
+        prof_wrapper.tt.tic("d2_conv2")
         x2 = self.conv2(x1)
-        tt.toc("d2_conv2")
+        prof_wrapper.tt.toc("d2_conv2")
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
@@ -394,11 +404,11 @@ class DownSample2(nn.Module):
             with record_function("model_inference"):
                 self.conv3(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d2_conv3", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("d2_conv3", prof_report, usingcuda)
 
-        tt.tic("d2_conv3")
+        prof_wrapper.tt.tic("d2_conv3")
         x3 = self.conv3(x1)
-        tt.toc("d2_conv3")
+        prof_wrapper.tt.toc("d2_conv3")
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
@@ -417,11 +427,11 @@ class DownSample2(nn.Module):
             with record_function("model_inference"):
                 self.resblock(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d2_resblock", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("d2_resblock", prof_report, usingcuda)
 
-        tt.tic("d2_resblock")
+        prof_wrapper.tt.tic("d2_resblock")
         r = self.resblock(x3)
-        tt.toc("d2_resblock")
+        prof_wrapper.tt.toc("d2_resblock")
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
@@ -441,11 +451,11 @@ class DownSample2(nn.Module):
                 self.conv4(tmp_input)
 
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d2_conv4", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("d2_conv4", prof_report, usingcuda)
 
-        tt.tic("d2_conv4")
+        prof_wrapper.tt.tic("d2_conv4")
         x4 = self.conv4(r)
-        tt.toc("d2_conv4")
+        prof_wrapper.tt.toc("d2_conv4")
         # ----------------------------------------------------------------
         x4 = torch.cat([x4, x2], dim=1)
         # ----------------------------------------------------------------
@@ -464,11 +474,11 @@ class DownSample2(nn.Module):
             with record_function("model_inference"):
                 self.conv5(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d2_conv5", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("d2_conv5", prof_report, usingcuda)
 
-        tt.tic("d2_conv5")
+        prof_wrapper.tt.tic("d2_conv5")
         x5 = self.conv5(x4)
-        tt.toc("d2_conv5")
+        prof_wrapper.tt.toc("d2_conv5")
         # ----------------------------------------------------------------
 
         # x1 = self.conv1(input)
@@ -494,7 +504,7 @@ class DownSample3(nn.Module):
         self.conv4 = Conv_Bn_Activation(128, 128, 1, 1, 'mish')
         self.conv5 = Conv_Bn_Activation(256, 256, 1, 1, 'mish')
 
-    def forward(self, input, tt, mr, usingcuda=False):
+    def forward(self, input, prof_wrapper, usingcuda=False):
         # ----------------------------------------------------------------
         tmp_input = torch.clone(input)
         with profile(
@@ -511,11 +521,11 @@ class DownSample3(nn.Module):
             with record_function("model_inference"):
                 self.conv1(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d3_conv1", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("d3_conv1", prof_report, usingcuda)
 
-        tt.tic("d3_conv1")
+        prof_wrapper.tt.tic("d3_conv1")
         x1 = self.conv1(input)
-        tt.toc("d3_conv1")
+        prof_wrapper.tt.toc("d3_conv1")
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
@@ -534,11 +544,11 @@ class DownSample3(nn.Module):
             with record_function("model_inference"):
                 self.conv2(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d3_conv2", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("d3_conv2", prof_report, usingcuda)
 
-        tt.tic("d3_conv2")
+        prof_wrapper.tt.tic("d3_conv2")
         x2 = self.conv2(x1)
-        tt.toc("d3_conv2")
+        prof_wrapper.tt.toc("d3_conv2")
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
@@ -557,11 +567,11 @@ class DownSample3(nn.Module):
             with record_function("model_inference"):
                 self.conv3(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d3_conv3", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("d3_conv3", prof_report, usingcuda)
 
-        tt.tic("d3_conv3")
+        prof_wrapper.tt.tic("d3_conv3")
         x3 = self.conv3(x1)
-        tt.toc("d3_conv3")
+        prof_wrapper.tt.toc("d3_conv3")
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
@@ -580,11 +590,11 @@ class DownSample3(nn.Module):
             with record_function("model_inference"):
                 self.resblock(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d3_resblock", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("d3_resblock", prof_report, usingcuda)
 
-        tt.tic("d3_resblock")
+        prof_wrapper.tt.tic("d3_resblock")
         r = self.resblock(x3)
-        tt.toc("d3_resblock")
+        prof_wrapper.tt.toc("d3_resblock")
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
@@ -604,11 +614,11 @@ class DownSample3(nn.Module):
                 self.conv4(tmp_input)
 
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d3_conv4", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("d3_conv4", prof_report, usingcuda)
 
-        tt.tic("d3_conv4")
+        prof_wrapper.tt.tic("d3_conv4")
         x4 = self.conv4(r)
-        tt.toc("d3_conv4")
+        prof_wrapper.tt.toc("d3_conv4")
         # ----------------------------------------------------------------
         x4 = torch.cat([x4, x2], dim=1)
         # ----------------------------------------------------------------
@@ -627,11 +637,11 @@ class DownSample3(nn.Module):
             with record_function("model_inference"):
                 self.conv5(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d3_conv5", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("d3_conv5", prof_report, usingcuda)
 
-        tt.tic("d3_conv5")
+        prof_wrapper.tt.tic("d3_conv5")
         x5 = self.conv5(x4)
-        tt.toc("d3_conv5")
+        prof_wrapper.tt.toc("d3_conv5")
         # ----------------------------------------------------------------
 
         # x1 = self.conv1(input)
@@ -657,7 +667,7 @@ class DownSample4(nn.Module):
         self.conv4 = Conv_Bn_Activation(256, 256, 1, 1, 'mish')
         self.conv5 = Conv_Bn_Activation(512, 512, 1, 1, 'mish')
 
-    def forward(self, input, tt, mr, usingcuda=False):
+    def forward(self, input, prof_wrapper, usingcuda=False):
         # ----------------------------------------------------------------
         tmp_input = torch.clone(input)
         with profile(
@@ -674,11 +684,11 @@ class DownSample4(nn.Module):
             with record_function("model_inference"):
                 self.conv1(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d4_conv1", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("d4_conv1", prof_report, usingcuda)
 
-        tt.tic("d4_conv1")
+        prof_wrapper.tt.tic("d4_conv1")
         x1 = self.conv1(input)
-        tt.toc("d4_conv1")
+        prof_wrapper.tt.toc("d4_conv1")
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
@@ -697,11 +707,11 @@ class DownSample4(nn.Module):
             with record_function("model_inference"):
                 self.conv2(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d4_conv2", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("d4_conv2", prof_report, usingcuda)
 
-        tt.tic("d4_conv2")
+        prof_wrapper.tt.tic("d4_conv2")
         x2 = self.conv2(x1)
-        tt.toc("d4_conv2")
+        prof_wrapper.tt.toc("d4_conv2")
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
@@ -720,11 +730,11 @@ class DownSample4(nn.Module):
             with record_function("model_inference"):
                 self.conv3(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d4_conv3", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("d4_conv3", prof_report, usingcuda)
 
-        tt.tic("d4_conv3")
+        prof_wrapper.tt.tic("d4_conv3")
         x3 = self.conv3(x1)
-        tt.toc("d4_conv3")
+        prof_wrapper.tt.toc("d4_conv3")
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
@@ -743,11 +753,11 @@ class DownSample4(nn.Module):
             with record_function("model_inference"):
                 self.resblock(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d4_resblock", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("d4_resblock", prof_report, usingcuda)
 
-        tt.tic("d4_resblock")
+        prof_wrapper.tt.tic("d4_resblock")
         r = self.resblock(x3)
-        tt.toc("d4_resblock")
+        prof_wrapper.tt.toc("d4_resblock")
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
@@ -766,11 +776,11 @@ class DownSample4(nn.Module):
             with record_function("model_inference"):
                 self.conv4(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d4_conv4", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("d4_conv4", prof_report, usingcuda)
 
-        tt.tic("d4_conv4")
+        prof_wrapper.tt.tic("d4_conv4")
         x4 = self.conv4(r)
-        tt.toc("d4_conv4")
+        prof_wrapper.tt.toc("d4_conv4")
         # ----------------------------------------------------------------
         x4 = torch.cat([x4, x2], dim=1)
         # ----------------------------------------------------------------
@@ -789,11 +799,11 @@ class DownSample4(nn.Module):
             with record_function("model_inference"):
                 self.conv5(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d4_conv5", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("d4_conv5", prof_report, usingcuda)
 
-        tt.tic("d4_conv5")
+        prof_wrapper.tt.tic("d4_conv5")
         x5 = self.conv5(x4)
-        tt.toc("d4_conv5")
+        prof_wrapper.tt.toc("d4_conv5")
         # ----------------------------------------------------------------
 
         # x1 = self.conv1(input)
@@ -819,7 +829,7 @@ class DownSample5(nn.Module):
         self.conv4 = Conv_Bn_Activation(512, 512, 1, 1, 'mish')
         self.conv5 = Conv_Bn_Activation(1024, 1024, 1, 1, 'mish')
 
-    def forward(self, input, tt, mr, usingcuda=False):
+    def forward(self, input, prof_wrapper, usingcuda=False):
         # ----------------------------------------------------------------
         tmp_input = torch.clone(input)
         with profile(
@@ -836,11 +846,11 @@ class DownSample5(nn.Module):
             with record_function("model_inference"):
                 self.conv1(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d5_conv1", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("d5_conv1", prof_report, usingcuda)
 
-        tt.tic("d5_conv1")
+        prof_wrapper.tt.tic("d5_conv1")
         x1 = self.conv1(input)
-        tt.toc("d5_conv1")
+        prof_wrapper.tt.toc("d5_conv1")
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
@@ -859,11 +869,11 @@ class DownSample5(nn.Module):
             with record_function("model_inference"):
                 self.conv2(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d5_conv2", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("d5_conv2", prof_report, usingcuda)
 
-        tt.tic("d5_conv2")
+        prof_wrapper.tt.tic("d5_conv2")
         x2 = self.conv2(x1)
-        tt.toc("d5_conv2")
+        prof_wrapper.tt.toc("d5_conv2")
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
@@ -882,11 +892,11 @@ class DownSample5(nn.Module):
             with record_function("model_inference"):
                 self.conv3(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d5_conv3", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("d5_conv3", prof_report, usingcuda)
 
-        tt.tic("d5_conv3")
+        prof_wrapper.tt.tic("d5_conv3")
         x3 = self.conv3(x1)
-        tt.toc("d5_conv3")
+        prof_wrapper.tt.toc("d5_conv3")
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
@@ -905,11 +915,11 @@ class DownSample5(nn.Module):
             with record_function("model_inference"):
                 self.resblock(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d5_resblock", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("d5_resblock", prof_report, usingcuda)
 
-        tt.tic("d5_resblock")
+        prof_wrapper.tt.tic("d5_resblock")
         r = self.resblock(x3)
-        tt.toc("d5_resblock")
+        prof_wrapper.tt.toc("d5_resblock")
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
@@ -928,11 +938,11 @@ class DownSample5(nn.Module):
             with record_function("model_inference"):
                 self.conv4(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d5_conv4", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("d5_conv4", prof_report, usingcuda)
 
-        tt.tic("d5_conv4")
+        prof_wrapper.tt.tic("d5_conv4")
         x4 = self.conv4(r)
-        tt.toc("d5_conv4")
+        prof_wrapper.tt.toc("d5_conv4")
         # ----------------------------------------------------------------
         x4 = torch.cat([x4, x2], dim=1)
         # ----------------------------------------------------------------
@@ -951,11 +961,11 @@ class DownSample5(nn.Module):
             with record_function("model_inference"):
                 self.conv5(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("d5_conv5", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("d5_conv5", prof_report, usingcuda)
 
-        tt.tic("d5_conv5")
+        prof_wrapper.tt.tic("d5_conv5")
         x5 = self.conv5(x4)
-        tt.toc("d5_conv5")
+        prof_wrapper.tt.toc("d5_conv5")
         # ----------------------------------------------------------------
 
         # x1 = self.conv1(input)
@@ -1011,7 +1021,7 @@ class Neck(nn.Module):
         self.conv19 = Conv_Bn_Activation(128, 256, 3, 1, 'leaky')
         self.conv20 = Conv_Bn_Activation(256, 128, 1, 1, 'leaky')
 
-    def forward(self, input, downsample4, downsample3, tt, mr, inference=False, usingcuda=False):
+    def forward(self, input, downsample4, downsample3, prof_wrapper, inference=False, usingcuda=False):
         x1 = self.conv1(input)
         x2 = self.conv2(x1)
         x3 = self.conv3(x2)
@@ -1101,7 +1111,7 @@ class Yolov4Head(nn.Module):
             anchors=[12, 16, 19, 36, 40, 28, 36, 75, 76, 55, 72, 146, 142, 110, 192, 243, 459, 401],
             num_anchors=9, stride=32)
 
-    def forward(self, input1, input2, input3, tt, mr, usingcuda=False):
+    def forward(self, input1, input2, input3, prof_wrapper, usingcuda=False):
         x1 = self.conv1(input1)
         x2 = self.conv2(x1)
 
@@ -1169,14 +1179,14 @@ class Yolov4(nn.Module):
         # head
         self.head = Yolov4Head(output_ch, n_classes, inference)
 
-    def forward(self, input, tt, mr, usingcuda=False):
-        d1 = self.down1(input, tt, mr, usingcuda)
-        d2 = self.down2(d1, tt, mr, usingcuda)
-        d3 = self.down3(d2, tt, mr, usingcuda)
-        d4 = self.down4(d3, tt, mr, usingcuda)
-        d5 = self.down5(d4, tt, mr, usingcuda)
-        x20, x13, x6 = self.neck(d5, d4, d3, tt, mr, usingcuda)
-        output = self.head(x20, x13, x6, tt, mr, usingcuda)
+    def forward(self, input, prof_wrapper, usingcuda=False):
+        d1 = self.down1(input, prof_wrapper, usingcuda)
+        d2 = self.down2(d1, prof_wrapper, usingcuda)
+        d3 = self.down3(d2, prof_wrapper, usingcuda)
+        d4 = self.down4(d3, prof_wrapper, usingcuda)
+        d5 = self.down5(d4, prof_wrapper, usingcuda)
+        x20, x13, x6 = self.neck(d5, d4, d3, prof_wrapper, usingcuda)
+        output = self.head(x20, x13, x6, prof_wrapper, usingcuda)
         return output
 
 

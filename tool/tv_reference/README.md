@@ -14,7 +14,7 @@ matplotlib
 
 You must modify the following flags:
 
-`--data-path=/path/to/coco/dataset`
+`--self-path=/path/to/coco/dataset`
 
 `--nproc_per_node=<number_of_gpus_available>`
 

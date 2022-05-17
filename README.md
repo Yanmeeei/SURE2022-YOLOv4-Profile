@@ -24,7 +24,7 @@ A minimal PyTorch implementation of YOLOv4.
 ├── train.py              train models.py
 ├── cfg.py                cfg.py for train
 ├── cfg                   cfg --> darknet2pytorch
-├── data            
+├── self            
 ├── weight                --> darknet2pytorch
 ├── tool
 │   ├── camera.py           a demo camera
@@ -56,10 +56,10 @@ you can use darknet2pytorch to convert it yourself, or download my converted mod
 
 # 1. Train
 
-[use yolov4 to train your own data](Use_yolov4_to_train_your_own_data.md)
+[use yolov4 to train your own self](Use_yolov4_to_train_your_own_data.md)
 
 1. Download weight
-2. Transform data
+2. Transform self
 
     For coco dataset,you can use tool/coco_annotation.py.
     ```
