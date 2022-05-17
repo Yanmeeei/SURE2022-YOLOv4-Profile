@@ -27,11 +27,15 @@ class DataScale(object):
         self.dependencyRec[src_name].update(dest)
 
     def report(self):
-        print("Data size of each tensor: \n")
+        print("\nData size of each tensor: \n")
+        print("{:<15} {:<20}".format('Name', 'Size'))
+        print("================================================\n")
         for key, value in self.scaleRec.items():
-            print(f"{key}       ::      {list(value)}")
+            print("{:<15} {:<20}".format(key, str(list(value))))
 
-        print("Data Dependency of each layer \n")
+        print("\nData Dependency of each layer \n")
+        print("{:<20} {:<15} {:<15}".format('Name', 'Source', "Destination"))
+        print("================================================\n")
         for key, value in self.dependencyRec.items():
             for dest in value.dest_list:
-                print(f"{key}       ::      {value.src}       ::      {dest}")
+                print("{:<20} {:<15} {:<15}".format(key, value.src, dest))

@@ -228,6 +228,7 @@ class DownSample1(nn.Module):
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x4", src="d1_conv4", dest="d1_conv5")
         tmp_input = torch.clone(x4)
         with profile(
                 activities=
@@ -248,9 +249,11 @@ class DownSample1(nn.Module):
         prof_wrapper.tt.tic("d1_conv5")
         x5 = self.conv5(x4)
         prof_wrapper.tt.toc("d1_conv5")
+        prof_wrapper.scale.weight(tensor_src="d1_conv5", data=x5)
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x5", src="d1_conv5", dest="d1_conv6")
         tmp_input = torch.clone(x5)
         with profile(
                 activities=
@@ -271,10 +274,12 @@ class DownSample1(nn.Module):
         prof_wrapper.tt.tic("d1_conv6")
         x6 = self.conv6(x5)
         prof_wrapper.tt.toc("d1_conv6")
+        prof_wrapper.scale.weight(tensor_src="d1_conv6", data=x6)
         # ----------------------------------------------------------------
         # shortcut -3
         x6 = x6 + x4
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x6", src="d1_conv6", dest="d1_conv7")
         tmp_input = torch.clone(x6)
         with profile(
                 activities=
@@ -296,11 +301,13 @@ class DownSample1(nn.Module):
         prof_wrapper.tt.tic("d1_conv7")
         x7 = self.conv7(x6)
         prof_wrapper.tt.toc("d1_conv7")
+        prof_wrapper.scale.weight(tensor_src="d1_conv7", data=x7)
         # ----------------------------------------------------------------
         # [route]
         # layers = -1, -7
         x7 = torch.cat([x7, x3], dim=1)
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x7", src="d1_conv7", dest="d1_conv8")
         tmp_input = torch.clone(x7)
         with profile(
                 activities=
@@ -321,6 +328,7 @@ class DownSample1(nn.Module):
         prof_wrapper.tt.tic("d1_conv8")
         x8 = self.conv8(x7)
         prof_wrapper.tt.toc("d1_conv8")
+        prof_wrapper.scale.weight(tensor_src="d1_conv8", data=x8)
         # ----------------------------------------------------------------
 
         return x8
@@ -343,6 +351,7 @@ class DownSample2(nn.Module):
 
     def forward(self, input, prof_wrapper, usingcuda=False):
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="input", src="d1_conv8", dest="d2_conv1")
         tmp_input = torch.clone(input)
         with profile(
                 activities=
@@ -363,9 +372,11 @@ class DownSample2(nn.Module):
         prof_wrapper.tt.tic("d2_conv1")
         x1 = self.conv1(input)
         prof_wrapper.tt.toc("d2_conv1")
+        prof_wrapper.scale.weight(tensor_src="d2_conv1", data=x1)
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x1", src="d2_conv1", dest="d2_conv2")
         tmp_input = torch.clone(x1)
         with profile(
                 activities=
@@ -386,9 +397,11 @@ class DownSample2(nn.Module):
         prof_wrapper.tt.tic("d2_conv2")
         x2 = self.conv2(x1)
         prof_wrapper.tt.toc("d2_conv2")
+        prof_wrapper.scale.weight(tensor_src="d2_conv2", data=x2)
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x1", src="d2_conv1", dest="d2_conv3")
         tmp_input = torch.clone(x1)
         with profile(
                 activities=
@@ -409,9 +422,11 @@ class DownSample2(nn.Module):
         prof_wrapper.tt.tic("d2_conv3")
         x3 = self.conv3(x1)
         prof_wrapper.tt.toc("d2_conv3")
+        prof_wrapper.scale.weight(tensor_src="d2_conv3", data=x3)
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x3", src="d2_conv3", dest="d2_resblock")
         tmp_input = torch.clone(x3)
         with profile(
                 activities=
@@ -432,9 +447,11 @@ class DownSample2(nn.Module):
         prof_wrapper.tt.tic("d2_resblock")
         r = self.resblock(x3)
         prof_wrapper.tt.toc("d2_resblock")
+        prof_wrapper.scale.weight(tensor_src="d2_resblock", data=r)
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="r", src="d2_resblock", dest="d2_conv4")
         tmp_input = torch.clone(r)
         with profile(
                 activities=
@@ -456,9 +473,11 @@ class DownSample2(nn.Module):
         prof_wrapper.tt.tic("d2_conv4")
         x4 = self.conv4(r)
         prof_wrapper.tt.toc("d2_conv4")
+        prof_wrapper.scale.weight(tensor_src="d2_conv4", data=x4)
         # ----------------------------------------------------------------
         x4 = torch.cat([x4, x2], dim=1)
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x4", src="d2_conv4", dest="d2_conv5")
         tmp_input = torch.clone(x4)
         with profile(
                 activities=
@@ -479,6 +498,7 @@ class DownSample2(nn.Module):
         prof_wrapper.tt.tic("d2_conv5")
         x5 = self.conv5(x4)
         prof_wrapper.tt.toc("d2_conv5")
+        prof_wrapper.scale.weight(tensor_src="d2_conv5", data=x5)
         # ----------------------------------------------------------------
 
         # x1 = self.conv1(input)
@@ -506,6 +526,7 @@ class DownSample3(nn.Module):
 
     def forward(self, input, prof_wrapper, usingcuda=False):
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="input", src="d2_conv5", dest="d3_conv1")
         tmp_input = torch.clone(input)
         with profile(
                 activities=
@@ -526,9 +547,11 @@ class DownSample3(nn.Module):
         prof_wrapper.tt.tic("d3_conv1")
         x1 = self.conv1(input)
         prof_wrapper.tt.toc("d3_conv1")
+        prof_wrapper.scale.weight(tensor_src="d3_conv1", data=x1)
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x1", src="d3_conv1", dest="d3_conv2")
         tmp_input = torch.clone(x1)
         with profile(
                 activities=
@@ -549,9 +572,11 @@ class DownSample3(nn.Module):
         prof_wrapper.tt.tic("d3_conv2")
         x2 = self.conv2(x1)
         prof_wrapper.tt.toc("d3_conv2")
+        prof_wrapper.scale.weight(tensor_src="d3_conv2", data=x2)
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x1", src="d3_conv1", dest="d3_conv3")
         tmp_input = torch.clone(x1)
         with profile(
                 activities=
@@ -572,9 +597,11 @@ class DownSample3(nn.Module):
         prof_wrapper.tt.tic("d3_conv3")
         x3 = self.conv3(x1)
         prof_wrapper.tt.toc("d3_conv3")
+        prof_wrapper.scale.weight(tensor_src="d3_conv3", data=x3)
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x3", src="d3_conv3", dest="d3_resblock")
         tmp_input = torch.clone(x3)
         with profile(
                 activities=
@@ -595,9 +622,11 @@ class DownSample3(nn.Module):
         prof_wrapper.tt.tic("d3_resblock")
         r = self.resblock(x3)
         prof_wrapper.tt.toc("d3_resblock")
+        prof_wrapper.scale.weight(tensor_src="d3_resblock", data=r)
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="r", src="d3_resblock", dest="d3_conv4")
         tmp_input = torch.clone(r)
         with profile(
                 activities=
@@ -619,9 +648,11 @@ class DownSample3(nn.Module):
         prof_wrapper.tt.tic("d3_conv4")
         x4 = self.conv4(r)
         prof_wrapper.tt.toc("d3_conv4")
+        prof_wrapper.scale.weight(tensor_src="d3_conv4", data=x4)
         # ----------------------------------------------------------------
         x4 = torch.cat([x4, x2], dim=1)
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x4", src="d3_conv4", dest="d3_conv5")
         tmp_input = torch.clone(x4)
         with profile(
                 activities=
@@ -642,6 +673,7 @@ class DownSample3(nn.Module):
         prof_wrapper.tt.tic("d3_conv5")
         x5 = self.conv5(x4)
         prof_wrapper.tt.toc("d3_conv5")
+        prof_wrapper.scale.weight(tensor_src="d3_conv5", data=x5)
         # ----------------------------------------------------------------
 
         # x1 = self.conv1(input)
@@ -669,6 +701,7 @@ class DownSample4(nn.Module):
 
     def forward(self, input, prof_wrapper, usingcuda=False):
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="input", src="d3_conv5", dest="d4_conv1")
         tmp_input = torch.clone(input)
         with profile(
                 activities=
@@ -689,9 +722,11 @@ class DownSample4(nn.Module):
         prof_wrapper.tt.tic("d4_conv1")
         x1 = self.conv1(input)
         prof_wrapper.tt.toc("d4_conv1")
+        prof_wrapper.scale.weight(tensor_src="d4_conv1", data=x1)
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x1", src="d4_conv1", dest="d4_conv2")
         tmp_input = torch.clone(x1)
         with profile(
                 activities=
@@ -712,9 +747,11 @@ class DownSample4(nn.Module):
         prof_wrapper.tt.tic("d4_conv2")
         x2 = self.conv2(x1)
         prof_wrapper.tt.toc("d4_conv2")
+        prof_wrapper.scale.weight(tensor_src="d4_conv2", data=x2)
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x1", src="d4_conv1", dest="d4_conv3")
         tmp_input = torch.clone(x1)
         with profile(
                 activities=
@@ -735,9 +772,11 @@ class DownSample4(nn.Module):
         prof_wrapper.tt.tic("d4_conv3")
         x3 = self.conv3(x1)
         prof_wrapper.tt.toc("d4_conv3")
+        prof_wrapper.scale.weight(tensor_src="d4_conv3", data=x3)
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x3", src="d4_conv3", dest="d4_resblock")
         tmp_input = torch.clone(x3)
         with profile(
                 activities=
@@ -758,9 +797,11 @@ class DownSample4(nn.Module):
         prof_wrapper.tt.tic("d4_resblock")
         r = self.resblock(x3)
         prof_wrapper.tt.toc("d4_resblock")
+        prof_wrapper.scale.weight(tensor_src="d4_resblock", data=r)
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="r", src="d4_resblock", dest="d4_conv4")
         tmp_input = torch.clone(r)
         with profile(
                 activities=
@@ -781,9 +822,11 @@ class DownSample4(nn.Module):
         prof_wrapper.tt.tic("d4_conv4")
         x4 = self.conv4(r)
         prof_wrapper.tt.toc("d4_conv4")
+        prof_wrapper.scale.weight(tensor_src="d4_conv4", data=x4)
         # ----------------------------------------------------------------
         x4 = torch.cat([x4, x2], dim=1)
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x4", src="d4_conv4", dest="d4_conv5")
         tmp_input = torch.clone(x4)
         with profile(
                 activities=
@@ -804,6 +847,7 @@ class DownSample4(nn.Module):
         prof_wrapper.tt.tic("d4_conv5")
         x5 = self.conv5(x4)
         prof_wrapper.tt.toc("d4_conv5")
+        prof_wrapper.scale.weight(tensor_src="d4_conv5", data=x5)
         # ----------------------------------------------------------------
 
         # x1 = self.conv1(input)
@@ -831,6 +875,7 @@ class DownSample5(nn.Module):
 
     def forward(self, input, prof_wrapper, usingcuda=False):
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="input", src="d4_conv5", dest="d5_conv1")
         tmp_input = torch.clone(input)
         with profile(
                 activities=
@@ -851,9 +896,11 @@ class DownSample5(nn.Module):
         prof_wrapper.tt.tic("d5_conv1")
         x1 = self.conv1(input)
         prof_wrapper.tt.toc("d5_conv1")
+        prof_wrapper.scale.weight(tensor_src="d5_conv1", data=x1)
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x1", src="d5_conv1", dest="d5_conv2")
         tmp_input = torch.clone(x1)
         with profile(
                 activities=
@@ -874,9 +921,11 @@ class DownSample5(nn.Module):
         prof_wrapper.tt.tic("d5_conv2")
         x2 = self.conv2(x1)
         prof_wrapper.tt.toc("d5_conv2")
+        prof_wrapper.scale.weight(tensor_src="d5_conv2", data=x2)
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x1", src="d5_conv1", dest="d5_conv3")
         tmp_input = torch.clone(x1)
         with profile(
                 activities=
@@ -897,9 +946,11 @@ class DownSample5(nn.Module):
         prof_wrapper.tt.tic("d5_conv3")
         x3 = self.conv3(x1)
         prof_wrapper.tt.toc("d5_conv3")
+        prof_wrapper.scale.weight(tensor_src="d5_conv3", data=x3)
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x3", src="d5_conv3", dest="d5_resblock")
         tmp_input = torch.clone(x3)
         with profile(
                 activities=
@@ -920,9 +971,11 @@ class DownSample5(nn.Module):
         prof_wrapper.tt.tic("d5_resblock")
         r = self.resblock(x3)
         prof_wrapper.tt.toc("d5_resblock")
+        prof_wrapper.scale.weight(tensor_src="d5_resblock", data=r)
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="r", src="d5_resblock", dest="d5_conv4")
         tmp_input = torch.clone(r)
         with profile(
                 activities=
@@ -943,9 +996,11 @@ class DownSample5(nn.Module):
         prof_wrapper.tt.tic("d5_conv4")
         x4 = self.conv4(r)
         prof_wrapper.tt.toc("d5_conv4")
+        prof_wrapper.scale.weight(tensor_src="d5_conv4", data=x4)
         # ----------------------------------------------------------------
         x4 = torch.cat([x4, x2], dim=1)
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x4", src="d5_conv4", dest="d5_conv5")
         tmp_input = torch.clone(x4)
         with profile(
                 activities=
@@ -966,6 +1021,7 @@ class DownSample5(nn.Module):
         prof_wrapper.tt.tic("d5_conv5")
         x5 = self.conv5(x4)
         prof_wrapper.tt.toc("d5_conv5")
+        prof_wrapper.scale.weight(tensor_src="d5_conv5", data=x5)
         # ----------------------------------------------------------------
 
         # x1 = self.conv1(input)
