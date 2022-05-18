@@ -853,6 +853,7 @@ class Yolov4Head(nn.Module):
 
         if self.inference:
             # ----------------------------------------------------------------
+            prof_wrapper.scale.dependency_check(tensor_name="x2", src="hd_conv2", dest="yolo1")
             tmp_input = torch.clone(x2)
             with profile(
                     activities=
@@ -873,9 +874,11 @@ class Yolov4Head(nn.Module):
             prof_wrapper.tt.tic("yolo1")
             y1 = self.yolo1(x2)
             prof_wrapper.tt.toc("yolo1")
+            prof_wrapper.scale.weight(tensor_src="yolo1", data=y1)
             # ----------------------------------------------------------------
 
             # ----------------------------------------------------------------
+            prof_wrapper.scale.dependency_check(tensor_name="x10", src="hd_conv10", dest="yolo2")
             tmp_input = torch.clone(x10)
             with profile(
                     activities=
@@ -896,9 +899,11 @@ class Yolov4Head(nn.Module):
             prof_wrapper.tt.tic("yolo2")
             y2 = self.yolo2(x10)
             prof_wrapper.tt.toc("yolo2")
+            prof_wrapper.scale.weight(tensor_src="yolo2", data=y2)
             # ----------------------------------------------------------------
 
             # ----------------------------------------------------------------
+            prof_wrapper.scale.dependency_check(tensor_name="x18", src="hd_conv18", dest="yolo3")
             tmp_input = torch.clone(x18)
             with profile(
                     activities=
@@ -919,15 +924,23 @@ class Yolov4Head(nn.Module):
             prof_wrapper.tt.tic("yolo3")
             y3 = self.yolo3(x18)
             prof_wrapper.tt.toc("yolo3")
+            prof_wrapper.scale.weight(tensor_src="yolo3", data=y3)
             # ----------------------------------------------------------------
 
             # y1 = self.yolo1(x2)
             # y2 = self.yolo2(x10)
             # y3 = self.yolo3(x18)
+            prof_wrapper.scale.dependency_check(tensor_name="y1", src="yolo1", dest="inference_output")
+            prof_wrapper.scale.dependency_check(tensor_name="y2", src="yolo2", dest="inference_output")
+            prof_wrapper.scale.dependency_check(tensor_name="y3", src="yolo3", dest="inference_output")
 
             return get_region_boxes([y1, y2, y3])
 
         else:
+            prof_wrapper.scale.dependency_check(tensor_name="x2", src="hd_conv2", dest="head_output")
+            prof_wrapper.scale.dependency_check(tensor_name="x10", src="hd_conv10", dest="head_output")
+            prof_wrapper.scale.dependency_check(tensor_name="x18", src="hd_conv18", dest="head_output")
+
             return [x2, x10, x18]
 
 
