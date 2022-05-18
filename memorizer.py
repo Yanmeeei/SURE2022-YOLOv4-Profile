@@ -47,7 +47,7 @@ class MemRec(object):
         self.mem_self_cpu[layername].append(self.get_mem_helper(ret_list, "Self CPU Mem"))
         self.mem_cpu[layername].append(self.get_mem_helper(ret_list, "CPU Mem"))
         if usingcuda:
-            self.mem_self_cuda[layername].append(self.get_mem_helper(ret_list, "Self CUDA Mem"))
+            self.mem_self_cuda[layername].append(self.get_mem_helper(ret_list, "Self CUDA Me"))
             self.mem_cuda[layername].append(self.get_mem_helper(ret_list, "CUDA Mem"))
 
     def report(self, sample=False):
@@ -86,7 +86,8 @@ class MemRec(object):
         print("mem_self_cpu | Average Mem Consumption of Each Layer")
         for key, value in self.mem_self_cpu.items():
             # value.pop(0)
-            print(f"{key} :: {sum(value) / len(value)}")
+            print("{:<15} {:<20}".format(key, sum(value) / len(value)))
+            # print(f"{key} :: {sum(value) / len(value)}")
             layernames.append(key)
             avg_mems.append(sum(value) / len(value))
 
@@ -104,7 +105,8 @@ class MemRec(object):
         print("mem_cpu | Average Mem Consumption of Each Layer")
         for key, value in self.mem_cpu.items():
             # value.pop(0)
-            print(f"{key} :: {sum(value) / len(value)}")
+            print("{:<15} {:<20}".format(key, sum(value) / len(value)))
+            # print(f"{key} :: {sum(value) / len(value)}")
             layernames.append(key)
             avg_mems.append(sum(value) / len(value))
 
@@ -123,7 +125,8 @@ class MemRec(object):
             print("mem_self_cuda | Average Mem Consumption of Each Layer")
             for key, value in self.mem_self_cuda.items():
                 # value.pop(0)
-                print(f"{key} :: {sum(value) / len(value)}")
+                print("{:<15} {:<20}".format(key, sum(value) / len(value)))
+                # print(f"{key} :: {sum(value) / len(value)}")
                 layernames.append(key)
                 avg_mems.append(sum(value) / len(value))
 
@@ -141,7 +144,8 @@ class MemRec(object):
             print("mem_cuda | Average Mem Consumption of Each Layer")
             for key, value in self.mem_cuda.items():
                 # value.pop(0)
-                print(f"{key} :: {sum(value) / len(value)}")
+                print("{:<15} {:<20}".format(key, sum(value) / len(value)))
+                # print(f"{key} :: {sum(value) / len(value)}")
                 layernames.append(key)
                 avg_mems.append(sum(value) / len(value))
 

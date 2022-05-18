@@ -122,7 +122,7 @@ class DownSample1(nn.Module):
         # layers = -1, -7
         self.conv8 = Conv_Bn_Activation(128, 64, 1, 1, 'mish')
 
-    def forward(self, input, tt, mr):
+    def forward(self, input, prof_wrapper):
         x1 = self.conv1(input)
         x2 = self.conv2(x1)
         x3 = self.conv3(x2)
@@ -152,7 +152,7 @@ class DownSample2(nn.Module):
         # r -1 -10
         self.conv5 = Conv_Bn_Activation(128, 128, 1, 1, 'mish')
 
-    def forward(self, input, tt, mr):
+    def forward(self, input, prof_wrapper):
         x1 = self.conv1(input)
         x2 = self.conv2(x1)
         x3 = self.conv3(x1)
@@ -176,7 +176,7 @@ class DownSample3(nn.Module):
         self.conv4 = Conv_Bn_Activation(128, 128, 1, 1, 'mish')
         self.conv5 = Conv_Bn_Activation(256, 256, 1, 1, 'mish')
 
-    def forward(self, input, tt, mr):
+    def forward(self, input, prof_wrapper):
         x1 = self.conv1(input)
         x2 = self.conv2(x1)
         x3 = self.conv3(x1)
@@ -200,7 +200,7 @@ class DownSample4(nn.Module):
         self.conv4 = Conv_Bn_Activation(256, 256, 1, 1, 'mish')
         self.conv5 = Conv_Bn_Activation(512, 512, 1, 1, 'mish')
 
-    def forward(self, input, tt, mr):
+    def forward(self, input, prof_wrapper):
         x1 = self.conv1(input)
         x2 = self.conv2(x1)
         x3 = self.conv3(x1)
@@ -224,7 +224,7 @@ class DownSample5(nn.Module):
         self.conv4 = Conv_Bn_Activation(512, 512, 1, 1, 'mish')
         self.conv5 = Conv_Bn_Activation(1024, 1024, 1, 1, 'mish')
 
-    def forward(self, input, tt, mr):
+    def forward(self, input, prof_wrapper):
         x1 = self.conv1(input)
         x2 = self.conv2(x1)
         x3 = self.conv3(x1)
@@ -278,8 +278,11 @@ class Neck(nn.Module):
         self.conv19 = Conv_Bn_Activation(128, 256, 3, 1, 'leaky')
         self.conv20 = Conv_Bn_Activation(256, 128, 1, 1, 'leaky')
 
-    def forward(self, input, downsample4, downsample3, tt, mr, inference=False, usingcuda=False):
+    def forward(self, input, downsample4, downsample3, prof_wrapper, inference=False, usingcuda=False):
+        prof_wrapper.scale.weight(tensor_src="d5_conv5", data=input)
+
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="input", src="d5_conv5", dest="nk_conv1")
         tmp_input = torch.clone(input)
         with profile(
                 activities=
@@ -295,14 +298,16 @@ class Neck(nn.Module):
             with record_function("model_inference"):
                 self.conv1(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("conv1", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("nk_conv1", prof_report, usingcuda)
 
-        tt.tic("conv1")
+        prof_wrapper.tt.tic("nk_conv1")
         x1 = self.conv1(input)
-        tt.toc("conv1")
+        prof_wrapper.tt.toc("nk_conv1")
+        prof_wrapper.scale.weight(tensor_src="nk_conv1", data=x1)
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x1", src="nk_conv1", dest="nk_conv2")
         tmp_input = torch.clone(x1)
         with profile(
                 activities=
@@ -318,14 +323,16 @@ class Neck(nn.Module):
             with record_function("model_inference"):
                 self.conv2(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("conv2", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("nk_conv2", prof_report, usingcuda)
 
-        tt.tic("conv2")
+        prof_wrapper.tt.tic("nk_conv2")
         x2 = self.conv2(x1)
-        tt.toc("conv2")
+        prof_wrapper.tt.toc("nk_conv2")
+        prof_wrapper.scale.weight(tensor_src="nk_conv2", data=x2)
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x2", src="nk_conv2", dest="nk_conv3")
         tmp_input = torch.clone(x2)
         with profile(
                 activities=
@@ -341,14 +348,16 @@ class Neck(nn.Module):
             with record_function("model_inference"):
                 self.conv3(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("conv3", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("nk_conv3", prof_report, usingcuda)
 
-        tt.tic("conv3")
+        prof_wrapper.tt.tic("nk_conv3")
         x3 = self.conv3(x2)
-        tt.toc("conv3")
+        prof_wrapper.tt.toc("nk_conv3")
+        prof_wrapper.scale.weight(tensor_src="nk_conv3", data=x3)
         # ----------------------------------------------------------------
         #SPP
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x3", src="nk_conv3", dest="nk_maxpl1")
         tmp_input = torch.clone(x3)
         with profile(
                 activities=
@@ -364,14 +373,16 @@ class Neck(nn.Module):
             with record_function("model_inference"):
                 self.maxpool1(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("maxpool1", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("nk_maxpl1", prof_report, usingcuda)
 
-        tt.tic("maxpool1")
+        prof_wrapper.tt.tic("nk_maxpl1")
         m1 = self.maxpool1(x3)
-        tt.toc("maxpool1")
+        prof_wrapper.tt.toc("nk_maxpl1")
+        prof_wrapper.scale.weight(tensor_src="nk_maxpl1", data=m1)
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x3", src="nk_conv3", dest="nk_maxpl2")
         tmp_input = torch.clone(x3)
         with profile(
                 activities=
@@ -387,14 +398,16 @@ class Neck(nn.Module):
             with record_function("model_inference"):
                 self.maxpool2(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("maxpool2", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("nk_maxpl2", prof_report, usingcuda)
 
-        tt.tic("maxpool2")
+        prof_wrapper.tt.tic("nk_maxpl2")
         m2 = self.maxpool2(x3)
-        tt.toc("maxpool2")
+        prof_wrapper.tt.toc("nk_maxpl2")
+        prof_wrapper.scale.weight(tensor_src="nk_maxpl2", data=m2)
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x3", src="nk_conv3", dest="nk_maxpl3")
         tmp_input = torch.clone(x3)
         with profile(
                 activities=
@@ -410,14 +423,19 @@ class Neck(nn.Module):
             with record_function("model_inference"):
                 self.maxpool3(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("maxpool3", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("nk_maxpl3", prof_report, usingcuda)
 
-        tt.tic("maxpool3")
+        prof_wrapper.tt.tic("nk_maxpl3")
         m3 = self.maxpool3(x3)
-        tt.toc("maxpool3")
+        prof_wrapper.tt.toc("nk_maxpl3")
+        prof_wrapper.scale.weight(tensor_src="nk_maxpl3", data=m3)
         # ----------------------------------------------------------------
         # SPP end
         spp = torch.cat([m3, m2, m1, x3], dim=1)
+        prof_wrapper.scale.dependency_check(tensor_name="x3", src="nk_conv3", dest="nk_conv4")
+        prof_wrapper.scale.dependency_check(tensor_name="m1", src="nk_maxpl1", dest="nk_conv4")
+        prof_wrapper.scale.dependency_check(tensor_name="m2", src="nk_maxpl2", dest="nk_conv4")
+        prof_wrapper.scale.dependency_check(tensor_name="m3", src="nk_maxpl3", dest="nk_conv4")
         # ----------------------------------------------------------------
         tmp_input = torch.clone(spp)
         with profile(
@@ -434,14 +452,16 @@ class Neck(nn.Module):
             with record_function("model_inference"):
                 self.conv4(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("conv4", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("nk_conv4", prof_report, usingcuda)
 
-        tt.tic("conv4")
+        prof_wrapper.tt.tic("nk_conv4")
         x4 = self.conv4(spp)
-        tt.toc("conv4")
+        prof_wrapper.tt.toc("nk_conv4")
+        prof_wrapper.scale.weight(tensor_src="nk_conv4", data=x4)
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x4", src="nk_conv4", dest="nk_conv5")
         tmp_input = torch.clone(x4)
         with profile(
                 activities=
@@ -457,14 +477,16 @@ class Neck(nn.Module):
             with record_function("model_inference"):
                 self.conv5(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("conv5", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("nk_conv5", prof_report, usingcuda)
 
-        tt.tic("conv5")
+        prof_wrapper.tt.tic("nk_conv5")
         x5 = self.conv5(x4)
-        tt.toc("conv5")
+        prof_wrapper.tt.toc("nk_conv5")
+        prof_wrapper.scale.weight(tensor_src="nk_conv5", data=x5)
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x5", src="nk_conv5", dest="nk_conv6")
         tmp_input = torch.clone(x5)
         with profile(
                 activities=
@@ -480,14 +502,16 @@ class Neck(nn.Module):
             with record_function("model_inference"):
                 self.conv6(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("conv6", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("nk_conv6", prof_report, usingcuda)
 
-        tt.tic("conv6")
+        prof_wrapper.tt.tic("nk_conv6")
         x6 = self.conv6(x5)
-        tt.toc("conv6")
+        prof_wrapper.tt.toc("nk_conv6")
+        prof_wrapper.scale.weight(tensor_src="nk_conv6", data=x6)
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x6", src="nk_conv6", dest="nk_conv7")
         tmp_input = torch.clone(x6)
         with profile(
                 activities=
@@ -503,14 +527,17 @@ class Neck(nn.Module):
             with record_function("model_inference"):
                 self.conv7(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("conv7", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("nk_conv7", prof_report, usingcuda)
 
-        tt.tic("conv7")
+        prof_wrapper.tt.tic("nk_conv7")
         x7 = self.conv7(x6)
-        tt.toc("conv7")
+        prof_wrapper.tt.toc("nk_conv7")
+        prof_wrapper.scale.weight(tensor_src="nk_conv7", data=x7)
         # ----------------------------------------------------------------
         # UP
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x7", src="nk_conv7", dest="nk_upspl1")
+        prof_wrapper.scale.dependency_check(tensor_name="downsample4", src="d4_conv5", dest="nk_upspl1")
         tmp_input = torch.clone(x7)
         with profile(
                 activities=
@@ -526,14 +553,16 @@ class Neck(nn.Module):
             with record_function("model_inference"):
                 self.upsample1(tmp_input, downsample4.size(), self.inference)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("upsample1", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("nk_upspl1", prof_report, usingcuda)
 
-        tt.tic("upsample1")
+        prof_wrapper.tt.tic("nk_upspl1")
         up = self.upsample1(x7, downsample4.size(), self.inference)
-        tt.toc("upsample1")
+        prof_wrapper.tt.toc("nk_upspl1")
+        prof_wrapper.scale.weight(tensor_src="nk_upspl1", data=up)
         # ----------------------------------------------------------------
         # R 85
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="downsample4", src="d4_conv5", dest="nk_conv8")
         tmp_input = torch.clone(downsample4)
         with profile(
                 activities=
@@ -549,14 +578,16 @@ class Neck(nn.Module):
             with record_function("model_inference"):
                 self.conv8(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("conv8", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("nk_conv8", prof_report, usingcuda)
 
-        tt.tic("conv8")
+        prof_wrapper.tt.tic("nk_conv8")
         x8 = self.conv8(downsample4)
-        tt.toc("conv8")
+        prof_wrapper.tt.toc("nk_conv8")
+        prof_wrapper.scale.weight(tensor_src="nk_conv8", data=x8)
         # ----------------------------------------------------------------
         x8 = torch.cat([x8, up], dim=1)
-
+        prof_wrapper.scale.dependency_check(tensor_name="x8", src="nk_conv8", dest="nk_conv9")
+        prof_wrapper.scale.dependency_check(tensor_name="up", src="nk_upspl1", dest="nk_conv9")
         # ----------------------------------------------------------------
         tmp_input = torch.clone(x8)
         with profile(
@@ -573,14 +604,16 @@ class Neck(nn.Module):
             with record_function("model_inference"):
                 self.conv9(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("conv9", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("nk_conv9", prof_report, usingcuda)
 
-        tt.tic("conv9")
+        prof_wrapper.tt.tic("nk_conv9")
         x9 = self.conv9(x8)
-        tt.toc("conv9")
+        prof_wrapper.tt.toc("nk_conv9")
+        prof_wrapper.scale.weight(tensor_src="nk_conv9", data=x9)
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x9", src="nk_conv9", dest="nk_conv10")
         tmp_input = torch.clone(x9)
         with profile(
                 activities=
@@ -596,14 +629,16 @@ class Neck(nn.Module):
             with record_function("model_inference"):
                 self.conv10(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("conv10", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("nk_conv10", prof_report, usingcuda)
 
-        tt.tic("conv10")
+        prof_wrapper.tt.tic("nk_conv10")
         x10 = self.conv10(x9)
-        tt.toc("conv10")
+        prof_wrapper.tt.toc("nk_conv10")
+        prof_wrapper.scale.weight(tensor_src="nk_conv10", data=x10)
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x10", src="nk_conv10", dest="nk_conv11")
         tmp_input = torch.clone(x10)
         with profile(
                 activities=
@@ -619,14 +654,16 @@ class Neck(nn.Module):
             with record_function("model_inference"):
                 self.conv11(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("conv11", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("nk_conv11", prof_report, usingcuda)
 
-        tt.tic("conv11")
+        prof_wrapper.tt.tic("nk_conv11")
         x11 = self.conv11(x10)
-        tt.toc("conv11")
+        prof_wrapper.tt.toc("nk_conv11")
+        prof_wrapper.scale.weight(tensor_src="nk_conv11", data=x11)
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x11", src="nk_conv11", dest="nk_conv12")
         tmp_input = torch.clone(x11)
         with profile(
                 activities=
@@ -642,14 +679,16 @@ class Neck(nn.Module):
             with record_function("model_inference"):
                 self.conv12(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("conv12", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("nk_conv12", prof_report, usingcuda)
 
-        tt.tic("conv12")
+        prof_wrapper.tt.tic("nk_conv12")
         x12 = self.conv12(x11)
-        tt.toc("conv12")
+        prof_wrapper.tt.toc("nk_conv12")
+        prof_wrapper.scale.weight(tensor_src="nk_conv12", data=x12)
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x12", src="nk_conv12", dest="nk_conv13")
         tmp_input = torch.clone(x12)
         with profile(
                 activities=
@@ -665,14 +704,16 @@ class Neck(nn.Module):
             with record_function("model_inference"):
                 self.conv13(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("conv13", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("nk_conv13", prof_report, usingcuda)
 
-        tt.tic("conv13")
+        prof_wrapper.tt.tic("nk_conv13")
         x13 = self.conv13(x12)
-        tt.toc("conv13")
+        prof_wrapper.tt.toc("nk_conv13")
+        prof_wrapper.scale.weight(tensor_src="nk_conv13", data=x13)
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x13", src="nk_conv13", dest="nk_conv14")
         tmp_input = torch.clone(x13)
         with profile(
                 activities=
@@ -688,14 +729,17 @@ class Neck(nn.Module):
             with record_function("model_inference"):
                 self.conv14(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("conv14", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("nk_conv14", prof_report, usingcuda)
 
-        tt.tic("conv14")
+        prof_wrapper.tt.tic("nk_conv14")
         x14 = self.conv14(x13)
-        tt.toc("conv14")
+        prof_wrapper.tt.toc("nk_conv14")
+        prof_wrapper.scale.weight(tensor_src="nk_conv14", data=x14)
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x14", src="nk_conv14", dest="nk_upspl2")
+        prof_wrapper.scale.dependency_check(tensor_name="downsample3", src="d3_conv5", dest="nk_upspl2")
         tmp_input = torch.clone(x14)
         with profile(
                 activities=
@@ -711,14 +755,16 @@ class Neck(nn.Module):
             with record_function("model_inference"):
                 self.upsample2(tmp_input, downsample3.size(), self.inference)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("upsample2", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("nk_upspl2", prof_report, usingcuda)
 
-        tt.tic("upsample2")
+        prof_wrapper.tt.tic("nk_upspl2")
         up = self.upsample2(x14, downsample3.size(), self.inference)
-        tt.toc("upsample2")
+        prof_wrapper.tt.toc("nk_upspl2")
+        prof_wrapper.scale.weight(tensor_src="nk_upspl2", data=up)
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="downsample3", src="d3_conv5", dest="nk_conv15")
         tmp_input = torch.clone(downsample3)
         with profile(
                 activities=
@@ -734,14 +780,16 @@ class Neck(nn.Module):
             with record_function("model_inference"):
                 self.conv15(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("conv15", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("nk_conv15", prof_report, usingcuda)
 
-        tt.tic("conv15")
+        prof_wrapper.tt.tic("nk_conv15")
         x15 = self.conv15(downsample3)
-        tt.toc("conv15")
+        prof_wrapper.tt.toc("nk_conv15")
+        prof_wrapper.scale.weight(tensor_src="nk_conv15", data=x15)
         # ----------------------------------------------------------------
         x15 = torch.cat([x15, up], dim=1)
-
+        prof_wrapper.scale.dependency_check(tensor_name="x15", src="nk_conv15", dest="nk_conv16")
+        prof_wrapper.scale.dependency_check(tensor_name="up", src="nk_upspl2", dest="nk_conv16")
         # ----------------------------------------------------------------
         tmp_input = torch.clone(x15)
         with profile(
@@ -758,14 +806,16 @@ class Neck(nn.Module):
             with record_function("model_inference"):
                 self.conv16(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("conv16", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("nk_conv16", prof_report, usingcuda)
 
-        tt.tic("conv16")
+        prof_wrapper.tt.tic("nk_conv16")
         x16 = self.conv16(x15)
-        tt.toc("conv16")
+        prof_wrapper.tt.toc("nk_conv16")
+        prof_wrapper.scale.weight(tensor_src="nk_conv16", data=x16)
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x16", src="nk_conv16", dest="nk_conv17")
         tmp_input = torch.clone(x16)
         with profile(
                 activities=
@@ -781,14 +831,16 @@ class Neck(nn.Module):
             with record_function("model_inference"):
                 self.conv17(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("conv17", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("nk_conv17", prof_report, usingcuda)
 
-        tt.tic("conv17")
+        prof_wrapper.tt.tic("nk_conv17")
         x17 = self.conv17(x16)
-        tt.toc("conv17")
+        prof_wrapper.tt.toc("nk_conv17")
+        prof_wrapper.scale.weight(tensor_src="nk_conv17", data=x17)
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x17", src="nk_conv17", dest="nk_conv18")
         tmp_input = torch.clone(x17)
         with profile(
                 activities=
@@ -804,14 +856,16 @@ class Neck(nn.Module):
             with record_function("model_inference"):
                 self.conv18(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("conv18", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("nk_conv18", prof_report, usingcuda)
 
-        tt.tic("conv18")
+        prof_wrapper.tt.tic("nk_conv18")
         x18 = self.conv18(x17)
-        tt.toc("conv18")
+        prof_wrapper.tt.toc("nk_conv18")
+        prof_wrapper.scale.weight(tensor_src="nk_conv18", data=x18)
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x18", src="nk_conv18", dest="nk_conv19")
         tmp_input = torch.clone(x18)
         with profile(
                 activities=
@@ -827,14 +881,16 @@ class Neck(nn.Module):
             with record_function("model_inference"):
                 self.conv19(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("conv19", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("nk_conv19", prof_report, usingcuda)
 
-        tt.tic("conv19")
+        prof_wrapper.tt.tic("nk_conv19")
         x19 = self.conv19(x18)
-        tt.toc("conv19")
+        prof_wrapper.tt.toc("nk_conv19")
+        prof_wrapper.scale.weight(tensor_src="nk_conv19", data=x19)
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x19", src="nk_conv19", dest="nk_conv20")
         tmp_input = torch.clone(x19)
         with profile(
                 activities=
@@ -850,11 +906,12 @@ class Neck(nn.Module):
             with record_function("model_inference"):
                 self.conv20(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("conv20", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("nk_conv20", prof_report, usingcuda)
 
-        tt.tic("conv20")
+        prof_wrapper.tt.tic("nk_conv20")
         x20 = self.conv20(x19)
-        tt.toc("conv20")
+        prof_wrapper.tt.toc("nk_conv20")
+        prof_wrapper.scale.weight(tensor_src="nk_conv20", data=x20)
         # ----------------------------------------------------------------
 
         # x1 = self.conv1(input)
@@ -946,7 +1003,7 @@ class Yolov4Head(nn.Module):
                                 anchors=[12, 16, 19, 36, 40, 28, 36, 75, 76, 55, 72, 146, 142, 110, 192, 243, 459, 401],
                                 num_anchors=9, stride=32)
 
-    def forward(self, input1, input2, input3, tt, mr):
+    def forward(self, input1, input2, input3, prof_wrapper):
         x1 = self.conv1(input1)
         x2 = self.conv2(x1)
 
@@ -1014,14 +1071,14 @@ class Yolov4(nn.Module):
         # head
         self.head = Yolov4Head(output_ch, n_classes, inference)
 
-    def forward(self, input, tt, mr, usingcuda=False):
-        d1 = self.down1(input, tt, mr)
-        d2 = self.down2(d1, tt, mr)
-        d3 = self.down3(d2, tt, mr)
-        d4 = self.down4(d3, tt, mr)
-        d5 = self.down5(d4, tt, mr)
-        x20, x13, x6 = self.neck(d5, d4, d3, tt, mr, usingcuda=usingcuda)
-        output = self.head(x20, x13, x6, tt, mr)
+    def forward(self, input, prof_wrapper, usingcuda=False):
+        d1 = self.down1(input, prof_wrapper)
+        d2 = self.down2(d1, prof_wrapper)
+        d3 = self.down3(d2, prof_wrapper)
+        d4 = self.down4(d3, prof_wrapper)
+        d5 = self.down5(d4, prof_wrapper)
+        x20, x13, x6 = self.neck(d5, d4, d3, prof_wrapper, usingcuda=usingcuda)
+        output = self.head(x20, x13, x6, prof_wrapper)
 
         return output
 
