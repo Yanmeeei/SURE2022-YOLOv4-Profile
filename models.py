@@ -913,7 +913,6 @@ class Neck(nn.Module):
         prof_wrapper.tt.toc("nk_conv20")
         prof_wrapper.scale.weight(tensor_src="nk_conv20", data=x20)
         # ----------------------------------------------------------------
-        prof_wrapper.scale.dependency_check(tensor_name="x20", src="nk_conv20", dest="hd_conv1")
 
         # x1 = self.conv1(input)
         # x2 = self.conv2(x1)
