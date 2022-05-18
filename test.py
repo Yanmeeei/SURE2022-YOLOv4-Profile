@@ -17,7 +17,7 @@ model = Yolov4()
 model.to(device)
 print("YOLOv4 is Ready")
 
-n = 15
+n = 20
 print(f"input size: {n}")
 input = torch.randn(n, 3, 244, 244).to(device)
 model.forward(input, prof_wrapper, usingcuda)

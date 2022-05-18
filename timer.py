@@ -21,15 +21,18 @@ class Clock(object):
         plt.rcParams.update({'font.size': 8})
         if sample:
             for key, value in self.time_records.items():
+                # print("{:<15} {:<20}".format(key, value))
                 print(key, end=' :: ')
                 print(value, flush=True)
+
 
         layernames = []
         avg_times = []
         print("Average Time of Each Layer")
         for key, value in self.time_records.items():
             # value.pop(0)
-            print(f"{key} :: {sum(value) / len(value)}")
+            print("{:<15} {:<20}".format(key, sum(value) / len(value)))
+            # print(f"{key} :: {sum(value) / len(value)}")
             layernames.append(key)
             avg_times.append(sum(value) / len(value))
 

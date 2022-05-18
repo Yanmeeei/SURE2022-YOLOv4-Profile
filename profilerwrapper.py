@@ -10,6 +10,6 @@ class ProfilerWrapper(object):
         self.scale = datascale.DataScale()
 
     def report(self, sample=False):
-        self.mr.report(sample=sample)
         self.tt.report(sample=sample)
+        self.mr.report(sample=sample)
         self.scale.report()
