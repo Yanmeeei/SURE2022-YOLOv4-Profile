@@ -1,28 +1,25 @@
 import torch
 from models import Yolov4, YoloLayer, Yolov4Head
 
-from timer import Clock
-from memorizer import MemRec
+from profilerwrapper import ProfilerWrapper
 
-tt = Clock()
-mr = MemRec()
+prof_wrapper = ProfilerWrapper()
 
 device = "cuda:0" if torch.cuda.is_available() else "cpu"
 print(device)
 if device != 'cpu':
-  usingcuda = True
+    usingcuda = True
 else:
-  usingcuda = False
+    usingcuda = False
 
 # create a model
 model = Yolov4()
 model.to(device)
 print("YOLOv4 is Ready")
 
-n = 15
+n = 20
 print(f"input size: {n}")
 input = torch.randn(n, 3, 244, 244).to(device)
-model.forward(input, tt, mr, usingcuda)
+model.forward(input, prof_wrapper, usingcuda)
 
-tt.report(sample=False)
-mr.report(sample=False)
+prof_wrapper.report(sample=False)
