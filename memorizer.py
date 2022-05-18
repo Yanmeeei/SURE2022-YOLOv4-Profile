@@ -86,7 +86,8 @@ class MemRec(object):
         print("mem_self_cpu | Average Mem Consumption of Each Layer")
         for key, value in self.mem_self_cpu.items():
             # value.pop(0)
-            print(f"{key} :: {sum(value) / len(value)}")
+            print("{:<15} {:<20}".format(key, sum(value) / len(value)))
+            # print(f"{key} :: {sum(value) / len(value)}")
             layernames.append(key)
             avg_mems.append(sum(value) / len(value))
 
@@ -97,14 +98,15 @@ class MemRec(object):
         plt.xlabel("layernames")
         plt.xticks(rotation=45, ha="right")
         plt.ylabel("avg_mem_self_cpu (mb)")
-        plt.savefig("layer-avg_mem_self_cpu_head.png")
+        plt.savefig("layer-avg_mem_self_cpu.png")
 
         layernames = []
         avg_mems = []
         print("mem_cpu | Average Mem Consumption of Each Layer")
         for key, value in self.mem_cpu.items():
             # value.pop(0)
-            print(f"{key} :: {sum(value) / len(value)}")
+            print("{:<15} {:<20}".format(key, sum(value) / len(value)))
+            # print(f"{key} :: {sum(value) / len(value)}")
             layernames.append(key)
             avg_mems.append(sum(value) / len(value))
 
@@ -115,7 +117,7 @@ class MemRec(object):
         plt.xlabel("layernames")
         plt.xticks(rotation=45, ha="right")
         plt.ylabel("avg_mem_cpu (mb)")
-        plt.savefig("layer-avg_mem_cpu_head.png")
+        plt.savefig("layer-avg_mem_cpu.png")
 
         if self.mem_cuda:
             layernames = []
@@ -123,7 +125,8 @@ class MemRec(object):
             print("mem_self_cuda | Average Mem Consumption of Each Layer")
             for key, value in self.mem_self_cuda.items():
                 # value.pop(0)
-                print(f"{key} :: {sum(value) / len(value)}")
+                print("{:<15} {:<20}".format(key, sum(value) / len(value)))
+                # print(f"{key} :: {sum(value) / len(value)}")
                 layernames.append(key)
                 avg_mems.append(sum(value) / len(value))
 
@@ -134,14 +137,15 @@ class MemRec(object):
             plt.xlabel("layernames")
             plt.xticks(rotation=45, ha="right")
             plt.ylabel("avg_mem_self_cuda")
-            plt.savefig("layer-avg_mem_self_cuda_head.png")
+            plt.savefig("layer-avg_mem_self_cuda.png")
 
             layernames = []
             avg_mems = []
             print("mem_cuda | Average Mem Consumption of Each Layer")
             for key, value in self.mem_cuda.items():
                 # value.pop(0)
-                print(f"{key} :: {sum(value) / len(value)}")
+                print("{:<15} {:<20}".format(key, sum(value) / len(value)))
+                # print(f"{key} :: {sum(value) / len(value)}")
                 layernames.append(key)
                 avg_mems.append(sum(value) / len(value))
 
@@ -152,7 +156,7 @@ class MemRec(object):
             plt.xlabel("layernames")
             plt.xticks(rotation=45, ha="right")
             plt.ylabel("avg_mem_cuda")
-            plt.savefig("layer-avg_mem_cuda_head.png")
+            plt.savefig("layer-avg_mem_cuda.png")
 
 
 def parse_prof_table(prof_report):

@@ -123,7 +123,7 @@ class DownSample1(nn.Module):
         # layers = -1, -7
         self.conv8 = Conv_Bn_Activation(128, 64, 1, 1, 'mish')
 
-    def forward(self, input, tt, mr):
+    def forward(self, input, prof_wrapper):
         x1 = self.conv1(input)
         x2 = self.conv2(x1)
         x3 = self.conv3(x2)
@@ -153,7 +153,7 @@ class DownSample2(nn.Module):
         # r -1 -10
         self.conv5 = Conv_Bn_Activation(128, 128, 1, 1, 'mish')
 
-    def forward(self, input, tt, mr):
+    def forward(self, input, prof_wrapper):
         x1 = self.conv1(input)
         x2 = self.conv2(x1)
         x3 = self.conv3(x1)
@@ -177,7 +177,7 @@ class DownSample3(nn.Module):
         self.conv4 = Conv_Bn_Activation(128, 128, 1, 1, 'mish')
         self.conv5 = Conv_Bn_Activation(256, 256, 1, 1, 'mish')
 
-    def forward(self, input, tt, mr):
+    def forward(self, input, prof_wrapper):
         x1 = self.conv1(input)
         x2 = self.conv2(x1)
         x3 = self.conv3(x1)
@@ -201,7 +201,7 @@ class DownSample4(nn.Module):
         self.conv4 = Conv_Bn_Activation(256, 256, 1, 1, 'mish')
         self.conv5 = Conv_Bn_Activation(512, 512, 1, 1, 'mish')
 
-    def forward(self, input, tt, mr):
+    def forward(self, input, prof_wrapper):
         x1 = self.conv1(input)
         x2 = self.conv2(x1)
         x3 = self.conv3(x1)
@@ -225,7 +225,7 @@ class DownSample5(nn.Module):
         self.conv4 = Conv_Bn_Activation(512, 512, 1, 1, 'mish')
         self.conv5 = Conv_Bn_Activation(1024, 1024, 1, 1, 'mish')
 
-    def forward(self, input, tt, mr):
+    def forward(self, input, prof_wrapper):
         x1 = self.conv1(input)
         x2 = self.conv2(x1)
         x3 = self.conv3(x1)
@@ -279,7 +279,7 @@ class Neck(nn.Module):
         self.conv19 = Conv_Bn_Activation(128, 256, 3, 1, 'leaky')
         self.conv20 = Conv_Bn_Activation(256, 128, 1, 1, 'leaky')
 
-    def forward(self, input, downsample4, downsample3, tt, mr, inference=False):
+    def forward(self, input, downsample4, downsample3, prof_wrapper, inference=False):
 
         x1 = self.conv1(input)
         x2 = self.conv2(x1)
@@ -370,8 +370,10 @@ class Yolov4Head(nn.Module):
             anchors=[12, 16, 19, 36, 40, 28, 36, 75, 76, 55, 72, 146, 142, 110, 192, 243, 459, 401],
             num_anchors=9, stride=32)
 
-    def forward(self, input1, input2, input3, tt, mr, usingcuda=False):
+    def forward(self, input1, input2, input3, prof_wrapper, usingcuda=False):
+
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="input1", src="nk_conv20", dest="hd_conv1")
         tmp_input = torch.clone(input1)
         with profile(
                 activities=
@@ -387,14 +389,16 @@ class Yolov4Head(nn.Module):
             with record_function("model_inference"):
                 self.conv1(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("conv1", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("hd_conv1", prof_report, usingcuda)
 
-        tt.tic("conv1")
+        prof_wrapper.tt.tic("hd_conv1")
         x1 = self.conv1(input1)
-        tt.toc("conv1")
+        prof_wrapper.tt.toc("hd_conv1")
+        prof_wrapper.scale.weight(tensor_src="hd_conv1", data=x1)
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x1", src="hd_conv1", dest="hd_conv2")
         tmp_input = torch.clone(x1)
         with profile(
                 activities=
@@ -410,14 +414,16 @@ class Yolov4Head(nn.Module):
             with record_function("model_inference"):
                 self.conv2(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("conv2", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("hd_conv2", prof_report, usingcuda)
 
-        tt.tic("conv2")
+        prof_wrapper.tt.tic("hd_conv2")
         x2 = self.conv2(x1)
-        tt.toc("conv2")
+        prof_wrapper.tt.toc("hd_conv2")
+        prof_wrapper.scale.weight(tensor_src="hd_conv2", data=x2)
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x2", src="hd_conv2", dest="hd_conv3")
         tmp_input = torch.clone(input1)
         with profile(
                 activities=
@@ -433,13 +439,16 @@ class Yolov4Head(nn.Module):
             with record_function("model_inference"):
                 self.conv3(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("conv3", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("hd_conv3", prof_report, usingcuda)
 
-        tt.tic("conv3")
+        prof_wrapper.tt.tic("hd_conv3")
         x3 = self.conv3(input1)
-        tt.toc("conv3")
+        prof_wrapper.tt.toc("hd_conv3")
+        prof_wrapper.scale.weight(tensor_src="hd_conv3", data=x3)
         # ----------------------------------------------------------------
         x3 = torch.cat([x3, input2], dim=1)
+        prof_wrapper.scale.dependency_check(tensor_name="x3", src="hd_conv3", dest="hd_conv4")
+        prof_wrapper.scale.dependency_check(tensor_name="input2", src="nk_conv13", dest="hd_conv4")
         # ----------------------------------------------------------------
         tmp_input = torch.clone(x3)
         with profile(
@@ -456,14 +465,16 @@ class Yolov4Head(nn.Module):
             with record_function("model_inference"):
                 self.conv4(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("conv4", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("hd_conv4", prof_report, usingcuda)
 
-        tt.tic("conv4")
+        prof_wrapper.tt.tic("hd_conv4")
         x4 = self.conv4(x3)
-        tt.toc("conv4")
+        prof_wrapper.tt.toc("hd_conv4")
+        prof_wrapper.scale.weight(tensor_src="hd_conv4", data=x4)
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x4", src="hd_conv4", dest="hd_conv5")
         tmp_input = torch.clone(x4)
         with profile(
                 activities=
@@ -479,14 +490,16 @@ class Yolov4Head(nn.Module):
             with record_function("model_inference"):
                 self.conv5(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("conv5", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("hd_conv5", prof_report, usingcuda)
 
-        tt.tic("conv5")
+        prof_wrapper.tt.tic("hd_conv5")
         x5 = self.conv5(x4)
-        tt.toc("conv5")
+        prof_wrapper.tt.toc("hd_conv5")
+        prof_wrapper.scale.weight(tensor_src="hd_conv5", data=x5)
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x5", src="hd_conv5", dest="hd_conv6")
         tmp_input = torch.clone(x5)
         with profile(
                 activities=
@@ -502,14 +515,16 @@ class Yolov4Head(nn.Module):
             with record_function("model_inference"):
                 self.conv6(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("conv6", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("hd_conv6", prof_report, usingcuda)
 
-        tt.tic("conv6")
+        prof_wrapper.tt.tic("hd_conv6")
         x6 = self.conv6(x5)
-        tt.toc("conv6")
+        prof_wrapper.tt.toc("hd_conv6")
+        prof_wrapper.scale.weight(tensor_src="hd_conv6", data=x6)
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x6", src="hd_conv6", dest="hd_conv7")
         tmp_input = torch.clone(x6)
         with profile(
                 activities=
@@ -525,14 +540,16 @@ class Yolov4Head(nn.Module):
             with record_function("model_inference"):
                 self.conv7(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("conv7", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("hd_conv7", prof_report, usingcuda)
 
-        tt.tic("conv7")
+        prof_wrapper.tt.tic("hd_conv7")
         x7 = self.conv7(x6)
-        tt.toc("conv7")
+        prof_wrapper.tt.toc("hd_conv7")
+        prof_wrapper.scale.weight(tensor_src="hd_conv7", data=x7)
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x7", src="hd_conv7", dest="hd_conv8")
         tmp_input = torch.clone(x7)
         with profile(
                 activities=
@@ -548,14 +565,16 @@ class Yolov4Head(nn.Module):
             with record_function("model_inference"):
                 self.conv8(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("conv8", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("hd_conv8", prof_report, usingcuda)
 
-        tt.tic("conv8")
+        prof_wrapper.tt.tic("hd_conv8")
         x8 = self.conv8(x7)
-        tt.toc("conv8")
+        prof_wrapper.tt.toc("hd_conv8")
+        prof_wrapper.scale.weight(tensor_src="hd_conv8", data=x8)
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x8", src="hd_conv8", dest="hd_conv9")
         tmp_input = torch.clone(x8)
         with profile(
                 activities=
@@ -571,14 +590,16 @@ class Yolov4Head(nn.Module):
             with record_function("model_inference"):
                 self.conv9(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("conv9", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("hd_conv9", prof_report, usingcuda)
 
-        tt.tic("conv9")
+        prof_wrapper.tt.tic("hd_conv9")
         x9 = self.conv9(x8)
-        tt.toc("conv9")
+        prof_wrapper.tt.toc("hd_conv9")
+        prof_wrapper.scale.weight(tensor_src="hd_conv9", data=x9)
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x9", src="hd_conv9", dest="hd_conv10")
         tmp_input = torch.clone(x9)
         with profile(
                 activities=
@@ -594,14 +615,16 @@ class Yolov4Head(nn.Module):
             with record_function("model_inference"):
                 self.conv10(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("conv10", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("hd_conv10", prof_report, usingcuda)
 
-        tt.tic("conv10")
+        prof_wrapper.tt.tic("hd_conv10")
         x10 = self.conv10(x9)
-        tt.toc("conv10")
+        prof_wrapper.tt.toc("hd_conv10")
+        prof_wrapper.scale.weight(tensor_src="hd_conv10", data=x10)
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x8", src="hd_conv8", dest="hd_conv11")
         tmp_input = torch.clone(x8)
         with profile(
                 activities=
@@ -617,13 +640,16 @@ class Yolov4Head(nn.Module):
             with record_function("model_inference"):
                 self.conv11(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("conv11", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("hd_conv11", prof_report, usingcuda)
 
-        tt.tic("conv11")
+        prof_wrapper.tt.tic("hd_conv11")
         x11 = self.conv11(x8)
-        tt.toc("conv11")
+        prof_wrapper.tt.toc("hd_conv11")
+        prof_wrapper.scale.weight(tensor_src="hd_conv11", data=x11)
         # ----------------------------------------------------------------
         x11 = torch.cat([x11, input3], dim=1)
+        prof_wrapper.scale.dependency_check(tensor_name="x11", src="hd_conv11", dest="hd_conv12")
+        prof_wrapper.scale.dependency_check(tensor_name="input3", src="nk_conv6", dest="hd_conv12")
         # ----------------------------------------------------------------
         tmp_input = torch.clone(x11)
         with profile(
@@ -640,14 +666,16 @@ class Yolov4Head(nn.Module):
             with record_function("model_inference"):
                 self.conv12(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("conv12", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("hd_conv12", prof_report, usingcuda)
 
-        tt.tic("conv12")
+        prof_wrapper.tt.tic("hd_conv12")
         x12 = self.conv12(x11)
-        tt.toc("conv12")
+        prof_wrapper.tt.toc("hd_conv12")
+        prof_wrapper.scale.weight(tensor_src="hd_conv12", data=x12)
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x12", src="hd_conv12", dest="hd_conv13")
         tmp_input = torch.clone(x12)
         with profile(
                 activities=
@@ -663,14 +691,16 @@ class Yolov4Head(nn.Module):
             with record_function("model_inference"):
                 self.conv13(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("conv13", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("hd_conv13", prof_report, usingcuda)
 
-        tt.tic("conv13")
+        prof_wrapper.tt.tic("hd_conv13")
         x13 = self.conv13(x12)
-        tt.toc("conv13")
+        prof_wrapper.tt.toc("hd_conv13")
+        prof_wrapper.scale.weight(tensor_src="hd_conv13", data=x13)
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x13", src="hd_conv13", dest="hd_conv14")
         tmp_input = torch.clone(x13)
         with profile(
                 activities=
@@ -686,14 +716,16 @@ class Yolov4Head(nn.Module):
             with record_function("model_inference"):
                 self.conv14(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("conv14", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("hd_conv14", prof_report, usingcuda)
 
-        tt.tic("conv14")
+        prof_wrapper.tt.tic("hd_conv14")
         x14 = self.conv14(x13)
-        tt.toc("conv14")
+        prof_wrapper.tt.toc("hd_conv14")
+        prof_wrapper.scale.weight(tensor_src="hd_conv14", data=x14)
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x14", src="hd_conv14", dest="hd_conv15")
         tmp_input = torch.clone(x14)
         with profile(
                 activities=
@@ -709,14 +741,16 @@ class Yolov4Head(nn.Module):
             with record_function("model_inference"):
                 self.conv15(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("conv15", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("hd_conv15", prof_report, usingcuda)
 
-        tt.tic("conv15")
+        prof_wrapper.tt.tic("hd_conv15")
         x15 = self.conv15(x14)
-        tt.toc("conv15")
+        prof_wrapper.tt.toc("hd_conv15")
+        prof_wrapper.scale.weight(tensor_src="hd_conv15", data=x15)
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x15", src="hd_conv15", dest="hd_conv16")
         tmp_input = torch.clone(x15)
         with profile(
                 activities=
@@ -732,14 +766,16 @@ class Yolov4Head(nn.Module):
             with record_function("model_inference"):
                 self.conv16(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("conv16", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("hd_conv16", prof_report, usingcuda)
 
-        tt.tic("conv16")
+        prof_wrapper.tt.tic("hd_conv16")
         x16 = self.conv16(x15)
-        tt.toc("conv16")
+        prof_wrapper.tt.toc("hd_conv16")
+        prof_wrapper.scale.weight(tensor_src="hd_conv16", data=x16)
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x16", src="hd_conv16", dest="hd_conv17")
         tmp_input = torch.clone(x16)
         with profile(
                 activities=
@@ -755,14 +791,16 @@ class Yolov4Head(nn.Module):
             with record_function("model_inference"):
                 self.conv17(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("conv17", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("hd_conv17", prof_report, usingcuda)
 
-        tt.tic("conv17")
+        prof_wrapper.tt.tic("hd_conv17")
         x17 = self.conv17(x16)
-        tt.toc("conv17")
+        prof_wrapper.tt.toc("hd_conv17")
+        prof_wrapper.scale.weight(tensor_src="hd_conv17", data=x17)
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x17", src="hd_conv17", dest="hd_conv18")
         tmp_input = torch.clone(x17)
         with profile(
                 activities=
@@ -778,11 +816,12 @@ class Yolov4Head(nn.Module):
             with record_function("model_inference"):
                 self.conv18(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
-        mr.get_mem("conv18", prof_report, usingcuda)
+        prof_wrapper.mr.get_mem("hd_conv18", prof_report, usingcuda)
 
-        tt.tic("conv18")
+        prof_wrapper.tt.tic("hd_conv18")
         x18 = self.conv18(x17)
-        tt.toc("conv18")
+        prof_wrapper.tt.toc("hd_conv18")
+        prof_wrapper.scale.weight(tensor_src="hd_conv18", data=x18)
         # ----------------------------------------------------------------
 
         # x1 = self.conv1(input1)
@@ -829,11 +868,11 @@ class Yolov4Head(nn.Module):
                 with record_function("model_inference"):
                     self.yolo1(tmp_input)
             prof_report = str(prof.key_averages().table()).split("\n")
-            mr.get_mem("yolo1", prof_report, usingcuda)
+            prof_wrapper.mr.get_mem("yolo1", prof_report, usingcuda)
 
-            tt.tic("yolo1")
+            prof_wrapper.tt.tic("yolo1")
             y1 = self.yolo1(x2)
-            tt.toc("yolo1")
+            prof_wrapper.tt.toc("yolo1")
             # ----------------------------------------------------------------
 
             # ----------------------------------------------------------------
@@ -852,11 +891,11 @@ class Yolov4Head(nn.Module):
                 with record_function("model_inference"):
                     self.yolo2(tmp_input)
             prof_report = str(prof.key_averages().table()).split("\n")
-            mr.get_mem("yolo2", prof_report, usingcuda)
+            prof_wrapper.mr.get_mem("yolo2", prof_report, usingcuda)
 
-            tt.tic("yolo2")
+            prof_wrapper.tt.tic("yolo2")
             y2 = self.yolo2(x10)
-            tt.toc("yolo2")
+            prof_wrapper.tt.toc("yolo2")
             # ----------------------------------------------------------------
 
             # ----------------------------------------------------------------
@@ -875,11 +914,11 @@ class Yolov4Head(nn.Module):
                 with record_function("model_inference"):
                     self.yolo3(tmp_input)
             prof_report = str(prof.key_averages().table()).split("\n")
-            mr.get_mem("yolo3", prof_report, usingcuda)
+            prof_wrapper.mr.get_mem("yolo3", prof_report, usingcuda)
 
-            tt.tic("yolo3")
+            prof_wrapper.tt.tic("yolo3")
             y3 = self.yolo3(x18)
-            tt.toc("yolo3")
+            prof_wrapper.tt.toc("yolo3")
             # ----------------------------------------------------------------
 
             # y1 = self.yolo1(x2)
@@ -921,14 +960,14 @@ class Yolov4(nn.Module):
         # head
         self.head = Yolov4Head(output_ch, n_classes, inference)
 
-    def forward(self, input, tt, mr, usingcuda=False):
-        d1 = self.down1(input, tt, mr)
-        d2 = self.down2(d1, tt, mr)
-        d3 = self.down3(d2, tt, mr)
-        d4 = self.down4(d3, tt, mr)
-        d5 = self.down5(d4, tt, mr)
-        x20, x13, x6 = self.neck(d5, d4, d3, tt, mr)
-        output = self.head(x20, x13, x6, tt, mr, usingcuda)
+    def forward(self, input, prof_wrapper, usingcuda=False):
+        d1 = self.down1(input, prof_wrapper)
+        d2 = self.down2(d1, prof_wrapper)
+        d3 = self.down3(d2, prof_wrapper)
+        d4 = self.down4(d3, prof_wrapper)
+        d5 = self.down5(d4, prof_wrapper)
+        x20, x13, x6 = self.neck(d5, d4, d3, prof_wrapper)
+        output = self.head(x20, x13, x6, prof_wrapper, usingcuda)
 
         return output
 
