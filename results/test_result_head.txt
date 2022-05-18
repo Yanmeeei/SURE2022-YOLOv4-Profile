@@ -1,0 +1,110 @@
+cpu
+YOLOv4 is Ready
+input size: 20
+Average Time of Each Layer
+hd_conv1        0.33441591262817383 
+hd_conv2        0.07216310501098633 
+hd_conv3        0.08064913749694824 
+hd_conv4        0.040714263916015625
+hd_conv5        0.32675623893737793 
+hd_conv6        0.03993391990661621 
+hd_conv7        0.33910298347473145 
+hd_conv8        0.04623293876647949 
+hd_conv9        0.34164881706237793 
+hd_conv10       0.03784489631652832 
+hd_conv11       0.08840608596801758 
+hd_conv12       0.038336992263793945
+hd_conv13       0.3306879997253418  
+hd_conv14       0.034262895584106445
+hd_conv15       0.3216841220855713  
+hd_conv16       0.03520774841308594 
+hd_conv17       0.3170888423919678  
+hd_conv18       0.01879286766052246 
+mem_self_cpu | Average Mem Consumption of Each Layer
+hd_conv1        -0.002992           
+hd_conv2        0.0                 
+hd_conv3        -0.002992           
+hd_conv4        -0.002992           
+hd_conv5        0.004008000000001562
+hd_conv6        -0.002992           
+hd_conv7        0.004008000000001562
+hd_conv8        -0.002992           
+hd_conv9        0.004008000000001562
+hd_conv10       0.0                 
+hd_conv11       0.004007999999999786
+hd_conv12       0.004007999999999786
+hd_conv13       -0.001992000000000214
+hd_conv14       0.004007999999999786
+hd_conv15       -0.001992000000000214
+hd_conv16       0.004007999999999786
+hd_conv17       -0.001992000000000214
+hd_conv18       0.0                 
+mem_cpu | Average Mem Consumption of Each Layer
+hd_conv1        187.70102799999998  
+hd_conv2        93.5                
+hd_conv3        50.00102799999999   
+hd_conv4        50.00102799999999   
+hd_conv5        100.01202800000002  
+hd_conv6        50.00102799999999   
+hd_conv7        100.01202800000002  
+hd_conv8        50.00102799999999   
+hd_conv9        100.01202800000002  
+hd_conv10       24.900000000000002  
+hd_conv11       25.012028           
+hd_conv12       25.012028           
+hd_conv13       50.05402799999999   
+hd_conv14       25.012028           
+hd_conv15       50.05402799999999   
+hd_conv16       25.012028           
+hd_conv17       50.05402799999999   
+hd_conv18       6.25                
+
+Data size of each tensor: 
+
+Name            Size                
+================================================
+
+hd_conv1        [20, 256, 31, 31]   
+hd_conv2        [20, 255, 31, 31]   
+hd_conv3        [20, 256, 16, 16]   
+hd_conv4        [20, 256, 16, 16]   
+hd_conv5        [20, 512, 16, 16]   
+hd_conv6        [20, 256, 16, 16]   
+hd_conv7        [20, 512, 16, 16]   
+hd_conv8        [20, 256, 16, 16]   
+hd_conv9        [20, 512, 16, 16]   
+hd_conv10       [20, 255, 16, 16]   
+hd_conv11       [20, 512, 8, 8]     
+hd_conv12       [20, 512, 8, 8]     
+hd_conv13       [20, 1024, 8, 8]    
+hd_conv14       [20, 512, 8, 8]     
+hd_conv15       [20, 1024, 8, 8]    
+hd_conv16       [20, 512, 8, 8]     
+hd_conv17       [20, 1024, 8, 8]    
+hd_conv18       [20, 255, 8, 8]     
+
+Data Dependency of each layer 
+
+Name                 Source          Destination    
+================================================
+
+nk_conv20_input1     nk_conv20       hd_conv1       
+hd_conv1_x1          hd_conv1        hd_conv2       
+hd_conv2_x2          hd_conv2        hd_conv3       
+hd_conv3_x3          hd_conv3        hd_conv4       
+nk_conv13_input2     nk_conv13       hd_conv4       
+hd_conv4_x4          hd_conv4        hd_conv5       
+hd_conv5_x5          hd_conv5        hd_conv6       
+hd_conv6_x6          hd_conv6        hd_conv7       
+hd_conv7_x7          hd_conv7        hd_conv8       
+hd_conv8_x8          hd_conv8        hd_conv9       
+hd_conv8_x8          hd_conv8        hd_conv11      
+hd_conv9_x9          hd_conv9        hd_conv10      
+hd_conv11_x11        hd_conv11       hd_conv12      
+nk_conv6_input3      nk_conv6        hd_conv12      
+hd_conv12_x12        hd_conv12       hd_conv13      
+hd_conv13_x13        hd_conv13       hd_conv14      
+hd_conv14_x14        hd_conv14       hd_conv15      
+hd_conv15_x15        hd_conv15       hd_conv16      
+hd_conv16_x16        hd_conv16       hd_conv17      
+hd_conv17_x17        hd_conv17       hd_conv18      
