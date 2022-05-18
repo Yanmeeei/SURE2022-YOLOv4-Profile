@@ -1028,7 +1028,6 @@ class DownSample5(nn.Module):
         prof_wrapper.tt.toc("d5_conv5")
         prof_wrapper.scale.weight(tensor_src="d5_conv5", data=x5)
         # ----------------------------------------------------------------
-        prof_wrapper.scale.dependency_check(tensor_name="x5", src="d5_conv5", dest="nk_conv1")
 
         # x1 = self.conv1(input)
         # x2 = self.conv2(x1)
