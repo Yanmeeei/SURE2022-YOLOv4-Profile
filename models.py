@@ -279,7 +279,6 @@ class Neck(nn.Module):
         self.conv20 = Conv_Bn_Activation(256, 128, 1, 1, 'leaky')
 
     def forward(self, input, downsample4, downsample3, prof_wrapper, inference=False, usingcuda=False):
-        prof_wrapper.scale.weight(tensor_src="d5_conv5", data=input)
 
         # ----------------------------------------------------------------
         prof_wrapper.scale.dependency_check(tensor_name="input", src="d5_conv5", dest="nk_conv1")
