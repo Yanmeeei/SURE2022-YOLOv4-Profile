@@ -423,7 +423,7 @@ class Yolov4Head(nn.Module):
         # ----------------------------------------------------------------
 
         # ----------------------------------------------------------------
-        prof_wrapper.scale.dependency_check(tensor_name="x2", src="hd_conv2", dest="hd_conv3")
+        prof_wrapper.scale.dependency_check(tensor_name="input1", src="nk_conv20", dest="hd_conv3")
         tmp_input = torch.clone(input1)
         with profile(
                 activities=
