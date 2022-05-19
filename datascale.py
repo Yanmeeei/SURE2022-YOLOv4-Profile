@@ -1,4 +1,5 @@
 import torch
+import sys
 
 
 class DpdtRec:
@@ -18,7 +19,7 @@ class DataScale(object):
 
     def weight(self, tensor_src, data):
         if tensor_src not in self.scaleRec:
-            self.scaleRec[tensor_src] = data.size()
+            self.scaleRec[tensor_src] = sys.getsizeof(data.storage())
 
     def dependency_check(self, tensor_name, src, dest):
         src_name = src + "_" + tensor_name
@@ -31,7 +32,7 @@ class DataScale(object):
         print("{:<15} {:<20}".format('Name', 'Size'))
         print("================================================\n")
         for key, value in self.scaleRec.items():
-            print("{:<15} {:<20}".format(key, str(list(value))))
+            print("{:<15} {:<20}".format(key, value/(1024**2)))
 
         print("\nData Dependency of each layer \n")
         print("{:<20} {:<15} {:<15}".format('Name', 'Source', "Destination"))
