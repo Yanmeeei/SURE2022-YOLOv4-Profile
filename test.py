@@ -5,7 +5,7 @@ from profilerwrapper import ProfilerWrapper
 
 prof_wrapper = ProfilerWrapper()
 
-device = "cuda:0" if torch.cuda.is_available() else "cpu"
+device = "cuda" if torch.cuda.is_available() else "cpu"
 print(device)
 if device != 'cpu':
     usingcuda = True
