@@ -143,9 +143,9 @@ class DownSample1(nn.Module):
                 self.conv1(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d1_conv1", prof_report, usingcuda)
-
-        prof_wrapper.tt.tic("d1_conv1")
         x1 = self.conv1(input)
+        prof_wrapper.tt.tic("d1_conv1")
+        self.conv1(input)
         prof_wrapper.tt.toc("d1_conv1")
 
         prof_wrapper.scale.weight(tensor_src="d1_conv1", data=x1)
@@ -169,9 +169,9 @@ class DownSample1(nn.Module):
                 self.conv2(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d1_conv2", prof_report, usingcuda)
-
-        prof_wrapper.tt.tic("d1_conv2")
         x2 = self.conv2(x1)
+        prof_wrapper.tt.tic("d1_conv2")
+        self.conv2(x1)
         prof_wrapper.tt.toc("d1_conv2")
         prof_wrapper.scale.weight(tensor_src="d1_conv2", data=x2)
         # ----------------------------------------------------------------
@@ -194,9 +194,9 @@ class DownSample1(nn.Module):
                 self.conv3(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d1_conv3", prof_report, usingcuda)
-
-        prof_wrapper.tt.tic("d1_conv3")
         x3 = self.conv3(x2)
+        prof_wrapper.tt.tic("d1_conv3")
+        self.conv3(x2)
         prof_wrapper.tt.toc("d1_conv3")
         prof_wrapper.scale.weight(tensor_src="d1_conv3", data=x3)
         # ----------------------------------------------------------------
@@ -220,9 +220,9 @@ class DownSample1(nn.Module):
                 self.conv4(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d1_conv4", prof_report, usingcuda)
-
-        prof_wrapper.tt.tic("d1_conv4")
         x4 = self.conv4(x2)
+        prof_wrapper.tt.tic("d1_conv4")
+        self.conv4(x2)
         prof_wrapper.tt.toc("d1_conv4")
         prof_wrapper.scale.weight(tensor_src="d1_conv4", data=x4)
         # ----------------------------------------------------------------
@@ -245,9 +245,9 @@ class DownSample1(nn.Module):
                 self.conv5(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d1_conv5", prof_report, usingcuda)
-
-        prof_wrapper.tt.tic("d1_conv5")
         x5 = self.conv5(x4)
+        prof_wrapper.tt.tic("d1_conv5")
+        self.conv5(x4)
         prof_wrapper.tt.toc("d1_conv5")
         prof_wrapper.scale.weight(tensor_src="d1_conv5", data=x5)
         # ----------------------------------------------------------------
@@ -270,9 +270,9 @@ class DownSample1(nn.Module):
                 self.conv6(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d1_conv6", prof_report, usingcuda)
-
-        prof_wrapper.tt.tic("d1_conv6")
         x6 = self.conv6(x5)
+        prof_wrapper.tt.tic("d1_conv6")
+        self.conv6(x5)
         prof_wrapper.tt.toc("d1_conv6")
         prof_wrapper.scale.weight(tensor_src="d1_conv6", data=x6)
         # ----------------------------------------------------------------
@@ -297,9 +297,9 @@ class DownSample1(nn.Module):
 
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d1_conv7", prof_report, usingcuda)
-
-        prof_wrapper.tt.tic("d1_conv7")
         x7 = self.conv7(x6)
+        prof_wrapper.tt.tic("d1_conv7")
+        self.conv7(x6)
         prof_wrapper.tt.toc("d1_conv7")
         prof_wrapper.scale.weight(tensor_src="d1_conv7", data=x7)
         # ----------------------------------------------------------------
@@ -325,9 +325,9 @@ class DownSample1(nn.Module):
                 self.conv8(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d1_conv8", prof_report, usingcuda)
-
-        prof_wrapper.tt.tic("d1_conv8")
         x8 = self.conv8(x7)
+        prof_wrapper.tt.tic("d1_conv8")
+        self.conv8(x7)
         prof_wrapper.tt.toc("d1_conv8")
         prof_wrapper.scale.weight(tensor_src="d1_conv8", data=x8)
         # ----------------------------------------------------------------
@@ -369,9 +369,9 @@ class DownSample2(nn.Module):
                 self.conv1(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d2_conv1", prof_report, usingcuda)
-
-        prof_wrapper.tt.tic("d2_conv1")
         x1 = self.conv1(input)
+        prof_wrapper.tt.tic("d2_conv1")
+        self.conv1(input)
         prof_wrapper.tt.toc("d2_conv1")
         prof_wrapper.scale.weight(tensor_src="d2_conv1", data=x1)
         # ----------------------------------------------------------------
@@ -394,9 +394,9 @@ class DownSample2(nn.Module):
                 self.conv2(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d2_conv2", prof_report, usingcuda)
-
-        prof_wrapper.tt.tic("d2_conv2")
         x2 = self.conv2(x1)
+        prof_wrapper.tt.tic("d2_conv2")
+        self.conv2(x1)
         prof_wrapper.tt.toc("d2_conv2")
         prof_wrapper.scale.weight(tensor_src="d2_conv2", data=x2)
         # ----------------------------------------------------------------
@@ -419,9 +419,9 @@ class DownSample2(nn.Module):
                 self.conv3(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d2_conv3", prof_report, usingcuda)
-
-        prof_wrapper.tt.tic("d2_conv3")
         x3 = self.conv3(x1)
+        prof_wrapper.tt.tic("d2_conv3")
+        self.conv3(x1)
         prof_wrapper.tt.toc("d2_conv3")
         prof_wrapper.scale.weight(tensor_src="d2_conv3", data=x3)
         # ----------------------------------------------------------------
@@ -444,9 +444,9 @@ class DownSample2(nn.Module):
                 self.resblock(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d2_resblock", prof_report, usingcuda)
-
-        prof_wrapper.tt.tic("d2_resblock")
         r = self.resblock(x3)
+        prof_wrapper.tt.tic("d2_resblock")
+        self.resblock(x3)
         prof_wrapper.tt.toc("d2_resblock")
         prof_wrapper.scale.weight(tensor_src="d2_resblock", data=r)
         # ----------------------------------------------------------------
@@ -470,9 +470,9 @@ class DownSample2(nn.Module):
 
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d2_conv4", prof_report, usingcuda)
-
-        prof_wrapper.tt.tic("d2_conv4")
         x4 = self.conv4(r)
+        prof_wrapper.tt.tic("d2_conv4")
+        self.conv4(r)
         prof_wrapper.tt.toc("d2_conv4")
         prof_wrapper.scale.weight(tensor_src="d2_conv4", data=x4)
         # ----------------------------------------------------------------
@@ -496,9 +496,9 @@ class DownSample2(nn.Module):
                 self.conv5(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d2_conv5", prof_report, usingcuda)
-
-        prof_wrapper.tt.tic("d2_conv5")
         x5 = self.conv5(x4)
+        prof_wrapper.tt.tic("d2_conv5")
+        self.conv5(x4)
         prof_wrapper.tt.toc("d2_conv5")
         prof_wrapper.scale.weight(tensor_src="d2_conv5", data=x5)
         # ----------------------------------------------------------------
@@ -545,9 +545,9 @@ class DownSample3(nn.Module):
                 self.conv1(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d3_conv1", prof_report, usingcuda)
-
-        prof_wrapper.tt.tic("d3_conv1")
         x1 = self.conv1(input)
+        prof_wrapper.tt.tic("d3_conv1")
+        self.conv1(input)
         prof_wrapper.tt.toc("d3_conv1")
         prof_wrapper.scale.weight(tensor_src="d3_conv1", data=x1)
         # ----------------------------------------------------------------
@@ -570,9 +570,9 @@ class DownSample3(nn.Module):
                 self.conv2(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d3_conv2", prof_report, usingcuda)
-
-        prof_wrapper.tt.tic("d3_conv2")
         x2 = self.conv2(x1)
+        prof_wrapper.tt.tic("d3_conv2")
+        self.conv2(x1)
         prof_wrapper.tt.toc("d3_conv2")
         prof_wrapper.scale.weight(tensor_src="d3_conv2", data=x2)
         # ----------------------------------------------------------------
@@ -595,9 +595,9 @@ class DownSample3(nn.Module):
                 self.conv3(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d3_conv3", prof_report, usingcuda)
-
-        prof_wrapper.tt.tic("d3_conv3")
         x3 = self.conv3(x1)
+        prof_wrapper.tt.tic("d3_conv3")
+        self.conv3(x1)
         prof_wrapper.tt.toc("d3_conv3")
         prof_wrapper.scale.weight(tensor_src="d3_conv3", data=x3)
         # ----------------------------------------------------------------
@@ -620,9 +620,9 @@ class DownSample3(nn.Module):
                 self.resblock(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d3_resblock", prof_report, usingcuda)
-
-        prof_wrapper.tt.tic("d3_resblock")
         r = self.resblock(x3)
+        prof_wrapper.tt.tic("d3_resblock")
+        self.resblock(x3)
         prof_wrapper.tt.toc("d3_resblock")
         prof_wrapper.scale.weight(tensor_src="d3_resblock", data=r)
         # ----------------------------------------------------------------
@@ -646,9 +646,9 @@ class DownSample3(nn.Module):
 
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d3_conv4", prof_report, usingcuda)
-
-        prof_wrapper.tt.tic("d3_conv4")
         x4 = self.conv4(r)
+        prof_wrapper.tt.tic("d3_conv4")
+        self.conv4(r)
         prof_wrapper.tt.toc("d3_conv4")
         prof_wrapper.scale.weight(tensor_src="d3_conv4", data=x4)
         # ----------------------------------------------------------------
@@ -672,9 +672,9 @@ class DownSample3(nn.Module):
                 self.conv5(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d3_conv5", prof_report, usingcuda)
-
-        prof_wrapper.tt.tic("d3_conv5")
         x5 = self.conv5(x4)
+        prof_wrapper.tt.tic("d3_conv5")
+        self.conv5(x4)
         prof_wrapper.tt.toc("d3_conv5")
         prof_wrapper.scale.weight(tensor_src="d3_conv5", data=x5)
         # ----------------------------------------------------------------
@@ -721,9 +721,9 @@ class DownSample4(nn.Module):
                 self.conv1(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d4_conv1", prof_report, usingcuda)
-
-        prof_wrapper.tt.tic("d4_conv1")
         x1 = self.conv1(input)
+        prof_wrapper.tt.tic("d4_conv1")
+        self.conv1(input)
         prof_wrapper.tt.toc("d4_conv1")
         prof_wrapper.scale.weight(tensor_src="d4_conv1", data=x1)
         # ----------------------------------------------------------------
@@ -746,9 +746,9 @@ class DownSample4(nn.Module):
                 self.conv2(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d4_conv2", prof_report, usingcuda)
-
-        prof_wrapper.tt.tic("d4_conv2")
         x2 = self.conv2(x1)
+        prof_wrapper.tt.tic("d4_conv2")
+        self.conv2(x1)
         prof_wrapper.tt.toc("d4_conv2")
         prof_wrapper.scale.weight(tensor_src="d4_conv2", data=x2)
         # ----------------------------------------------------------------
@@ -771,9 +771,9 @@ class DownSample4(nn.Module):
                 self.conv3(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d4_conv3", prof_report, usingcuda)
-
-        prof_wrapper.tt.tic("d4_conv3")
         x3 = self.conv3(x1)
+        prof_wrapper.tt.tic("d4_conv3")
+        self.conv3(x1)
         prof_wrapper.tt.toc("d4_conv3")
         prof_wrapper.scale.weight(tensor_src="d4_conv3", data=x3)
         # ----------------------------------------------------------------
@@ -796,9 +796,9 @@ class DownSample4(nn.Module):
                 self.resblock(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d4_resblock", prof_report, usingcuda)
-
-        prof_wrapper.tt.tic("d4_resblock")
         r = self.resblock(x3)
+        prof_wrapper.tt.tic("d4_resblock")
+        self.resblock(x3)
         prof_wrapper.tt.toc("d4_resblock")
         prof_wrapper.scale.weight(tensor_src="d4_resblock", data=r)
         # ----------------------------------------------------------------
@@ -821,9 +821,9 @@ class DownSample4(nn.Module):
                 self.conv4(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d4_conv4", prof_report, usingcuda)
-
-        prof_wrapper.tt.tic("d4_conv4")
         x4 = self.conv4(r)
+        prof_wrapper.tt.tic("d4_conv4")
+        self.conv4(r)
         prof_wrapper.tt.toc("d4_conv4")
         prof_wrapper.scale.weight(tensor_src="d4_conv4", data=x4)
         # ----------------------------------------------------------------
@@ -847,9 +847,9 @@ class DownSample4(nn.Module):
                 self.conv5(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d4_conv5", prof_report, usingcuda)
-
-        prof_wrapper.tt.tic("d4_conv5")
         x5 = self.conv5(x4)
+        prof_wrapper.tt.tic("d4_conv5")
+        self.conv5(x4)
         prof_wrapper.tt.toc("d4_conv5")
         prof_wrapper.scale.weight(tensor_src="d4_conv5", data=x5)
         # ----------------------------------------------------------------
@@ -896,9 +896,9 @@ class DownSample5(nn.Module):
                 self.conv1(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d5_conv1", prof_report, usingcuda)
-
-        prof_wrapper.tt.tic("d5_conv1")
         x1 = self.conv1(input)
+        prof_wrapper.tt.tic("d5_conv1")
+        self.conv1(input)
         prof_wrapper.tt.toc("d5_conv1")
         prof_wrapper.scale.weight(tensor_src="d5_conv1", data=x1)
         # ----------------------------------------------------------------
@@ -921,9 +921,9 @@ class DownSample5(nn.Module):
                 self.conv2(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d5_conv2", prof_report, usingcuda)
-
-        prof_wrapper.tt.tic("d5_conv2")
         x2 = self.conv2(x1)
+        prof_wrapper.tt.tic("d5_conv2")
+        self.conv2(x1)
         prof_wrapper.tt.toc("d5_conv2")
         prof_wrapper.scale.weight(tensor_src="d5_conv2", data=x2)
         # ----------------------------------------------------------------
@@ -946,9 +946,9 @@ class DownSample5(nn.Module):
                 self.conv3(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d5_conv3", prof_report, usingcuda)
-
-        prof_wrapper.tt.tic("d5_conv3")
         x3 = self.conv3(x1)
+        prof_wrapper.tt.tic("d5_conv3")
+        self.conv3(x1)
         prof_wrapper.tt.toc("d5_conv3")
         prof_wrapper.scale.weight(tensor_src="d5_conv3", data=x3)
         # ----------------------------------------------------------------
@@ -971,9 +971,9 @@ class DownSample5(nn.Module):
                 self.resblock(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d5_resblock", prof_report, usingcuda)
-
-        prof_wrapper.tt.tic("d5_resblock")
         r = self.resblock(x3)
+        prof_wrapper.tt.tic("d5_resblock")
+        self.resblock(x3)
         prof_wrapper.tt.toc("d5_resblock")
         prof_wrapper.scale.weight(tensor_src="d5_resblock", data=r)
         # ----------------------------------------------------------------
@@ -996,9 +996,9 @@ class DownSample5(nn.Module):
                 self.conv4(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d5_conv4", prof_report, usingcuda)
-
-        prof_wrapper.tt.tic("d5_conv4")
         x4 = self.conv4(r)
+        prof_wrapper.tt.tic("d5_conv4")
+        self.conv4(r)
         prof_wrapper.tt.toc("d5_conv4")
         prof_wrapper.scale.weight(tensor_src="d5_conv4", data=x4)
         # ----------------------------------------------------------------
@@ -1022,9 +1022,9 @@ class DownSample5(nn.Module):
                 self.conv5(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d5_conv5", prof_report, usingcuda)
-
-        prof_wrapper.tt.tic("d5_conv5")
         x5 = self.conv5(x4)
+        prof_wrapper.tt.tic("d5_conv5")
+        self.conv5(x4)
         prof_wrapper.tt.toc("d5_conv5")
         prof_wrapper.scale.weight(tensor_src="d5_conv5", data=x5)
         # ----------------------------------------------------------------
