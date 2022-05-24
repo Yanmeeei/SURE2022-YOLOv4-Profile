@@ -19,7 +19,7 @@ print("YOLOv4 is Ready")
 
 n = 1
 print(f"input size: {n}")
-input = torch.randn(n, 3, 244, 244).to(device)
+input = torch.randn(n, 3, 608, 608).to(device)
 model.forward(input, prof_wrapper, usingcuda)
 
 prof_wrapper.report(sample=False)
