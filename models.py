@@ -145,7 +145,6 @@ class DownSample1(nn.Module):
                 self.conv1(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d1_conv1", prof_report, usingcuda)
-        prof_wrapper.scale.flop_count("d1_conv1", )
         x1 = self.conv1(input)
         x1 = self.conv1(input)
 
