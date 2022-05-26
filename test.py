@@ -1,5 +1,6 @@
 import torch
 from models import Yolov4, YoloLayer, Yolov4Head
+from ptflops import get_model_complexity_info
 
 from profilerwrapper import ProfilerWrapper
 

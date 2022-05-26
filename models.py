@@ -1,3 +1,5 @@
+import time
+
 import torch
 from torch import nn
 import torch.nn.functional as F
@@ -137,17 +139,21 @@ class DownSample1(nn.Module):
                     ProfilerActivity.CPU,
                     ProfilerActivity.CUDA
                 ],
-                profile_memory=True, record_shapes=True
+                profile_memory=True, record_shapes=True, with_flops=True
         ) as prof:
             with record_function("model_inference"):
                 self.conv1(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d1_conv1", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("d1_conv1", )
         x1 = self.conv1(input)
         x1 = self.conv1(input)
-        prof_wrapper.tt.tic("d1_conv1")
+
+        time_starts = time.time()
         self.conv1(input)
-        prof_wrapper.tt.toc("d1_conv1")
+        diff = time.time() - time_starts
+        prof_wrapper.tt.get_time("d1_conv1", diff)
+
         prof_wrapper.tt.tic("d1_conv1")
         self.conv1(input)
         prof_wrapper.tt.toc("d1_conv1")
@@ -175,9 +181,12 @@ class DownSample1(nn.Module):
         prof_wrapper.mr.get_mem("d1_conv2", prof_report, usingcuda)
         x2 = self.conv2(x1)
         x2 = self.conv2(x1)
-        prof_wrapper.tt.tic("d1_conv2")
+
+        time_starts = time.time()
         self.conv2(x1)
-        prof_wrapper.tt.toc("d1_conv2")
+        diff = time.time() - time_starts
+        prof_wrapper.tt.get_time("d1_conv2", diff)
+
         prof_wrapper.tt.tic("d1_conv2")
         self.conv2(x1)
         prof_wrapper.tt.toc("d1_conv2")
@@ -204,9 +213,12 @@ class DownSample1(nn.Module):
         prof_wrapper.mr.get_mem("d1_conv3", prof_report, usingcuda)
         x3 = self.conv3(x2)
         x3 = self.conv3(x2)
-        prof_wrapper.tt.tic("d1_conv3")
+
+        time_starts = time.time()
         self.conv3(x2)
-        prof_wrapper.tt.toc("d1_conv3")
+        diff = time.time() - time_starts
+        prof_wrapper.tt.get_time("d1_conv3", diff)
+
         prof_wrapper.tt.tic("d1_conv3")
         self.conv3(x2)
         prof_wrapper.tt.toc("d1_conv3")
@@ -234,9 +246,12 @@ class DownSample1(nn.Module):
         prof_wrapper.mr.get_mem("d1_conv4", prof_report, usingcuda)
         x4 = self.conv4(x2)
         x4 = self.conv4(x2)
-        prof_wrapper.tt.tic("d1_conv4")
+
+        time_starts = time.time()
         self.conv4(x2)
-        prof_wrapper.tt.toc("d1_conv4")
+        diff = time.time() - time_starts
+        prof_wrapper.tt.get_time("d1_conv4", diff)
+
         prof_wrapper.tt.tic("d1_conv4")
         self.conv4(x2)
         prof_wrapper.tt.toc("d1_conv4")
@@ -263,9 +278,13 @@ class DownSample1(nn.Module):
         prof_wrapper.mr.get_mem("d1_conv5", prof_report, usingcuda)
         x5 = self.conv5(x4)
         x5 = self.conv5(x4)
-        prof_wrapper.tt.tic("d1_conv5")
+
+        time_starts = time.time()
         self.conv5(x4)
-        prof_wrapper.tt.toc("d1_conv5")
+        diff = time.time() - time_starts
+        prof_wrapper.tt.get_time("d1_conv5", diff)
+
+
         prof_wrapper.tt.tic("d1_conv5")
         self.conv5(x4)
         prof_wrapper.tt.toc("d1_conv5")
@@ -292,9 +311,12 @@ class DownSample1(nn.Module):
         prof_wrapper.mr.get_mem("d1_conv6", prof_report, usingcuda)
         x6 = self.conv6(x5)
         x6 = self.conv6(x5)
-        prof_wrapper.tt.tic("d1_conv6")
+
+        time_starts = time.time()
         self.conv6(x5)
-        prof_wrapper.tt.toc("d1_conv6")
+        diff = time.time() - time_starts
+        prof_wrapper.tt.get_time("d1_conv6", diff)
+
         prof_wrapper.tt.tic("d1_conv6")
         self.conv6(x5)
         prof_wrapper.tt.toc("d1_conv6")
@@ -323,9 +345,13 @@ class DownSample1(nn.Module):
         prof_wrapper.mr.get_mem("d1_conv7", prof_report, usingcuda)
         x7 = self.conv7(x6)
         x7 = self.conv7(x6)
-        prof_wrapper.tt.tic("d1_conv7")
+
+        time_starts = time.time()
         self.conv7(x6)
-        prof_wrapper.tt.toc("d1_conv7")
+        diff = time.time() - time_starts
+        prof_wrapper.tt.get_time("d1_conv7", diff)
+
+
         prof_wrapper.tt.tic("d1_conv7")
         self.conv7(x6)
         prof_wrapper.tt.toc("d1_conv7")
@@ -355,9 +381,13 @@ class DownSample1(nn.Module):
         prof_wrapper.mr.get_mem("d1_conv8", prof_report, usingcuda)
         x8 = self.conv8(x7)
         x8 = self.conv8(x7)
-        prof_wrapper.tt.tic("d1_conv8")
+
+        time_starts = time.time()
         self.conv8(x7)
-        prof_wrapper.tt.toc("d1_conv8")
+        diff = time.time() - time_starts
+        prof_wrapper.tt.get_time("d1_conv8", diff)
+
+
         prof_wrapper.tt.tic("d1_conv8")
         self.conv8(x7)
         prof_wrapper.tt.toc("d1_conv8")
@@ -403,9 +433,13 @@ class DownSample2(nn.Module):
         prof_wrapper.mr.get_mem("d2_conv1", prof_report, usingcuda)
         x1 = self.conv1(input)
         x1 = self.conv1(input)
-        prof_wrapper.tt.tic("d2_conv1")
+
+        time_starts = time.time()
         self.conv1(input)
-        prof_wrapper.tt.toc("d2_conv1")
+        diff = time.time() - time_starts
+        prof_wrapper.tt.get_time("d2_conv1", diff)
+
+
         prof_wrapper.tt.tic("d2_conv1")
         self.conv1(input)
         prof_wrapper.tt.toc("d2_conv1")
@@ -432,9 +466,12 @@ class DownSample2(nn.Module):
         prof_wrapper.mr.get_mem("d2_conv2", prof_report, usingcuda)
         x2 = self.conv2(x1)
         x2 = self.conv2(x1)
-        prof_wrapper.tt.tic("d2_conv2")
+
+        time_starts = time.time()
         self.conv2(x1)
-        prof_wrapper.tt.toc("d2_conv2")
+        diff = time.time() - time_starts
+        prof_wrapper.tt.get_time("d2_conv2", diff)
+
         prof_wrapper.tt.tic("d2_conv2")
         self.conv2(x1)
         prof_wrapper.tt.toc("d2_conv2")
@@ -461,9 +498,12 @@ class DownSample2(nn.Module):
         prof_wrapper.mr.get_mem("d2_conv3", prof_report, usingcuda)
         x3 = self.conv3(x1)
         x3 = self.conv3(x1)
-        prof_wrapper.tt.tic("d2_conv3")
+
+        time_starts = time.time()
         self.conv3(x1)
-        prof_wrapper.tt.toc("d2_conv3")
+        diff = time.time() - time_starts
+        prof_wrapper.tt.get_time("d2_conv3", diff)
+
         prof_wrapper.tt.tic("d2_conv3")
         self.conv3(x1)
         prof_wrapper.tt.toc("d2_conv3")
@@ -490,9 +530,13 @@ class DownSample2(nn.Module):
         prof_wrapper.mr.get_mem("d2_resblock", prof_report, usingcuda)
         r = self.resblock(x3)
         r = self.resblock(x3)
-        prof_wrapper.tt.tic("d2_resblock")
+
+        time_starts = time.time()
         self.resblock(x3)
-        prof_wrapper.tt.toc("d2_resblock")
+        diff = time.time() - time_starts
+        prof_wrapper.tt.get_time("d2_resblock", diff)
+
+
         prof_wrapper.tt.tic("d2_resblock")
         self.resblock(x3)
         prof_wrapper.tt.toc("d2_resblock")
@@ -520,9 +564,13 @@ class DownSample2(nn.Module):
         prof_wrapper.mr.get_mem("d2_conv4", prof_report, usingcuda)
         x4 = self.conv4(r)
         x4 = self.conv4(r)
-        prof_wrapper.tt.tic("d2_conv4")
+
+        time_starts = time.time()
         self.conv4(r)
-        prof_wrapper.tt.toc("d2_conv4")
+        diff = time.time() - time_starts
+        prof_wrapper.tt.get_time("d2_conv4", diff)
+
+
         prof_wrapper.tt.tic("d2_conv4")
         self.conv4(r)
         prof_wrapper.tt.toc("d2_conv4")
@@ -550,9 +598,12 @@ class DownSample2(nn.Module):
         prof_wrapper.mr.get_mem("d2_conv5", prof_report, usingcuda)
         x5 = self.conv5(x4)
         x5 = self.conv5(x4)
-        prof_wrapper.tt.tic("d2_conv5")
+
+        time_starts = time.time()
         self.conv5(x4)
-        prof_wrapper.tt.toc("d2_conv5")
+        diff = time.time() - time_starts
+        prof_wrapper.tt.get_time("d2_conv5", diff)
+
         prof_wrapper.tt.tic("d2_conv5")
         self.conv5(x4)
         prof_wrapper.tt.toc("d2_conv5")
@@ -603,9 +654,12 @@ class DownSample3(nn.Module):
         prof_wrapper.mr.get_mem("d3_conv1", prof_report, usingcuda)
         x1 = self.conv1(input)
         x1 = self.conv1(input)
-        prof_wrapper.tt.tic("d3_conv1")
+
+        time_starts = time.time()
         self.conv1(input)
-        prof_wrapper.tt.toc("d3_conv1")
+        diff = time.time() - time_starts
+        prof_wrapper.tt.get_time("d3_conv1", diff)
+
         prof_wrapper.tt.tic("d3_conv1")
         self.conv1(input)
         prof_wrapper.tt.toc("d3_conv1")
@@ -632,9 +686,13 @@ class DownSample3(nn.Module):
         prof_wrapper.mr.get_mem("d3_conv2", prof_report, usingcuda)
         x2 = self.conv2(x1)
         x2 = self.conv2(x1)
-        prof_wrapper.tt.tic("d3_conv2")
+
+        time_starts = time.time()
         self.conv2(x1)
-        prof_wrapper.tt.toc("d3_conv2")
+        diff = time.time() - time_starts
+        prof_wrapper.tt.get_time("d3_conv2", diff)
+
+
         prof_wrapper.tt.tic("d3_conv2")
         self.conv2(x1)
         prof_wrapper.tt.toc("d3_conv2")
@@ -661,9 +719,13 @@ class DownSample3(nn.Module):
         prof_wrapper.mr.get_mem("d3_conv3", prof_report, usingcuda)
         x3 = self.conv3(x1)
         x3 = self.conv3(x1)
-        prof_wrapper.tt.tic("d3_conv3")
+
+        time_starts = time.time()
         self.conv3(x1)
-        prof_wrapper.tt.toc("d3_conv3")
+        diff = time.time() - time_starts
+        prof_wrapper.tt.get_time("d3_conv3", diff)
+
+
         prof_wrapper.tt.tic("d3_conv3")
         self.conv3(x1)
         prof_wrapper.tt.toc("d3_conv3")
@@ -690,9 +752,13 @@ class DownSample3(nn.Module):
         prof_wrapper.mr.get_mem("d3_resblock", prof_report, usingcuda)
         r = self.resblock(x3)
         r = self.resblock(x3)
-        prof_wrapper.tt.tic("d3_resblock")
+
+        time_starts = time.time()
         self.resblock(x3)
-        prof_wrapper.tt.toc("d3_resblock")
+        diff = time.time() - time_starts
+        prof_wrapper.tt.get_time("d3_resblock", diff)
+
+
         prof_wrapper.tt.tic("d3_resblock")
         self.resblock(x3)
         prof_wrapper.tt.toc("d3_resblock")
@@ -720,9 +786,13 @@ class DownSample3(nn.Module):
         prof_wrapper.mr.get_mem("d3_conv4", prof_report, usingcuda)
         x4 = self.conv4(r)
         x4 = self.conv4(r)
-        prof_wrapper.tt.tic("d3_conv4")
+
+        time_starts = time.time()
         self.conv4(r)
-        prof_wrapper.tt.toc("d3_conv4")
+        diff = time.time() - time_starts
+        prof_wrapper.tt.get_time("d3_conv4", diff)
+
+
         prof_wrapper.tt.tic("d3_conv4")
         self.conv4(r)
         prof_wrapper.tt.toc("d3_conv4")
@@ -750,9 +820,13 @@ class DownSample3(nn.Module):
         prof_wrapper.mr.get_mem("d3_conv5", prof_report, usingcuda)
         x5 = self.conv5(x4)
         x5 = self.conv5(x4)
-        prof_wrapper.tt.tic("d3_conv5")
+
+        time_starts = time.time()
         self.conv5(x4)
-        prof_wrapper.tt.toc("d3_conv5")
+        diff = time.time() - time_starts
+        prof_wrapper.tt.get_time("d3_conv5", diff)
+
+
         prof_wrapper.tt.tic("d3_conv5")
         self.conv5(x4)
         prof_wrapper.tt.toc("d3_conv5")
@@ -803,9 +877,12 @@ class DownSample4(nn.Module):
         prof_wrapper.mr.get_mem("d4_conv1", prof_report, usingcuda)
         x1 = self.conv1(input)
         x1 = self.conv1(input)
-        prof_wrapper.tt.tic("d4_conv1")
+
+        time_starts = time.time()
         self.conv1(input)
-        prof_wrapper.tt.toc("d4_conv1")
+        diff = time.time() - time_starts
+        prof_wrapper.tt.get_time("d4_conv1", diff)
+
         prof_wrapper.tt.tic("d4_conv1")
         self.conv1(input)
         prof_wrapper.tt.toc("d4_conv1")
@@ -832,9 +909,13 @@ class DownSample4(nn.Module):
         prof_wrapper.mr.get_mem("d4_conv2", prof_report, usingcuda)
         x2 = self.conv2(x1)
         x2 = self.conv2(x1)
-        prof_wrapper.tt.tic("d4_conv2")
+
+        time_starts = time.time()
         self.conv2(x1)
-        prof_wrapper.tt.toc("d4_conv2")
+        diff = time.time() - time_starts
+        prof_wrapper.tt.get_time("d4_conv2", diff)
+
+
         prof_wrapper.tt.tic("d4_conv2")
         self.conv2(x1)
         prof_wrapper.tt.toc("d4_conv2")
@@ -861,9 +942,12 @@ class DownSample4(nn.Module):
         prof_wrapper.mr.get_mem("d4_conv3", prof_report, usingcuda)
         x3 = self.conv3(x1)
         x3 = self.conv3(x1)
-        prof_wrapper.tt.tic("d4_conv3")
+
+        time_starts = time.time()
         self.conv3(x1)
-        prof_wrapper.tt.toc("d4_conv3")
+        diff = time.time() - time_starts
+        prof_wrapper.tt.get_time("d4_conv3", diff)
+
         prof_wrapper.tt.tic("d4_conv3")
         self.conv3(x1)
         prof_wrapper.tt.toc("d4_conv3")
@@ -890,9 +974,13 @@ class DownSample4(nn.Module):
         prof_wrapper.mr.get_mem("d4_resblock", prof_report, usingcuda)
         r = self.resblock(x3)
         r = self.resblock(x3)
-        prof_wrapper.tt.tic("d4_resblock")
+
+        time_starts = time.time()
         self.resblock(x3)
-        prof_wrapper.tt.toc("d4_resblock")
+        diff = time.time() - time_starts
+        prof_wrapper.tt.get_time("d4_resblock", diff)
+
+
         prof_wrapper.tt.tic("d4_resblock")
         self.resblock(x3)
         prof_wrapper.tt.toc("d4_resblock")
@@ -919,9 +1007,12 @@ class DownSample4(nn.Module):
         prof_wrapper.mr.get_mem("d4_conv4", prof_report, usingcuda)
         x4 = self.conv4(r)
         x4 = self.conv4(r)
-        prof_wrapper.tt.tic("d4_conv4")
+
+        time_starts = time.time()
         self.conv4(r)
-        prof_wrapper.tt.toc("d4_conv4")
+        diff = time.time() - time_starts
+        prof_wrapper.tt.get_time("d4_conv4", diff)
+
         prof_wrapper.tt.tic("d4_conv4")
         self.conv4(r)
         prof_wrapper.tt.toc("d4_conv4")
@@ -949,9 +1040,12 @@ class DownSample4(nn.Module):
         prof_wrapper.mr.get_mem("d4_conv5", prof_report, usingcuda)
         x5 = self.conv5(x4)
         x5 = self.conv5(x4)
-        prof_wrapper.tt.tic("d4_conv5")
+
+        time_starts = time.time()
         self.conv5(x4)
-        prof_wrapper.tt.toc("d4_conv5")
+        diff = time.time() - time_starts
+        prof_wrapper.tt.get_time("d4_conv5", diff)
+
         prof_wrapper.tt.tic("d4_conv5")
         self.conv5(x4)
         prof_wrapper.tt.toc("d4_conv5")
@@ -1001,10 +1095,15 @@ class DownSample5(nn.Module):
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d5_conv1", prof_report, usingcuda)
         x1 = self.conv1(input)
-        x1 = self.conv1(input)
         prof_wrapper.tt.tic("d5_conv1")
         self.conv1(input)
         prof_wrapper.tt.toc("d5_conv1")
+
+        prof_wrapper.tt.tic("d5_conv1")
+        self.conv1(input)
+        prof_wrapper.tt.toc("d5_conv1")
+
+
         prof_wrapper.tt.tic("d5_conv1")
         self.conv1(input)
         prof_wrapper.tt.toc("d5_conv1")
@@ -1030,10 +1129,14 @@ class DownSample5(nn.Module):
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d5_conv2", prof_report, usingcuda)
         x2 = self.conv2(x1)
-        x2 = self.conv2(x1)
         prof_wrapper.tt.tic("d5_conv2")
         self.conv2(x1)
         prof_wrapper.tt.toc("d5_conv2")
+
+        prof_wrapper.tt.tic("d5_conv2")
+        self.conv2(x1)
+        prof_wrapper.tt.toc("d5_conv2")
+
         prof_wrapper.tt.tic("d5_conv2")
         self.conv2(x1)
         prof_wrapper.tt.toc("d5_conv2")
@@ -1059,10 +1162,14 @@ class DownSample5(nn.Module):
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d5_conv3", prof_report, usingcuda)
         x3 = self.conv3(x1)
-        x3 = self.conv3(x1)
         prof_wrapper.tt.tic("d5_conv3")
         self.conv3(x1)
         prof_wrapper.tt.toc("d5_conv3")
+
+        prof_wrapper.tt.tic("d5_conv3")
+        self.conv3(x1)
+        prof_wrapper.tt.toc("d5_conv3")
+
         prof_wrapper.tt.tic("d5_conv3")
         self.conv3(x1)
         prof_wrapper.tt.toc("d5_conv3")
@@ -1088,10 +1195,15 @@ class DownSample5(nn.Module):
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d5_resblock", prof_report, usingcuda)
         r = self.resblock(x3)
-        r = self.resblock(x3)
         prof_wrapper.tt.tic("d5_resblock")
         self.resblock(x3)
         prof_wrapper.tt.toc("d5_resblock")
+
+        prof_wrapper.tt.tic("d5_resblock")
+        self.resblock(x3)
+        prof_wrapper.tt.toc("d5_resblock")
+
+
         prof_wrapper.tt.tic("d5_resblock")
         self.resblock(x3)
         prof_wrapper.tt.toc("d5_resblock")
@@ -1117,10 +1229,14 @@ class DownSample5(nn.Module):
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d5_conv4", prof_report, usingcuda)
         x4 = self.conv4(r)
-        x4 = self.conv4(r)
         prof_wrapper.tt.tic("d5_conv4")
         self.conv4(r)
         prof_wrapper.tt.toc("d5_conv4")
+
+        prof_wrapper.tt.tic("d5_conv4")
+        self.conv4(r)
+        prof_wrapper.tt.toc("d5_conv4")
+
         prof_wrapper.tt.tic("d5_conv4")
         self.conv4(r)
         prof_wrapper.tt.toc("d5_conv4")
@@ -1147,10 +1263,14 @@ class DownSample5(nn.Module):
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d5_conv5", prof_report, usingcuda)
         x5 = self.conv5(x4)
-        x5 = self.conv5(x4)
         prof_wrapper.tt.tic("d5_conv5")
         self.conv5(x4)
         prof_wrapper.tt.toc("d5_conv5")
+
+        prof_wrapper.tt.tic("d5_conv5")
+        self.conv5(x4)
+        prof_wrapper.tt.toc("d5_conv5")
+
         prof_wrapper.tt.tic("d5_conv5")
         self.conv5(x4)
         prof_wrapper.tt.toc("d5_conv5")
@@ -1230,12 +1350,19 @@ class Neck(nn.Module):
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("nk_conv1", prof_report, usingcuda)
         x1 = self.conv1(input)
-        x1 = self.conv1(input)
-        x1 = self.conv1(input)
 
         prof_wrapper.tt.tic("nk_conv1")
         self.conv1(input)
         prof_wrapper.tt.toc("nk_conv1")
+
+        prof_wrapper.tt.tic("nk_conv1")
+        self.conv1(input)
+        prof_wrapper.tt.toc("nk_conv1")
+
+        prof_wrapper.tt.tic("nk_conv1")
+        self.conv1(input)
+        prof_wrapper.tt.toc("nk_conv1")
+
         prof_wrapper.tt.tic("nk_conv1")
         self.conv1(input)
         prof_wrapper.tt.toc("nk_conv1")
@@ -1261,10 +1388,15 @@ class Neck(nn.Module):
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("nk_conv2", prof_report, usingcuda)
         x2 = self.conv2(x1)
-        x2 = self.conv2(x1)
         prof_wrapper.tt.tic("nk_conv2")
         self.conv2(x1)
         prof_wrapper.tt.toc("nk_conv2")
+
+        prof_wrapper.tt.tic("nk_conv2")
+        self.conv2(x1)
+        prof_wrapper.tt.toc("nk_conv2")
+
+
         prof_wrapper.tt.tic("nk_conv2")
         self.conv2(x1)
         prof_wrapper.tt.toc("nk_conv2")
@@ -1290,11 +1422,18 @@ class Neck(nn.Module):
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("nk_conv3", prof_report, usingcuda)
         x3 = self.conv3(x2)
-        x3 = self.conv3(x2)
-        x3 = self.conv3(x2)
         prof_wrapper.tt.tic("nk_conv3")
         self.conv3(x2)
         prof_wrapper.tt.toc("nk_conv3")
+
+        prof_wrapper.tt.tic("nk_conv3")
+        self.conv3(x2)
+        prof_wrapper.tt.toc("nk_conv3")
+
+        prof_wrapper.tt.tic("nk_conv3")
+        self.conv3(x2)
+        prof_wrapper.tt.toc("nk_conv3")
+
         prof_wrapper.tt.tic("nk_conv3")
         self.conv3(x2)
         prof_wrapper.tt.toc("nk_conv3")
@@ -1320,10 +1459,10 @@ class Neck(nn.Module):
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("nk_maxpl1", prof_report, usingcuda)
         m1 = self.maxpool1(x3)
-        m1 = self.maxpool1(x3)
         prof_wrapper.tt.tic("nk_maxpl1")
         self.maxpool1(x3)
         prof_wrapper.tt.toc("nk_maxpl1")
+
         prof_wrapper.tt.tic("nk_maxpl1")
         self.maxpool1(x3)
         prof_wrapper.tt.toc("nk_maxpl1")
@@ -1349,11 +1488,18 @@ class Neck(nn.Module):
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("nk_maxpl2", prof_report, usingcuda)
         m2 = self.maxpool2(x3)
-        m2 = self.maxpool2(x3)
-        m2 = self.maxpool2(x3)
         prof_wrapper.tt.tic("nk_maxpl2")
         self.maxpool2(x3)
         prof_wrapper.tt.toc("nk_maxpl2")
+
+        prof_wrapper.tt.tic("nk_maxpl2")
+        self.maxpool2(x3)
+        prof_wrapper.tt.toc("nk_maxpl2")
+
+        prof_wrapper.tt.tic("nk_maxpl2")
+        self.maxpool2(x3)
+        prof_wrapper.tt.toc("nk_maxpl2")
+
         prof_wrapper.tt.tic("nk_maxpl2")
         self.maxpool2(x3)
         prof_wrapper.tt.toc("nk_maxpl2")
@@ -1379,11 +1525,18 @@ class Neck(nn.Module):
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("nk_maxpl3", prof_report, usingcuda)
         m3 = self.maxpool3(x3)
-        m3 = self.maxpool3(x3)
-        m3 = self.maxpool3(x3)
         prof_wrapper.tt.tic("nk_maxpl3")
         self.maxpool3(x3)
         prof_wrapper.tt.toc("nk_maxpl3")
+
+        prof_wrapper.tt.tic("nk_maxpl3")
+        self.maxpool3(x3)
+        prof_wrapper.tt.toc("nk_maxpl3")
+
+        prof_wrapper.tt.tic("nk_maxpl3")
+        self.maxpool3(x3)
+        prof_wrapper.tt.toc("nk_maxpl3")
+
         prof_wrapper.tt.tic("nk_maxpl3")
         self.maxpool3(x3)
         prof_wrapper.tt.toc("nk_maxpl3")
@@ -1443,11 +1596,18 @@ class Neck(nn.Module):
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("nk_conv5", prof_report, usingcuda)
         x5 = self.conv5(x4)
-        x5 = self.conv5(x4)
-        x5 = self.conv5(x4)
         prof_wrapper.tt.tic("nk_conv5")
         self.conv5(x4)
         prof_wrapper.tt.toc("nk_conv5")
+
+        prof_wrapper.tt.tic("nk_conv5")
+        self.conv5(x4)
+        prof_wrapper.tt.toc("nk_conv5")
+
+        prof_wrapper.tt.tic("nk_conv5")
+        self.conv5(x4)
+        prof_wrapper.tt.toc("nk_conv5")
+
         prof_wrapper.tt.tic("nk_conv5")
         self.conv5(x4)
         prof_wrapper.tt.toc("nk_conv5")
@@ -1473,11 +1633,18 @@ class Neck(nn.Module):
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("nk_conv6", prof_report, usingcuda)
         x6 = self.conv6(x5)
-        x6 = self.conv6(x5)
-        x6 = self.conv6(x5)
         prof_wrapper.tt.tic("nk_conv6")
         self.conv6(x5)
         prof_wrapper.tt.toc("nk_conv6")
+
+        prof_wrapper.tt.tic("nk_conv6")
+        self.conv6(x5)
+        prof_wrapper.tt.toc("nk_conv6")
+
+        prof_wrapper.tt.tic("nk_conv6")
+        self.conv6(x5)
+        prof_wrapper.tt.toc("nk_conv6")
+
         prof_wrapper.tt.tic("nk_conv6")
         self.conv6(x5)
         prof_wrapper.tt.toc("nk_conv6")
@@ -1504,11 +1671,18 @@ class Neck(nn.Module):
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("nk_conv7", prof_report, usingcuda)
         x7 = self.conv7(x6)
-        x7 = self.conv7(x6)
-        x7 = self.conv7(x6)
         prof_wrapper.tt.tic("nk_conv7")
         self.conv7(x6)
         prof_wrapper.tt.toc("nk_conv7")
+
+        prof_wrapper.tt.tic("nk_conv7")
+        self.conv7(x6)
+        prof_wrapper.tt.toc("nk_conv7")
+
+        prof_wrapper.tt.tic("nk_conv7")
+        self.conv7(x6)
+        prof_wrapper.tt.toc("nk_conv7")
+
         prof_wrapper.tt.tic("nk_conv7")
         self.conv7(x6)
         prof_wrapper.tt.toc("nk_conv7")
@@ -1534,11 +1708,18 @@ class Neck(nn.Module):
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("nk_upspl1", prof_report, usingcuda)
         up = self.upsample1(x7, downsample4.size(), self.inference)
-        up = self.upsample1(x7, downsample4.size(), self.inference)
-        up = self.upsample1(x7, downsample4.size(), self.inference)
         prof_wrapper.tt.tic("nk_upspl1")
         self.upsample1(x7, downsample4.size(), self.inference)
         prof_wrapper.tt.toc("nk_upspl1")
+
+        prof_wrapper.tt.tic("nk_upspl1")
+        self.upsample1(x7, downsample4.size(), self.inference)
+        prof_wrapper.tt.toc("nk_upspl1")
+
+        prof_wrapper.tt.tic("nk_upspl1")
+        self.upsample1(x7, downsample4.size(), self.inference)
+        prof_wrapper.tt.toc("nk_upspl1")
+
         prof_wrapper.tt.tic("nk_upspl1")
         self.upsample1(x7, downsample4.size(), self.inference)
         prof_wrapper.tt.toc("nk_upspl1")
@@ -1564,11 +1745,18 @@ class Neck(nn.Module):
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("nk_conv8", prof_report, usingcuda)
         x8 = self.conv8(downsample4)
-        x8 = self.conv8(downsample4)
-        x8 = self.conv8(downsample4)
         prof_wrapper.tt.tic("nk_conv8")
         self.conv8(downsample4)
         prof_wrapper.tt.toc("nk_conv8")
+
+        prof_wrapper.tt.tic("nk_conv8")
+        self.conv8(downsample4)
+        prof_wrapper.tt.toc("nk_conv8")
+
+        prof_wrapper.tt.tic("nk_conv8")
+        self.conv8(downsample4)
+        prof_wrapper.tt.toc("nk_conv8")
+
         prof_wrapper.tt.tic("nk_conv8")
         self.conv8(downsample4)
         prof_wrapper.tt.toc("nk_conv8")
@@ -1595,11 +1783,18 @@ class Neck(nn.Module):
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("nk_conv9", prof_report, usingcuda)
         x9 = self.conv9(x8)
-        x9 = self.conv9(x8)
-        x9 = self.conv9(x8)
         prof_wrapper.tt.tic("nk_conv9")
         self.conv9(x8)
         prof_wrapper.tt.toc("nk_conv9")
+
+        prof_wrapper.tt.tic("nk_conv9")
+        self.conv9(x8)
+        prof_wrapper.tt.toc("nk_conv9")
+
+        prof_wrapper.tt.tic("nk_conv9")
+        self.conv9(x8)
+        prof_wrapper.tt.toc("nk_conv9")
+
         prof_wrapper.tt.tic("nk_conv9")
         self.conv9(x8)
         prof_wrapper.tt.toc("nk_conv9")
@@ -1625,11 +1820,18 @@ class Neck(nn.Module):
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("nk_conv10", prof_report, usingcuda)
         x10 = self.conv10(x9)
-        x10 = self.conv10(x9)
-        x10 = self.conv10(x9)
         prof_wrapper.tt.tic("nk_conv10")
         self.conv10(x9)
         prof_wrapper.tt.toc("nk_conv10")
+
+        prof_wrapper.tt.tic("nk_conv10")
+        self.conv10(x9)
+        prof_wrapper.tt.toc("nk_conv10")
+
+        prof_wrapper.tt.tic("nk_conv10")
+        self.conv10(x9)
+        prof_wrapper.tt.toc("nk_conv10")
+
         prof_wrapper.tt.tic("nk_conv10")
         self.conv10(x9)
         prof_wrapper.tt.toc("nk_conv10")
@@ -1655,11 +1857,18 @@ class Neck(nn.Module):
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("nk_conv11", prof_report, usingcuda)
         x11 = self.conv11(x10)
-        x11 = self.conv11(x10)
-        x11 = self.conv11(x10)
         prof_wrapper.tt.tic("nk_conv11")
         self.conv11(x10)
         prof_wrapper.tt.toc("nk_conv11")
+
+        prof_wrapper.tt.tic("nk_conv11")
+        self.conv11(x10)
+        prof_wrapper.tt.toc("nk_conv11")
+
+        prof_wrapper.tt.tic("nk_conv11")
+        self.conv11(x10)
+        prof_wrapper.tt.toc("nk_conv11")
+
         prof_wrapper.tt.tic("nk_conv11")
         self.conv11(x10)
         prof_wrapper.tt.toc("nk_conv11")
@@ -1684,25 +1893,20 @@ class Neck(nn.Module):
                 self.conv12(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("nk_conv12", prof_report, usingcuda)
-        # x12 = self.conv12(x11)
-        # x12 = self.conv12(x11)
-        # x12 = self.conv12(x11)
-
-        with profile(activities=[ProfilerActivity.CUDA], record_shapes=True) as prof:
-            with record_function("model_inference"):
-                x12 = self.conv12(x11)
-        print("==>> cuda_time_total")
-        print(prof.key_averages().table(sort_by="cuda_time_total", row_limit=20))
-
-        with profile(activities=[ProfilerActivity.CUDA], record_shapes=True) as prof:
-            with record_function("model_inference"):
-                self.conv12(x11)
-        print("==>> cuda_time_total")
-        print(prof.key_averages().table(sort_by="cuda_time_total", row_limit=20))
+        x12 = self.conv12(x11)
 
         prof_wrapper.tt.tic("nk_conv12")
         self.conv12(x11)
         prof_wrapper.tt.toc("nk_conv12")
+
+        prof_wrapper.tt.tic("nk_conv12")
+        self.conv12(x11)
+        prof_wrapper.tt.toc("nk_conv12")
+
+        prof_wrapper.tt.tic("nk_conv12")
+        self.conv12(x11)
+        prof_wrapper.tt.toc("nk_conv12")
+
         prof_wrapper.tt.tic("nk_conv12")
         self.conv12(x11)
         prof_wrapper.tt.toc("nk_conv12")
@@ -1728,11 +1932,18 @@ class Neck(nn.Module):
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("nk_conv13", prof_report, usingcuda)
         x13 = self.conv13(x12)
-        x13 = self.conv13(x12)
-        x13 = self.conv13(x12)
         prof_wrapper.tt.tic("nk_conv13")
         self.conv13(x12)
         prof_wrapper.tt.toc("nk_conv13")
+
+        prof_wrapper.tt.tic("nk_conv13")
+        self.conv13(x12)
+        prof_wrapper.tt.toc("nk_conv13")
+
+        prof_wrapper.tt.tic("nk_conv13")
+        self.conv13(x12)
+        prof_wrapper.tt.toc("nk_conv13")
+
         prof_wrapper.tt.tic("nk_conv13")
         self.conv13(x12)
         prof_wrapper.tt.toc("nk_conv13")
@@ -1758,11 +1969,18 @@ class Neck(nn.Module):
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("nk_conv14", prof_report, usingcuda)
         x14 = self.conv14(x13)
-        x14 = self.conv14(x13)
-        x14 = self.conv14(x13)
         prof_wrapper.tt.tic("nk_conv14")
         self.conv14(x13)
         prof_wrapper.tt.toc("nk_conv14")
+
+        prof_wrapper.tt.tic("nk_conv14")
+        self.conv14(x13)
+        prof_wrapper.tt.toc("nk_conv14")
+
+        prof_wrapper.tt.tic("nk_conv14")
+        self.conv14(x13)
+        prof_wrapper.tt.toc("nk_conv14")
+
         prof_wrapper.tt.tic("nk_conv14")
         self.conv14(x13)
         prof_wrapper.tt.toc("nk_conv14")
@@ -1788,11 +2006,18 @@ class Neck(nn.Module):
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("nk_upspl2", prof_report, usingcuda)
         up = self.upsample2(x14, downsample3.size(), self.inference)
-        up = self.upsample2(x14, downsample3.size(), self.inference)
-        up = self.upsample2(x14, downsample3.size(), self.inference)
         prof_wrapper.tt.tic("nk_upspl2")
         self.upsample2(x14, downsample3.size(), self.inference)
         prof_wrapper.tt.toc("nk_upspl2")
+
+        prof_wrapper.tt.tic("nk_upspl2")
+        self.upsample2(x14, downsample3.size(), self.inference)
+        prof_wrapper.tt.toc("nk_upspl2")
+
+        prof_wrapper.tt.tic("nk_upspl2")
+        self.upsample2(x14, downsample3.size(), self.inference)
+        prof_wrapper.tt.toc("nk_upspl2")
+
         prof_wrapper.tt.tic("nk_upspl2")
         self.upsample2(x14, downsample3.size(), self.inference)
         prof_wrapper.tt.toc("nk_upspl2")
@@ -1818,11 +2043,18 @@ class Neck(nn.Module):
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("nk_conv15", prof_report, usingcuda)
         x15 = self.conv15(downsample3)
-        x15 = self.conv15(downsample3)
-        x15 = self.conv15(downsample3)
         prof_wrapper.tt.tic("nk_conv15")
         self.conv15(downsample3)
         prof_wrapper.tt.toc("nk_conv15")
+
+        prof_wrapper.tt.tic("nk_conv15")
+        self.conv15(downsample3)
+        prof_wrapper.tt.toc("nk_conv15")
+
+        prof_wrapper.tt.tic("nk_conv15")
+        self.conv15(downsample3)
+        prof_wrapper.tt.toc("nk_conv15")
+
         prof_wrapper.tt.tic("nk_conv15")
         self.conv15(downsample3)
         prof_wrapper.tt.toc("nk_conv15")
@@ -1849,11 +2081,18 @@ class Neck(nn.Module):
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("nk_conv16", prof_report, usingcuda)
         x16 = self.conv16(x15)
-        x16 = self.conv16(x15)
-        x16 = self.conv16(x15)
         prof_wrapper.tt.tic("nk_conv16")
         self.conv16(x15)
         prof_wrapper.tt.toc("nk_conv16")
+
+        prof_wrapper.tt.tic("nk_conv16")
+        self.conv16(x15)
+        prof_wrapper.tt.toc("nk_conv16")
+
+        prof_wrapper.tt.tic("nk_conv16")
+        self.conv16(x15)
+        prof_wrapper.tt.toc("nk_conv16")
+
         prof_wrapper.tt.tic("nk_conv16")
         self.conv16(x15)
         prof_wrapper.tt.toc("nk_conv16")
@@ -1879,11 +2118,18 @@ class Neck(nn.Module):
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("nk_conv17", prof_report, usingcuda)
         x17 = self.conv17(x16)
-        x17 = self.conv17(x16)
-        x17 = self.conv17(x16)
         prof_wrapper.tt.tic("nk_conv17")
         self.conv17(x16)
         prof_wrapper.tt.toc("nk_conv17")
+
+        prof_wrapper.tt.tic("nk_conv17")
+        self.conv17(x16)
+        prof_wrapper.tt.toc("nk_conv17")
+
+        prof_wrapper.tt.tic("nk_conv17")
+        self.conv17(x16)
+        prof_wrapper.tt.toc("nk_conv17")
+
         prof_wrapper.tt.tic("nk_conv17")
         self.conv17(x16)
         prof_wrapper.tt.toc("nk_conv17")
@@ -1909,11 +2155,18 @@ class Neck(nn.Module):
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("nk_conv18", prof_report, usingcuda)
         x18 = self.conv18(x17)
-        x18 = self.conv18(x17)
-        x18 = self.conv18(x17)
         prof_wrapper.tt.tic("nk_conv18")
         self.conv18(x17)
         prof_wrapper.tt.toc("nk_conv18")
+
+        prof_wrapper.tt.tic("nk_conv18")
+        self.conv18(x17)
+        prof_wrapper.tt.toc("nk_conv18")
+
+        prof_wrapper.tt.tic("nk_conv18")
+        self.conv18(x17)
+        prof_wrapper.tt.toc("nk_conv18")
+
         prof_wrapper.tt.tic("nk_conv18")
         self.conv18(x17)
         prof_wrapper.tt.toc("nk_conv18")
@@ -1939,11 +2192,18 @@ class Neck(nn.Module):
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("nk_conv19", prof_report, usingcuda)
         x19 = self.conv19(x18)
-        x19 = self.conv19(x18)
-        x19 = self.conv19(x18)
         prof_wrapper.tt.tic("nk_conv19")
         self.conv19(x18)
         prof_wrapper.tt.toc("nk_conv19")
+
+        prof_wrapper.tt.tic("nk_conv19")
+        self.conv19(x18)
+        prof_wrapper.tt.toc("nk_conv19")
+
+        prof_wrapper.tt.tic("nk_conv19")
+        self.conv19(x18)
+        prof_wrapper.tt.toc("nk_conv19")
+
         prof_wrapper.tt.tic("nk_conv19")
         self.conv19(x18)
         prof_wrapper.tt.toc("nk_conv19")
@@ -2097,9 +2357,16 @@ class Yolov4Head(nn.Module):
         prof_wrapper.tt.tic("hd_conv1")
         self.conv1(input1)
         prof_wrapper.tt.toc("hd_conv1")
+
         prof_wrapper.tt.tic("hd_conv1")
         self.conv1(input1)
         prof_wrapper.tt.toc("hd_conv1")
+
+        time_starts = time.time()
+        self.conv1(input1)
+        diff = time.time() - time_starts
+        prof_wrapper.tt.get_time("hd_conv1", diff)
+
         prof_wrapper.scale.weight(tensor_src="hd_conv1", data=x1)
         # ----------------------------------------------------------------
 
@@ -2122,7 +2389,6 @@ class Yolov4Head(nn.Module):
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("hd_conv2", prof_report, usingcuda)
         x2 = self.conv2(x1)
-        x2 = self.conv2(x1)
         prof_wrapper.tt.tic("hd_conv2")
         self.conv2(x1)
         prof_wrapper.tt.toc("hd_conv2")
@@ -2131,6 +2397,10 @@ class Yolov4Head(nn.Module):
         self.conv2(x1)
         prof_wrapper.tt.toc("hd_conv2")
 
+        time_starts = time.time()
+        self.conv2(x1)
+        diff = time.time() - time_starts
+        prof_wrapper.tt.get_time("hd_conv2", diff)
         prof_wrapper.scale.weight(tensor_src="hd_conv2", data=x2)
         # ----------------------------------------------------------------
 
@@ -2162,6 +2432,11 @@ class Yolov4Head(nn.Module):
         self.conv3(input1)
         prof_wrapper.tt.toc("hd_conv3")
 
+        time_starts = time.time()
+        self.conv3(input1)
+        diff = time.time() - time_starts
+        prof_wrapper.tt.get_time("hd_conv3", diff)
+
         prof_wrapper.scale.weight(tensor_src="hd_conv3", data=x3)
         # ----------------------------------------------------------------
         x3 = torch.cat([x3, input2], dim=1)
@@ -2185,7 +2460,6 @@ class Yolov4Head(nn.Module):
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("hd_conv4", prof_report, usingcuda)
         x4 = self.conv4(x3)
-        x4 = self.conv4(x3)
         prof_wrapper.tt.tic("hd_conv4")
         self.conv4(x3)
         prof_wrapper.tt.toc("hd_conv4")
@@ -2194,6 +2468,14 @@ class Yolov4Head(nn.Module):
         self.conv4(x3)
         prof_wrapper.tt.toc("hd_conv4")
 
+        prof_wrapper.tt.tic("hd_conv4")
+        self.conv4(x3)
+        prof_wrapper.tt.toc("hd_conv4")
+
+        time_starts = time.time()
+        self.conv4(x3)
+        diff = time.time() - time_starts
+        prof_wrapper.tt.get_time("hd_conv4", diff)
         prof_wrapper.scale.weight(tensor_src="hd_conv4", data=x4)
         # ----------------------------------------------------------------
 
@@ -2216,7 +2498,6 @@ class Yolov4Head(nn.Module):
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("hd_conv5", prof_report, usingcuda)
         x5 = self.conv5(x4)
-        x5 = self.conv5(x4)
         prof_wrapper.tt.tic("hd_conv5")
         self.conv5(x4)
         prof_wrapper.tt.toc("hd_conv5")
@@ -2224,6 +2505,15 @@ class Yolov4Head(nn.Module):
         prof_wrapper.tt.tic("hd_conv5")
         self.conv5(x4)
         prof_wrapper.tt.toc("hd_conv5")
+
+        prof_wrapper.tt.tic("hd_conv5")
+        self.conv5(x4)
+        prof_wrapper.tt.toc("hd_conv5")
+
+        time_starts = time.time()
+        self.conv5(x4)
+        diff = time.time() - time_starts
+        prof_wrapper.tt.get_time("hd_conv5", diff)
 
         prof_wrapper.scale.weight(tensor_src="hd_conv5", data=x5)
         # ----------------------------------------------------------------
@@ -2247,7 +2537,6 @@ class Yolov4Head(nn.Module):
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("hd_conv6", prof_report, usingcuda)
         x6 = self.conv6(x5)
-        x6 = self.conv6(x5)
         prof_wrapper.tt.tic("hd_conv6")
         self.conv6(x5)
         prof_wrapper.tt.toc("hd_conv6")
@@ -2255,6 +2544,15 @@ class Yolov4Head(nn.Module):
         prof_wrapper.tt.tic("hd_conv6")
         self.conv6(x5)
         prof_wrapper.tt.toc("hd_conv6")
+
+        prof_wrapper.tt.tic("hd_conv6")
+        self.conv6(x5)
+        prof_wrapper.tt.toc("hd_conv6")
+
+        time_starts = time.time()
+        self.conv6(x5)
+        diff = time.time() - time_starts
+        prof_wrapper.tt.get_time("hd_conv6", diff)
 
         prof_wrapper.scale.weight(tensor_src="hd_conv6", data=x6)
         # ----------------------------------------------------------------
@@ -2278,7 +2576,6 @@ class Yolov4Head(nn.Module):
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("hd_conv7", prof_report, usingcuda)
         x7 = self.conv7(x6)
-        x7 = self.conv7(x6)
         prof_wrapper.tt.tic("hd_conv7")
         self.conv7(x6)
         prof_wrapper.tt.toc("hd_conv7")
@@ -2286,6 +2583,15 @@ class Yolov4Head(nn.Module):
         prof_wrapper.tt.tic("hd_conv7")
         self.conv7(x6)
         prof_wrapper.tt.toc("hd_conv7")
+
+        prof_wrapper.tt.tic("hd_conv7")
+        self.conv7(x6)
+        prof_wrapper.tt.toc("hd_conv7")
+
+        time_starts = time.time()
+        self.conv7(x6)
+        diff = time.time() - time_starts
+        prof_wrapper.tt.get_time("hd_conv7", diff)
 
         prof_wrapper.scale.weight(tensor_src="hd_conv7", data=x7)
         # ----------------------------------------------------------------
@@ -2309,7 +2615,6 @@ class Yolov4Head(nn.Module):
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("hd_conv8", prof_report, usingcuda)
         x8 = self.conv8(x7)
-        x8 = self.conv8(x7)
         prof_wrapper.tt.tic("hd_conv8")
         self.conv8(x7)
         prof_wrapper.tt.toc("hd_conv8")
@@ -2317,6 +2622,15 @@ class Yolov4Head(nn.Module):
         prof_wrapper.tt.tic("hd_conv8")
         self.conv8(x7)
         prof_wrapper.tt.toc("hd_conv8")
+
+        prof_wrapper.tt.tic("hd_conv8")
+        self.conv8(x7)
+        prof_wrapper.tt.toc("hd_conv8")
+
+        time_starts = time.time()
+        self.conv8(x7)
+        diff = time.time() - time_starts
+        prof_wrapper.tt.get_time("hd_conv8", diff)
 
         prof_wrapper.scale.weight(tensor_src="hd_conv8", data=x8)
         # ----------------------------------------------------------------
@@ -2340,7 +2654,6 @@ class Yolov4Head(nn.Module):
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("hd_conv9", prof_report, usingcuda)
         x9 = self.conv9(x8)
-        x9 = self.conv9(x8)
         prof_wrapper.tt.tic("hd_conv9")
         self.conv9(x8)
         prof_wrapper.tt.toc("hd_conv9")
@@ -2348,6 +2661,15 @@ class Yolov4Head(nn.Module):
         prof_wrapper.tt.tic("hd_conv9")
         self.conv9(x8)
         prof_wrapper.tt.toc("hd_conv9")
+
+        prof_wrapper.tt.tic("hd_conv9")
+        self.conv9(x8)
+        prof_wrapper.tt.toc("hd_conv9")
+
+        time_starts = time.time()
+        self.conv9(x8)
+        diff = time.time() - time_starts
+        prof_wrapper.tt.get_time("hd_conv9", diff)
 
         prof_wrapper.scale.weight(tensor_src="hd_conv9", data=x9)
         # ----------------------------------------------------------------
@@ -2371,7 +2693,6 @@ class Yolov4Head(nn.Module):
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("hd_conv10", prof_report, usingcuda)
         x10 = self.conv10(x9)
-        x10 = self.conv10(x9)
         prof_wrapper.tt.tic("hd_conv10")
         self.conv10(x9)
         prof_wrapper.tt.toc("hd_conv10")
@@ -2379,6 +2700,15 @@ class Yolov4Head(nn.Module):
         prof_wrapper.tt.tic("hd_conv10")
         self.conv10(x9)
         prof_wrapper.tt.toc("hd_conv10")
+
+        prof_wrapper.tt.tic("hd_conv10")
+        self.conv10(x9)
+        prof_wrapper.tt.toc("hd_conv10")
+
+        time_starts = time.time()
+        self.conv10(x9)
+        diff = time.time() - time_starts
+        prof_wrapper.tt.get_time("hd_conv10", diff)
 
         prof_wrapper.scale.weight(tensor_src="hd_conv10", data=x10)
         # ----------------------------------------------------------------
@@ -2411,6 +2741,15 @@ class Yolov4Head(nn.Module):
         self.conv11(x8)
         prof_wrapper.tt.toc("hd_conv11")
 
+        prof_wrapper.tt.tic("hd_conv11")
+        self.conv11(x8)
+        prof_wrapper.tt.toc("hd_conv11")
+
+        time_starts = time.time()
+        self.conv11(x8)
+        diff = time.time() - time_starts
+        prof_wrapper.tt.get_time("hd_conv11", diff)
+
         prof_wrapper.scale.weight(tensor_src="hd_conv11", data=x11)
         # ----------------------------------------------------------------
         x11 = torch.cat([x11, input3], dim=1)
@@ -2434,7 +2773,10 @@ class Yolov4Head(nn.Module):
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("hd_conv12", prof_report, usingcuda)
         x12 = self.conv12(x11)
-        x12 = self.conv12(x11)
+        prof_wrapper.tt.tic("hd_conv12")
+        self.conv12(x11)
+        prof_wrapper.tt.toc("hd_conv12")
+
         prof_wrapper.tt.tic("hd_conv12")
         self.conv12(x11)
         prof_wrapper.tt.toc("hd_conv12")
@@ -2465,7 +2807,10 @@ class Yolov4Head(nn.Module):
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("hd_conv13", prof_report, usingcuda)
         x13 = self.conv13(x12)
-        x13 = self.conv13(x12)
+        prof_wrapper.tt.tic("hd_conv13")
+        self.conv13(x12)
+        prof_wrapper.tt.toc("hd_conv13")
+
         prof_wrapper.tt.tic("hd_conv13")
         self.conv13(x12)
         prof_wrapper.tt.toc("hd_conv13")
@@ -2496,7 +2841,10 @@ class Yolov4Head(nn.Module):
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("hd_conv14", prof_report, usingcuda)
         x14 = self.conv14(x13)
-        x14 = self.conv14(x13)
+        prof_wrapper.tt.tic("hd_conv14")
+        self.conv14(x13)
+        prof_wrapper.tt.toc("hd_conv14")
+
         prof_wrapper.tt.tic("hd_conv14")
         self.conv14(x13)
         prof_wrapper.tt.toc("hd_conv14")
@@ -2527,7 +2875,10 @@ class Yolov4Head(nn.Module):
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("hd_conv15", prof_report, usingcuda)
         x15 = self.conv15(x14)
-        x15 = self.conv15(x14)
+        prof_wrapper.tt.tic("hd_conv15")
+        self.conv15(x14)
+        prof_wrapper.tt.toc("hd_conv15")
+
         prof_wrapper.tt.tic("hd_conv15")
         self.conv15(x14)
         prof_wrapper.tt.toc("hd_conv15")
@@ -2558,7 +2909,10 @@ class Yolov4Head(nn.Module):
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("hd_conv16", prof_report, usingcuda)
         x16 = self.conv16(x15)
-        x16 = self.conv16(x15)
+        prof_wrapper.tt.tic("hd_conv16")
+        self.conv16(x15)
+        prof_wrapper.tt.toc("hd_conv16")
+
         prof_wrapper.tt.tic("hd_conv16")
         self.conv16(x15)
         prof_wrapper.tt.toc("hd_conv16")
@@ -2588,11 +2942,24 @@ class Yolov4Head(nn.Module):
                 self.conv17(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("hd_conv17", prof_report, usingcuda)
+        x17 = self.conv17(x16)
 
-        with profile(activities=[ProfilerActivity.CUDA], record_shapes=True) as prof:
-            with record_function("model_inference"):
-                x17 = self.conv17(x16)
-        prof_wrapper.tt.get_time("hd_conv17", (prof.key_averages().self_cpu_time_total + sum([item.cuda_time for item in prof.events()])) / 1000)
+        prof_wrapper.tt.tic("hd_conv17")
+        self.conv17(x16)
+        prof_wrapper.tt.toc("hd_conv17")
+
+        prof_wrapper.tt.tic("hd_conv17")
+        self.conv17(x16)
+        prof_wrapper.tt.toc("hd_conv17")
+
+        prof_wrapper.tt.tic("hd_conv17")
+        self.conv17(x16)
+        prof_wrapper.tt.toc("hd_conv17")
+
+        prof_wrapper.tt.tic("hd_conv17")
+        self.conv17(x16)
+        prof_wrapper.tt.toc("hd_conv17")
+
         prof_wrapper.scale.weight(tensor_src="hd_conv17", data=x17)
         # ----------------------------------------------------------------
 

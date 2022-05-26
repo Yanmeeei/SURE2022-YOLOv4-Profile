@@ -16,6 +16,7 @@ class DataScale(object):
     def __init__(self):
         self.scaleRec = {}
         self.dependencyRec = {}
+        self.flopRec = {}
 
     def weight(self, tensor_src, data):
         if tensor_src not in self.scaleRec:
@@ -26,6 +27,10 @@ class DataScale(object):
         if src_name not in self.dependencyRec:
             self.dependencyRec[src_name] = DpdtRec(src_name, src)
         self.dependencyRec[src_name].update(dest)
+
+    def flop_count(self, layer_name, num_flops):
+        if layer_name not in self.flopRec:
+            self.flopRec[layer_name] = num_flops
 
     def report(self):
         print("\nData size of each tensor: \n")
