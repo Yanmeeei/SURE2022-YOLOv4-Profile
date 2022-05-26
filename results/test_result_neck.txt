@@ -1,0 +1,151 @@
+cpu
+YOLOv4 is Ready
+input size: 20
+Average Time of Each Layer
+nk_conv1        0.0400240421295166  
+nk_conv2        0.30849599838256836 
+nk_conv3        0.0349278450012207  
+nk_maxpl1       0.015902996063232422
+nk_maxpl2       0.02436518669128418 
+nk_maxpl3       0.028153181076049805
+nk_conv4        0.07288479804992676 
+nk_conv5        0.30534815788269043 
+nk_conv6        0.03511500358581543 
+nk_conv7        0.009872913360595703
+nk_upspl1       0.0007359981536865234
+nk_conv8        0.042346954345703125
+nk_conv9        0.05045032501220703 
+nk_conv10       0.3168160915374756  
+nk_conv11       0.03856182098388672 
+nk_conv12       0.3120131492614746  
+nk_conv13       0.03886914253234863 
+nk_conv14       0.012470722198486328
+nk_upspl2       0.0009009838104248047
+nk_conv15       0.04118180274963379 
+nk_conv16       0.04091310501098633 
+nk_conv17       0.28041768074035645 
+nk_conv18       0.040574073791503906
+nk_conv19       0.2865407466888428  
+nk_conv20       0.040431976318359375
+mem_self_cpu | Average Mem Consumption of Each Layer
+nk_conv1        0.004007999999999786
+nk_conv2        -0.001992000000000214
+nk_conv3        0.004007999999999786
+nk_maxpl1       -7.49998            
+nk_maxpl2       -7.49998            
+nk_maxpl3       -7.49998            
+nk_conv4        0.004007999999999786
+nk_conv5        -0.001992000000000214
+nk_conv6        0.004007999999999786
+nk_conv7        -0.002992           
+nk_upspl1       0.0004039999999996269
+nk_conv8        -0.002992           
+nk_conv9        -0.002992           
+nk_conv10       0.004008000000001562
+nk_conv11       -0.002992           
+nk_conv12       0.004008000000001562
+nk_conv13       -0.002992           
+nk_conv14       -0.00148            
+nk_upspl2       0.000764000000000209
+nk_conv15       -0.00148            
+nk_conv16       -0.00148            
+nk_conv17       -0.002992           
+nk_conv18       -0.00148            
+nk_conv19       -0.002992           
+nk_conv20       -0.00148            
+mem_cpu | Average Mem Consumption of Each Layer
+nk_conv1        25.012028           
+nk_conv2        50.05402799999999   
+nk_conv3        25.012028           
+nk_maxpl1       7.50002             
+nk_maxpl2       7.50002             
+nk_maxpl3       7.50002             
+nk_conv4        25.012028           
+nk_conv5        50.05402799999999   
+nk_conv6        25.012028           
+nk_conv7        12.501028000000002  
+nk_upspl1       5.000532            
+nk_conv8        50.00102799999999   
+nk_conv9        50.00102799999999   
+nk_conv10       100.01202800000002  
+nk_conv11       50.00102799999999   
+nk_conv12       100.01202800000002  
+nk_conv13       50.00102799999999   
+nk_conv14       25.00054            
+nk_upspl2       9.381012            
+nk_conv15       93.84054000000002   
+nk_conv16       93.84054000000002   
+nk_conv17       187.70102799999998  
+nk_conv18       93.84054000000002   
+nk_conv19       187.70102799999998  
+nk_conv20       93.84054000000002   
+
+Data size of each tensor: 
+
+Name            Size                
+================================================
+
+d5_conv5        [20, 1024, 8, 8]    
+nk_conv1        [20, 512, 8, 8]     
+nk_conv2        [20, 1024, 8, 8]    
+nk_conv3        [20, 512, 8, 8]     
+nk_maxpl1       [20, 512, 8, 8]     
+nk_maxpl2       [20, 512, 8, 8]     
+nk_maxpl3       [20, 512, 8, 8]     
+nk_conv4        [20, 512, 8, 8]     
+nk_conv5        [20, 1024, 8, 8]    
+nk_conv6        [20, 512, 8, 8]     
+nk_conv7        [20, 256, 8, 8]     
+nk_upspl1       [20, 256, 16, 16]   
+nk_conv8        [20, 256, 16, 16]   
+nk_conv9        [20, 256, 16, 16]   
+nk_conv10       [20, 512, 16, 16]   
+nk_conv11       [20, 256, 16, 16]   
+nk_conv12       [20, 512, 16, 16]   
+nk_conv13       [20, 256, 16, 16]   
+nk_conv14       [20, 128, 16, 16]   
+nk_upspl2       [20, 128, 31, 31]   
+nk_conv15       [20, 128, 31, 31]   
+nk_conv16       [20, 128, 31, 31]   
+nk_conv17       [20, 256, 31, 31]   
+nk_conv18       [20, 128, 31, 31]   
+nk_conv19       [20, 256, 31, 31]   
+nk_conv20       [20, 128, 31, 31]   
+
+Data Dependency of each layer 
+
+Name                 Source          Destination    
+================================================
+
+d5_conv5_input       d5_conv5        nk_conv1       
+nk_conv1_x1          nk_conv1        nk_conv2       
+nk_conv2_x2          nk_conv2        nk_conv3       
+nk_conv3_x3          nk_conv3        nk_maxpl1      
+nk_conv3_x3          nk_conv3        nk_maxpl2      
+nk_conv3_x3          nk_conv3        nk_maxpl3      
+nk_conv3_x3          nk_conv3        nk_conv4       
+nk_maxpl1_m1         nk_maxpl1       nk_conv4       
+nk_maxpl2_m2         nk_maxpl2       nk_conv4       
+nk_maxpl3_m3         nk_maxpl3       nk_conv4       
+nk_conv4_x4          nk_conv4        nk_conv5       
+nk_conv5_x5          nk_conv5        nk_conv6       
+nk_conv6_x6          nk_conv6        nk_conv7       
+nk_conv7_x7          nk_conv7        nk_upspl1      
+d4_conv5_downsample4 d4_conv5        nk_upspl1      
+d4_conv5_downsample4 d4_conv5        nk_conv8       
+nk_conv8_x8          nk_conv8        nk_conv9       
+nk_upspl1_up         nk_upspl1       nk_conv9       
+nk_conv9_x9          nk_conv9        nk_conv10      
+nk_conv10_x10        nk_conv10       nk_conv11      
+nk_conv11_x11        nk_conv11       nk_conv12      
+nk_conv12_x12        nk_conv12       nk_conv13      
+nk_conv13_x13        nk_conv13       nk_conv14      
+nk_conv14_x14        nk_conv14       nk_upspl2      
+d3_conv5_downsample3 d3_conv5        nk_upspl2      
+d3_conv5_downsample3 d3_conv5        nk_conv15      
+nk_conv15_x15        nk_conv15       nk_conv16      
+nk_upspl2_up         nk_upspl2       nk_conv16      
+nk_conv16_x16        nk_conv16       nk_conv17      
+nk_conv17_x17        nk_conv17       nk_conv18      
+nk_conv18_x18        nk_conv18       nk_conv19      
+nk_conv19_x19        nk_conv19       nk_conv20      

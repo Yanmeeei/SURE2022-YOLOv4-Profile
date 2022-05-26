@@ -1,0 +1,185 @@
+cpu
+YOLOv4 is Ready
+input size: 20
+Average Time of Each Layer
+d1_conv1        0.42931485176086426 
+d1_conv2        0.46115994453430176 
+d1_conv3        0.2139110565185547  
+d1_conv4        0.20940184593200684 
+d1_conv5        0.11693406105041504 
+d1_conv6        0.39874935150146484 
+d1_conv7        0.21562623977661133 
+d1_conv8        0.34606003761291504 
+d2_conv1        0.34471797943115234 
+d2_conv2        0.07355999946594238 
+d2_conv3        0.07091569900512695 
+d2_resblock     0.45725011825561523 
+d2_conv4        0.05390787124633789 
+d2_conv5        0.14129304885864258 
+d3_conv1        0.30835795402526855 
+d3_conv2        0.0548548698425293  
+d3_conv3        0.056656837463378906
+d3_resblock     1.7886669635772705  
+d3_conv4        0.03875613212585449 
+d3_conv5        0.09908771514892578 
+d4_conv1        0.3333258628845215  
+d4_conv2        0.04872393608093262 
+d4_conv3        0.052079200744628906
+d4_resblock     1.5974600315093994  
+d4_conv4        0.03317999839782715 
+d4_conv5        0.08883309364318848 
+d5_conv1        0.3453710079193115  
+d5_conv2        0.03826713562011719 
+d5_conv3        0.039344072341918945
+d5_resblock     0.7198989391326904  
+d5_conv4        0.02222609519958496 
+d5_conv5        0.07542610168457031 
+mem_self_cpu | Average Mem Consumption of Each Layer
+d1_conv1        -145.360376         
+d1_conv2        -72.67073599999998  
+d1_conv3        -72.67073599999998  
+d1_conv4        -72.67073599999998  
+d1_conv5        -36.33037599999999  
+d1_conv6        -72.67073599999998  
+d1_conv7        -72.67073599999998  
+d1_conv8        -72.67073599999998  
+d2_conv1        -36.331479999999985 
+d2_conv2        -18.170735999999984 
+d2_conv3        -18.170735999999984 
+d2_resblock     -72.66299999999998  
+d2_conv4        -18.170735999999984 
+d2_conv5        -36.331479999999985 
+d3_conv1        -18.772992          
+d3_conv2        -9.391479999999996  
+d3_conv3        -9.391479999999996  
+d3_resblock     -150.15399999999997 
+d3_conv4        -9.391479999999996  
+d3_conv5        -18.772992          
+d4_conv1        -9.995991999999998  
+d4_conv2        -5.002992000000001  
+d4_conv3        -5.002992000000001  
+d4_resblock     -79.99799999999993  
+d4_conv4        -5.002992000000001  
+d4_conv5        -9.995991999999998  
+d5_conv1        -5.001992000000003  
+d5_conv2        -2.495992           
+d5_conv3        -2.495992           
+d5_resblock     -19.998000000000005 
+d5_conv4        -2.495992           
+d5_conv5        -5.001992000000003  
+mem_cpu | Average Mem Consumption of Each Layer
+d1_conv1        1744.2001559999994  
+d1_conv2        872.1502840000003   
+d1_conv3        872.1502840000003   
+d1_conv4        872.1502840000003   
+d1_conv5        436.0801560000001   
+d1_conv6        872.1502840000003   
+d1_conv7        872.1502840000003   
+d1_conv8        872.1502840000003   
+d2_conv1        436.08054000000004  
+d2_conv2        218.04028399999999  
+d2_conv3        218.04028399999999  
+d2_resblock     908.5010800000002   
+d2_conv4        218.04028399999999  
+d2_conv5        436.08054000000004  
+d3_conv1        225.241028          
+d3_conv2        112.60054000000001  
+d3_conv3        112.60054000000001  
+d3_resblock     1877.0683200000005  
+d3_conv4        112.60054000000001  
+d3_conv5        225.241028          
+d4_conv1        120.01202800000002  
+d4_conv2        60.00102799999999   
+d4_conv3        60.00102799999999   
+d4_resblock     1000.1863199999998  
+d4_conv4        60.00102799999999   
+d4_conv5        120.01202800000002  
+d5_conv1        60.05402799999999   
+d5_conv2        30.012028           
+d5_conv3        30.012028           
+d5_resblock     250.18616           
+d5_conv4        30.012028           
+d5_conv5        60.05402799999999   
+
+Data size of each tensor: 
+
+Name            Size                
+================================================
+
+user_input      [20, 3, 244, 244]   
+d1_conv1        [20, 32, 244, 244]  
+d1_conv2        [20, 64, 122, 122]  
+d1_conv3        [20, 64, 122, 122]  
+d1_conv4        [20, 64, 122, 122]  
+d1_conv5        [20, 32, 122, 122]  
+d1_conv6        [20, 64, 122, 122]  
+d1_conv7        [20, 64, 122, 122]  
+d1_conv8        [20, 64, 122, 122]  
+d2_conv1        [20, 128, 61, 61]   
+d2_conv2        [20, 64, 61, 61]    
+d2_conv3        [20, 64, 61, 61]    
+d2_resblock     [20, 64, 61, 61]    
+d2_conv4        [20, 64, 61, 61]    
+d2_conv5        [20, 128, 61, 61]   
+d3_conv1        [20, 256, 31, 31]   
+d3_conv2        [20, 128, 31, 31]   
+d3_conv3        [20, 128, 31, 31]   
+d3_resblock     [20, 128, 31, 31]   
+d3_conv4        [20, 128, 31, 31]   
+d3_conv5        [20, 256, 31, 31]   
+d4_conv1        [20, 512, 16, 16]   
+d4_conv2        [20, 256, 16, 16]   
+d4_conv3        [20, 256, 16, 16]   
+d4_resblock     [20, 256, 16, 16]   
+d4_conv4        [20, 256, 16, 16]   
+d4_conv5        [20, 512, 16, 16]   
+d5_conv1        [20, 1024, 8, 8]    
+d5_conv2        [20, 512, 8, 8]     
+d5_conv3        [20, 512, 8, 8]     
+d5_resblock     [20, 512, 8, 8]     
+d5_conv4        [20, 512, 8, 8]     
+d5_conv5        [20, 1024, 8, 8]    
+
+Data Dependency of each layer 
+
+Name                 Source          Destination    
+================================================
+
+user_input_input     user_input      d1_conv1       
+d1_conv1_x1          d1_conv1        d1_conv2       
+d1_conv2_x2          d1_conv2        d1_conv3       
+d1_conv2_x2          d1_conv2        d1_conv4       
+d1_conv4_x4          d1_conv4        d1_conv5       
+d1_conv5_x5          d1_conv5        d1_conv6       
+d1_conv6_x6          d1_conv6        d1_conv7       
+d1_conv3_x3          d1_conv3        d1_conv8       
+d1_conv7_x7          d1_conv7        d1_conv8       
+d1_conv8_input       d1_conv8        d2_conv1       
+d2_conv1_x1          d2_conv1        d2_conv2       
+d2_conv1_x1          d2_conv1        d2_conv3       
+d2_conv3_x3          d2_conv3        d2_resblock    
+d2_resblock_r        d2_resblock     d2_conv4       
+d2_conv2_x2          d2_conv2        d2_conv5       
+d2_conv4_x4          d2_conv4        d2_conv5       
+d2_conv5_input       d2_conv5        d3_conv1       
+d3_conv1_x1          d3_conv1        d3_conv2       
+d3_conv1_x1          d3_conv1        d3_conv3       
+d3_conv3_x3          d3_conv3        d3_resblock    
+d3_resblock_r        d3_resblock     d3_conv4       
+d3_conv2_x2          d3_conv2        d3_conv5       
+d3_conv4_x4          d3_conv4        d3_conv5       
+d3_conv5_input       d3_conv5        d4_conv1       
+d4_conv1_x1          d4_conv1        d4_conv2       
+d4_conv1_x1          d4_conv1        d4_conv3       
+d4_conv3_x3          d4_conv3        d4_resblock    
+d4_resblock_r        d4_resblock     d4_conv4       
+d4_conv2_x2          d4_conv2        d4_conv5       
+d4_conv4_x4          d4_conv4        d4_conv5       
+d4_conv5_input       d4_conv5        d5_conv1       
+d5_conv1_x1          d5_conv1        d5_conv2       
+d5_conv1_x1          d5_conv1        d5_conv3       
+d5_conv3_x3          d5_conv3        d5_resblock    
+d5_resblock_r        d5_resblock     d5_conv4       
+d5_conv2_x2          d5_conv2        d5_conv5       
+d5_conv4_x4          d5_conv4        d5_conv5       
+d5_conv5_x5          d5_conv5        backbone_output
