@@ -144,7 +144,10 @@ class DownSample1(nn.Module):
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d1_conv1", prof_report, usingcuda)
         x1 = self.conv1(input)
+        x1 = self.conv1(input)
+        prof_wrapper.tt.tic("d1_conv1")
         self.conv1(input)
+        prof_wrapper.tt.toc("d1_conv1")
         prof_wrapper.tt.tic("d1_conv1")
         self.conv1(input)
         prof_wrapper.tt.toc("d1_conv1")
@@ -171,7 +174,10 @@ class DownSample1(nn.Module):
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d1_conv2", prof_report, usingcuda)
         x2 = self.conv2(x1)
+        x2 = self.conv2(x1)
+        prof_wrapper.tt.tic("d1_conv2")
         self.conv2(x1)
+        prof_wrapper.tt.toc("d1_conv2")
         prof_wrapper.tt.tic("d1_conv2")
         self.conv2(x1)
         prof_wrapper.tt.toc("d1_conv2")
@@ -197,7 +203,10 @@ class DownSample1(nn.Module):
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d1_conv3", prof_report, usingcuda)
         x3 = self.conv3(x2)
+        x3 = self.conv3(x2)
+        prof_wrapper.tt.tic("d1_conv3")
         self.conv3(x2)
+        prof_wrapper.tt.toc("d1_conv3")
         prof_wrapper.tt.tic("d1_conv3")
         self.conv3(x2)
         prof_wrapper.tt.toc("d1_conv3")
@@ -224,7 +233,10 @@ class DownSample1(nn.Module):
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d1_conv4", prof_report, usingcuda)
         x4 = self.conv4(x2)
+        x4 = self.conv4(x2)
+        prof_wrapper.tt.tic("d1_conv4")
         self.conv4(x2)
+        prof_wrapper.tt.toc("d1_conv4")
         prof_wrapper.tt.tic("d1_conv4")
         self.conv4(x2)
         prof_wrapper.tt.toc("d1_conv4")
@@ -254,6 +266,9 @@ class DownSample1(nn.Module):
         prof_wrapper.tt.tic("d1_conv5")
         self.conv5(x4)
         prof_wrapper.tt.toc("d1_conv5")
+        prof_wrapper.tt.tic("d1_conv5")
+        self.conv5(x4)
+        prof_wrapper.tt.toc("d1_conv5")
         prof_wrapper.scale.weight(tensor_src="d1_conv5", data=x5)
         # ----------------------------------------------------------------
 
@@ -277,6 +292,9 @@ class DownSample1(nn.Module):
         prof_wrapper.mr.get_mem("d1_conv6", prof_report, usingcuda)
         x6 = self.conv6(x5)
         x6 = self.conv6(x5)
+        prof_wrapper.tt.tic("d1_conv6")
+        self.conv6(x5)
+        prof_wrapper.tt.toc("d1_conv6")
         prof_wrapper.tt.tic("d1_conv6")
         self.conv6(x5)
         prof_wrapper.tt.toc("d1_conv6")
@@ -308,6 +326,9 @@ class DownSample1(nn.Module):
         prof_wrapper.tt.tic("d1_conv7")
         self.conv7(x6)
         prof_wrapper.tt.toc("d1_conv7")
+        prof_wrapper.tt.tic("d1_conv7")
+        self.conv7(x6)
+        prof_wrapper.tt.toc("d1_conv7")
         prof_wrapper.scale.weight(tensor_src="d1_conv7", data=x7)
         # ----------------------------------------------------------------
         # [route]
@@ -334,6 +355,9 @@ class DownSample1(nn.Module):
         prof_wrapper.mr.get_mem("d1_conv8", prof_report, usingcuda)
         x8 = self.conv8(x7)
         x8 = self.conv8(x7)
+        prof_wrapper.tt.tic("d1_conv8")
+        self.conv8(x7)
+        prof_wrapper.tt.toc("d1_conv8")
         prof_wrapper.tt.tic("d1_conv8")
         self.conv8(x7)
         prof_wrapper.tt.toc("d1_conv8")
@@ -382,6 +406,9 @@ class DownSample2(nn.Module):
         prof_wrapper.tt.tic("d2_conv1")
         self.conv1(input)
         prof_wrapper.tt.toc("d2_conv1")
+        prof_wrapper.tt.tic("d2_conv1")
+        self.conv1(input)
+        prof_wrapper.tt.toc("d2_conv1")
         prof_wrapper.scale.weight(tensor_src="d2_conv1", data=x1)
         # ----------------------------------------------------------------
 
@@ -405,6 +432,9 @@ class DownSample2(nn.Module):
         prof_wrapper.mr.get_mem("d2_conv2", prof_report, usingcuda)
         x2 = self.conv2(x1)
         x2 = self.conv2(x1)
+        prof_wrapper.tt.tic("d2_conv2")
+        self.conv2(x1)
+        prof_wrapper.tt.toc("d2_conv2")
         prof_wrapper.tt.tic("d2_conv2")
         self.conv2(x1)
         prof_wrapper.tt.toc("d2_conv2")
@@ -434,6 +464,9 @@ class DownSample2(nn.Module):
         prof_wrapper.tt.tic("d2_conv3")
         self.conv3(x1)
         prof_wrapper.tt.toc("d2_conv3")
+        prof_wrapper.tt.tic("d2_conv3")
+        self.conv3(x1)
+        prof_wrapper.tt.toc("d2_conv3")
         prof_wrapper.scale.weight(tensor_src="d2_conv3", data=x3)
         # ----------------------------------------------------------------
 
@@ -457,6 +490,9 @@ class DownSample2(nn.Module):
         prof_wrapper.mr.get_mem("d2_resblock", prof_report, usingcuda)
         r = self.resblock(x3)
         r = self.resblock(x3)
+        prof_wrapper.tt.tic("d2_resblock")
+        self.resblock(x3)
+        prof_wrapper.tt.toc("d2_resblock")
         prof_wrapper.tt.tic("d2_resblock")
         self.resblock(x3)
         prof_wrapper.tt.toc("d2_resblock")
@@ -487,6 +523,9 @@ class DownSample2(nn.Module):
         prof_wrapper.tt.tic("d2_conv4")
         self.conv4(r)
         prof_wrapper.tt.toc("d2_conv4")
+        prof_wrapper.tt.tic("d2_conv4")
+        self.conv4(r)
+        prof_wrapper.tt.toc("d2_conv4")
         prof_wrapper.scale.weight(tensor_src="d2_conv4", data=x4)
         # ----------------------------------------------------------------
         x4 = torch.cat([x4, x2], dim=1)
@@ -511,6 +550,9 @@ class DownSample2(nn.Module):
         prof_wrapper.mr.get_mem("d2_conv5", prof_report, usingcuda)
         x5 = self.conv5(x4)
         x5 = self.conv5(x4)
+        prof_wrapper.tt.tic("d2_conv5")
+        self.conv5(x4)
+        prof_wrapper.tt.toc("d2_conv5")
         prof_wrapper.tt.tic("d2_conv5")
         self.conv5(x4)
         prof_wrapper.tt.toc("d2_conv5")
@@ -564,6 +606,9 @@ class DownSample3(nn.Module):
         prof_wrapper.tt.tic("d3_conv1")
         self.conv1(input)
         prof_wrapper.tt.toc("d3_conv1")
+        prof_wrapper.tt.tic("d3_conv1")
+        self.conv1(input)
+        prof_wrapper.tt.toc("d3_conv1")
         prof_wrapper.scale.weight(tensor_src="d3_conv1", data=x1)
         # ----------------------------------------------------------------
 
@@ -587,6 +632,9 @@ class DownSample3(nn.Module):
         prof_wrapper.mr.get_mem("d3_conv2", prof_report, usingcuda)
         x2 = self.conv2(x1)
         x2 = self.conv2(x1)
+        prof_wrapper.tt.tic("d3_conv2")
+        self.conv2(x1)
+        prof_wrapper.tt.toc("d3_conv2")
         prof_wrapper.tt.tic("d3_conv2")
         self.conv2(x1)
         prof_wrapper.tt.toc("d3_conv2")
@@ -616,6 +664,9 @@ class DownSample3(nn.Module):
         prof_wrapper.tt.tic("d3_conv3")
         self.conv3(x1)
         prof_wrapper.tt.toc("d3_conv3")
+        prof_wrapper.tt.tic("d3_conv3")
+        self.conv3(x1)
+        prof_wrapper.tt.toc("d3_conv3")
         prof_wrapper.scale.weight(tensor_src="d3_conv3", data=x3)
         # ----------------------------------------------------------------
 
@@ -639,6 +690,9 @@ class DownSample3(nn.Module):
         prof_wrapper.mr.get_mem("d3_resblock", prof_report, usingcuda)
         r = self.resblock(x3)
         r = self.resblock(x3)
+        prof_wrapper.tt.tic("d3_resblock")
+        self.resblock(x3)
+        prof_wrapper.tt.toc("d3_resblock")
         prof_wrapper.tt.tic("d3_resblock")
         self.resblock(x3)
         prof_wrapper.tt.toc("d3_resblock")
@@ -669,6 +723,9 @@ class DownSample3(nn.Module):
         prof_wrapper.tt.tic("d3_conv4")
         self.conv4(r)
         prof_wrapper.tt.toc("d3_conv4")
+        prof_wrapper.tt.tic("d3_conv4")
+        self.conv4(r)
+        prof_wrapper.tt.toc("d3_conv4")
         prof_wrapper.scale.weight(tensor_src="d3_conv4", data=x4)
         # ----------------------------------------------------------------
         x4 = torch.cat([x4, x2], dim=1)
@@ -693,6 +750,9 @@ class DownSample3(nn.Module):
         prof_wrapper.mr.get_mem("d3_conv5", prof_report, usingcuda)
         x5 = self.conv5(x4)
         x5 = self.conv5(x4)
+        prof_wrapper.tt.tic("d3_conv5")
+        self.conv5(x4)
+        prof_wrapper.tt.toc("d3_conv5")
         prof_wrapper.tt.tic("d3_conv5")
         self.conv5(x4)
         prof_wrapper.tt.toc("d3_conv5")
@@ -746,6 +806,9 @@ class DownSample4(nn.Module):
         prof_wrapper.tt.tic("d4_conv1")
         self.conv1(input)
         prof_wrapper.tt.toc("d4_conv1")
+        prof_wrapper.tt.tic("d4_conv1")
+        self.conv1(input)
+        prof_wrapper.tt.toc("d4_conv1")
         prof_wrapper.scale.weight(tensor_src="d4_conv1", data=x1)
         # ----------------------------------------------------------------
 
@@ -769,6 +832,9 @@ class DownSample4(nn.Module):
         prof_wrapper.mr.get_mem("d4_conv2", prof_report, usingcuda)
         x2 = self.conv2(x1)
         x2 = self.conv2(x1)
+        prof_wrapper.tt.tic("d4_conv2")
+        self.conv2(x1)
+        prof_wrapper.tt.toc("d4_conv2")
         prof_wrapper.tt.tic("d4_conv2")
         self.conv2(x1)
         prof_wrapper.tt.toc("d4_conv2")
@@ -798,6 +864,9 @@ class DownSample4(nn.Module):
         prof_wrapper.tt.tic("d4_conv3")
         self.conv3(x1)
         prof_wrapper.tt.toc("d4_conv3")
+        prof_wrapper.tt.tic("d4_conv3")
+        self.conv3(x1)
+        prof_wrapper.tt.toc("d4_conv3")
         prof_wrapper.scale.weight(tensor_src="d4_conv3", data=x3)
         # ----------------------------------------------------------------
 
@@ -821,6 +890,9 @@ class DownSample4(nn.Module):
         prof_wrapper.mr.get_mem("d4_resblock", prof_report, usingcuda)
         r = self.resblock(x3)
         r = self.resblock(x3)
+        prof_wrapper.tt.tic("d4_resblock")
+        self.resblock(x3)
+        prof_wrapper.tt.toc("d4_resblock")
         prof_wrapper.tt.tic("d4_resblock")
         self.resblock(x3)
         prof_wrapper.tt.toc("d4_resblock")
@@ -850,6 +922,9 @@ class DownSample4(nn.Module):
         prof_wrapper.tt.tic("d4_conv4")
         self.conv4(r)
         prof_wrapper.tt.toc("d4_conv4")
+        prof_wrapper.tt.tic("d4_conv4")
+        self.conv4(r)
+        prof_wrapper.tt.toc("d4_conv4")
         prof_wrapper.scale.weight(tensor_src="d4_conv4", data=x4)
         # ----------------------------------------------------------------
         x4 = torch.cat([x4, x2], dim=1)
@@ -874,6 +949,9 @@ class DownSample4(nn.Module):
         prof_wrapper.mr.get_mem("d4_conv5", prof_report, usingcuda)
         x5 = self.conv5(x4)
         x5 = self.conv5(x4)
+        prof_wrapper.tt.tic("d4_conv5")
+        self.conv5(x4)
+        prof_wrapper.tt.toc("d4_conv5")
         prof_wrapper.tt.tic("d4_conv5")
         self.conv5(x4)
         prof_wrapper.tt.toc("d4_conv5")
@@ -927,6 +1005,9 @@ class DownSample5(nn.Module):
         prof_wrapper.tt.tic("d5_conv1")
         self.conv1(input)
         prof_wrapper.tt.toc("d5_conv1")
+        prof_wrapper.tt.tic("d5_conv1")
+        self.conv1(input)
+        prof_wrapper.tt.toc("d5_conv1")
         prof_wrapper.scale.weight(tensor_src="d5_conv1", data=x1)
         # ----------------------------------------------------------------
 
@@ -950,6 +1031,9 @@ class DownSample5(nn.Module):
         prof_wrapper.mr.get_mem("d5_conv2", prof_report, usingcuda)
         x2 = self.conv2(x1)
         x2 = self.conv2(x1)
+        prof_wrapper.tt.tic("d5_conv2")
+        self.conv2(x1)
+        prof_wrapper.tt.toc("d5_conv2")
         prof_wrapper.tt.tic("d5_conv2")
         self.conv2(x1)
         prof_wrapper.tt.toc("d5_conv2")
@@ -979,6 +1063,9 @@ class DownSample5(nn.Module):
         prof_wrapper.tt.tic("d5_conv3")
         self.conv3(x1)
         prof_wrapper.tt.toc("d5_conv3")
+        prof_wrapper.tt.tic("d5_conv3")
+        self.conv3(x1)
+        prof_wrapper.tt.toc("d5_conv3")
         prof_wrapper.scale.weight(tensor_src="d5_conv3", data=x3)
         # ----------------------------------------------------------------
 
@@ -1002,6 +1089,9 @@ class DownSample5(nn.Module):
         prof_wrapper.mr.get_mem("d5_resblock", prof_report, usingcuda)
         r = self.resblock(x3)
         r = self.resblock(x3)
+        prof_wrapper.tt.tic("d5_resblock")
+        self.resblock(x3)
+        prof_wrapper.tt.toc("d5_resblock")
         prof_wrapper.tt.tic("d5_resblock")
         self.resblock(x3)
         prof_wrapper.tt.toc("d5_resblock")
@@ -1031,6 +1121,9 @@ class DownSample5(nn.Module):
         prof_wrapper.tt.tic("d5_conv4")
         self.conv4(r)
         prof_wrapper.tt.toc("d5_conv4")
+        prof_wrapper.tt.tic("d5_conv4")
+        self.conv4(r)
+        prof_wrapper.tt.toc("d5_conv4")
         prof_wrapper.scale.weight(tensor_src="d5_conv4", data=x4)
         # ----------------------------------------------------------------
         x4 = torch.cat([x4, x2], dim=1)
@@ -1055,6 +1148,9 @@ class DownSample5(nn.Module):
         prof_wrapper.mr.get_mem("d5_conv5", prof_report, usingcuda)
         x5 = self.conv5(x4)
         x5 = self.conv5(x4)
+        prof_wrapper.tt.tic("d5_conv5")
+        self.conv5(x4)
+        prof_wrapper.tt.toc("d5_conv5")
         prof_wrapper.tt.tic("d5_conv5")
         self.conv5(x4)
         prof_wrapper.tt.toc("d5_conv5")
@@ -1115,45 +1211,817 @@ class Neck(nn.Module):
         self.conv20 = Conv_Bn_Activation(256, 128, 1, 1, 'leaky')
 
     def forward(self, input, downsample4, downsample3, prof_wrapper, inference=False, usingcuda=False):
+        # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="input", src="d5_conv5", dest="nk_conv1")
+        tmp_input = torch.clone(input)
+        with profile(
+                activities=
+                [
+                    ProfilerActivity.CPU
+                ] if not usingcuda else
+                [
+                    ProfilerActivity.CPU,
+                    ProfilerActivity.CUDA
+                ],
+                profile_memory=True, record_shapes=True
+        ) as prof:
+            with record_function("model_inference"):
+                self.conv1(tmp_input)
+        prof_report = str(prof.key_averages().table()).split("\n")
+        prof_wrapper.mr.get_mem("nk_conv1", prof_report, usingcuda)
         x1 = self.conv1(input)
+        x1 = self.conv1(input)
+        x1 = self.conv1(input)
+
+        prof_wrapper.tt.tic("nk_conv1")
+        self.conv1(input)
+        prof_wrapper.tt.toc("nk_conv1")
+        prof_wrapper.tt.tic("nk_conv1")
+        self.conv1(input)
+        prof_wrapper.tt.toc("nk_conv1")
+        prof_wrapper.scale.weight(tensor_src="nk_conv1", data=x1)
+        # ----------------------------------------------------------------
+
+        # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x1", src="nk_conv1", dest="nk_conv2")
+        tmp_input = torch.clone(x1)
+        with profile(
+                activities=
+                [
+                    ProfilerActivity.CPU
+                ] if not usingcuda else
+                [
+                    ProfilerActivity.CPU,
+                    ProfilerActivity.CUDA
+                ],
+                profile_memory=True, record_shapes=True
+        ) as prof:
+            with record_function("model_inference"):
+                self.conv2(tmp_input)
+        prof_report = str(prof.key_averages().table()).split("\n")
+        prof_wrapper.mr.get_mem("nk_conv2", prof_report, usingcuda)
         x2 = self.conv2(x1)
+        x2 = self.conv2(x1)
+        prof_wrapper.tt.tic("nk_conv2")
+        self.conv2(x1)
+        prof_wrapper.tt.toc("nk_conv2")
+        prof_wrapper.tt.tic("nk_conv2")
+        self.conv2(x1)
+        prof_wrapper.tt.toc("nk_conv2")
+        prof_wrapper.scale.weight(tensor_src="nk_conv2", data=x2)
+        # ----------------------------------------------------------------
+
+        # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x2", src="nk_conv2", dest="nk_conv3")
+        tmp_input = torch.clone(x2)
+        with profile(
+                activities=
+                [
+                    ProfilerActivity.CPU
+                ] if not usingcuda else
+                [
+                    ProfilerActivity.CPU,
+                    ProfilerActivity.CUDA
+                ],
+                profile_memory=True, record_shapes=True
+        ) as prof:
+            with record_function("model_inference"):
+                self.conv3(tmp_input)
+        prof_report = str(prof.key_averages().table()).split("\n")
+        prof_wrapper.mr.get_mem("nk_conv3", prof_report, usingcuda)
         x3 = self.conv3(x2)
+        x3 = self.conv3(x2)
+        x3 = self.conv3(x2)
+        prof_wrapper.tt.tic("nk_conv3")
+        self.conv3(x2)
+        prof_wrapper.tt.toc("nk_conv3")
+        prof_wrapper.tt.tic("nk_conv3")
+        self.conv3(x2)
+        prof_wrapper.tt.toc("nk_conv3")
+        prof_wrapper.scale.weight(tensor_src="nk_conv3", data=x3)
+        # ----------------------------------------------------------------
         # SPP
+        # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x3", src="nk_conv3", dest="nk_maxpl1")
+        tmp_input = torch.clone(x3)
+        with profile(
+                activities=
+                [
+                    ProfilerActivity.CPU
+                ] if not usingcuda else
+                [
+                    ProfilerActivity.CPU,
+                    ProfilerActivity.CUDA
+                ],
+                profile_memory=True, record_shapes=True
+        ) as prof:
+            with record_function("model_inference"):
+                self.maxpool1(tmp_input)
+        prof_report = str(prof.key_averages().table()).split("\n")
+        prof_wrapper.mr.get_mem("nk_maxpl1", prof_report, usingcuda)
         m1 = self.maxpool1(x3)
+        m1 = self.maxpool1(x3)
+        prof_wrapper.tt.tic("nk_maxpl1")
+        self.maxpool1(x3)
+        prof_wrapper.tt.toc("nk_maxpl1")
+        prof_wrapper.tt.tic("nk_maxpl1")
+        self.maxpool1(x3)
+        prof_wrapper.tt.toc("nk_maxpl1")
+        prof_wrapper.scale.weight(tensor_src="nk_maxpl1", data=m1)
+        # ----------------------------------------------------------------
+
+        # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x3", src="nk_conv3", dest="nk_maxpl2")
+        tmp_input = torch.clone(x3)
+        with profile(
+                activities=
+                [
+                    ProfilerActivity.CPU
+                ] if not usingcuda else
+                [
+                    ProfilerActivity.CPU,
+                    ProfilerActivity.CUDA
+                ],
+                profile_memory=True, record_shapes=True
+        ) as prof:
+            with record_function("model_inference"):
+                self.maxpool2(tmp_input)
+        prof_report = str(prof.key_averages().table()).split("\n")
+        prof_wrapper.mr.get_mem("nk_maxpl2", prof_report, usingcuda)
         m2 = self.maxpool2(x3)
+        m2 = self.maxpool2(x3)
+        m2 = self.maxpool2(x3)
+        prof_wrapper.tt.tic("nk_maxpl2")
+        self.maxpool2(x3)
+        prof_wrapper.tt.toc("nk_maxpl2")
+        prof_wrapper.tt.tic("nk_maxpl2")
+        self.maxpool2(x3)
+        prof_wrapper.tt.toc("nk_maxpl2")
+        prof_wrapper.scale.weight(tensor_src="nk_maxpl2", data=m2)
+        # ----------------------------------------------------------------
+
+        # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x3", src="nk_conv3", dest="nk_maxpl3")
+        tmp_input = torch.clone(x3)
+        with profile(
+                activities=
+                [
+                    ProfilerActivity.CPU
+                ] if not usingcuda else
+                [
+                    ProfilerActivity.CPU,
+                    ProfilerActivity.CUDA
+                ],
+                profile_memory=True, record_shapes=True
+        ) as prof:
+            with record_function("model_inference"):
+                self.maxpool3(tmp_input)
+        prof_report = str(prof.key_averages().table()).split("\n")
+        prof_wrapper.mr.get_mem("nk_maxpl3", prof_report, usingcuda)
         m3 = self.maxpool3(x3)
-        spp = torch.cat([m3, m2, m1, x3], dim=1)
+        m3 = self.maxpool3(x3)
+        m3 = self.maxpool3(x3)
+        prof_wrapper.tt.tic("nk_maxpl3")
+        self.maxpool3(x3)
+        prof_wrapper.tt.toc("nk_maxpl3")
+        prof_wrapper.tt.tic("nk_maxpl3")
+        self.maxpool3(x3)
+        prof_wrapper.tt.toc("nk_maxpl3")
+        prof_wrapper.scale.weight(tensor_src="nk_maxpl3", data=m3)
+        # ----------------------------------------------------------------
         # SPP end
+        spp = torch.cat([m3, m2, m1, x3], dim=1)
+        prof_wrapper.scale.dependency_check(tensor_name="x3", src="nk_conv3", dest="nk_conv4")
+        prof_wrapper.scale.dependency_check(tensor_name="m1", src="nk_maxpl1", dest="nk_conv4")
+        prof_wrapper.scale.dependency_check(tensor_name="m2", src="nk_maxpl2", dest="nk_conv4")
+        prof_wrapper.scale.dependency_check(tensor_name="m3", src="nk_maxpl3", dest="nk_conv4")
+        # ----------------------------------------------------------------
+        tmp_input = torch.clone(spp)
+        with profile(
+                activities=
+                [
+                    ProfilerActivity.CPU
+                ] if not usingcuda else
+                [
+                    ProfilerActivity.CPU,
+                    ProfilerActivity.CUDA
+                ],
+                profile_memory=True, record_shapes=True
+        ) as prof:
+            with record_function("model_inference"):
+                self.conv4(tmp_input)
+        prof_report = str(prof.key_averages().table()).split("\n")
+        prof_wrapper.mr.get_mem("nk_conv4", prof_report, usingcuda)
         x4 = self.conv4(spp)
+        x4 = self.conv4(spp)
+        x4 = self.conv4(spp)
+        prof_wrapper.tt.tic("nk_conv4")
+        self.conv4(spp)
+        prof_wrapper.tt.toc("nk_conv4")
+        prof_wrapper.tt.tic("nk_conv4")
+        self.conv4(spp)
+        prof_wrapper.tt.toc("nk_conv4")
+        prof_wrapper.scale.weight(tensor_src="nk_conv4", data=x4)
+        # ----------------------------------------------------------------
+
+        # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x4", src="nk_conv4", dest="nk_conv5")
+        tmp_input = torch.clone(x4)
+        with profile(
+                activities=
+                [
+                    ProfilerActivity.CPU
+                ] if not usingcuda else
+                [
+                    ProfilerActivity.CPU,
+                    ProfilerActivity.CUDA
+                ],
+                profile_memory=True, record_shapes=True
+        ) as prof:
+            with record_function("model_inference"):
+                self.conv5(tmp_input)
+        prof_report = str(prof.key_averages().table()).split("\n")
+        prof_wrapper.mr.get_mem("nk_conv5", prof_report, usingcuda)
         x5 = self.conv5(x4)
+        x5 = self.conv5(x4)
+        x5 = self.conv5(x4)
+        prof_wrapper.tt.tic("nk_conv5")
+        self.conv5(x4)
+        prof_wrapper.tt.toc("nk_conv5")
+        prof_wrapper.tt.tic("nk_conv5")
+        self.conv5(x4)
+        prof_wrapper.tt.toc("nk_conv5")
+        prof_wrapper.scale.weight(tensor_src="nk_conv5", data=x5)
+        # ----------------------------------------------------------------
+
+        # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x5", src="nk_conv5", dest="nk_conv6")
+        tmp_input = torch.clone(x5)
+        with profile(
+                activities=
+                [
+                    ProfilerActivity.CPU
+                ] if not usingcuda else
+                [
+                    ProfilerActivity.CPU,
+                    ProfilerActivity.CUDA
+                ],
+                profile_memory=True, record_shapes=True
+        ) as prof:
+            with record_function("model_inference"):
+                self.conv6(tmp_input)
+        prof_report = str(prof.key_averages().table()).split("\n")
+        prof_wrapper.mr.get_mem("nk_conv6", prof_report, usingcuda)
         x6 = self.conv6(x5)
+        x6 = self.conv6(x5)
+        x6 = self.conv6(x5)
+        prof_wrapper.tt.tic("nk_conv6")
+        self.conv6(x5)
+        prof_wrapper.tt.toc("nk_conv6")
+        prof_wrapper.tt.tic("nk_conv6")
+        self.conv6(x5)
+        prof_wrapper.tt.toc("nk_conv6")
+
+        prof_wrapper.scale.weight(tensor_src="nk_conv6", data=x6)
+        # ----------------------------------------------------------------
+
+        # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x6", src="nk_conv6", dest="nk_conv7")
+        tmp_input = torch.clone(x6)
+        with profile(
+                activities=
+                [
+                    ProfilerActivity.CPU
+                ] if not usingcuda else
+                [
+                    ProfilerActivity.CPU,
+                    ProfilerActivity.CUDA
+                ],
+                profile_memory=True, record_shapes=True
+        ) as prof:
+            with record_function("model_inference"):
+                self.conv7(tmp_input)
+        prof_report = str(prof.key_averages().table()).split("\n")
+        prof_wrapper.mr.get_mem("nk_conv7", prof_report, usingcuda)
         x7 = self.conv7(x6)
+        x7 = self.conv7(x6)
+        x7 = self.conv7(x6)
+        prof_wrapper.tt.tic("nk_conv7")
+        self.conv7(x6)
+        prof_wrapper.tt.toc("nk_conv7")
+        prof_wrapper.tt.tic("nk_conv7")
+        self.conv7(x6)
+        prof_wrapper.tt.toc("nk_conv7")
+        prof_wrapper.scale.weight(tensor_src="nk_conv7", data=x7)
+        # ----------------------------------------------------------------
         # UP
+        # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x7", src="nk_conv7", dest="nk_upspl1")
+        tmp_input = torch.clone(x7)
+        with profile(
+                activities=
+                [
+                    ProfilerActivity.CPU
+                ] if not usingcuda else
+                [
+                    ProfilerActivity.CPU,
+                    ProfilerActivity.CUDA
+                ],
+                profile_memory=True, record_shapes=True
+        ) as prof:
+            with record_function("model_inference"):
+                self.upsample1(tmp_input, downsample4.size(), self.inference)
+        prof_report = str(prof.key_averages().table()).split("\n")
+        prof_wrapper.mr.get_mem("nk_upspl1", prof_report, usingcuda)
         up = self.upsample1(x7, downsample4.size(), self.inference)
+        up = self.upsample1(x7, downsample4.size(), self.inference)
+        up = self.upsample1(x7, downsample4.size(), self.inference)
+        prof_wrapper.tt.tic("nk_upspl1")
+        self.upsample1(x7, downsample4.size(), self.inference)
+        prof_wrapper.tt.toc("nk_upspl1")
+        prof_wrapper.tt.tic("nk_upspl1")
+        self.upsample1(x7, downsample4.size(), self.inference)
+        prof_wrapper.tt.toc("nk_upspl1")
+        prof_wrapper.scale.weight(tensor_src="nk_upspl1", data=up)
+        # ----------------------------------------------------------------
         # R 85
+        # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="downsample4", src="d4_conv5", dest="nk_conv8")
+        tmp_input = torch.clone(downsample4)
+        with profile(
+                activities=
+                [
+                    ProfilerActivity.CPU
+                ] if not usingcuda else
+                [
+                    ProfilerActivity.CPU,
+                    ProfilerActivity.CUDA
+                ],
+                profile_memory=True, record_shapes=True
+        ) as prof:
+            with record_function("model_inference"):
+                self.conv8(tmp_input)
+        prof_report = str(prof.key_averages().table()).split("\n")
+        prof_wrapper.mr.get_mem("nk_conv8", prof_report, usingcuda)
         x8 = self.conv8(downsample4)
-        # R -1 -3
+        x8 = self.conv8(downsample4)
+        x8 = self.conv8(downsample4)
+        prof_wrapper.tt.tic("nk_conv8")
+        self.conv8(downsample4)
+        prof_wrapper.tt.toc("nk_conv8")
+        prof_wrapper.tt.tic("nk_conv8")
+        self.conv8(downsample4)
+        prof_wrapper.tt.toc("nk_conv8")
+        prof_wrapper.scale.weight(tensor_src="nk_conv8", data=x8)
+        # ----------------------------------------------------------------
         x8 = torch.cat([x8, up], dim=1)
-
+        prof_wrapper.scale.dependency_check(tensor_name="x8", src="nk_conv8", dest="nk_conv9")
+        prof_wrapper.scale.dependency_check(tensor_name="up", src="nk_upspl1", dest="nk_conv9")
+        # ----------------------------------------------------------------
+        tmp_input = torch.clone(x8)
+        with profile(
+                activities=
+                [
+                    ProfilerActivity.CPU
+                ] if not usingcuda else
+                [
+                    ProfilerActivity.CPU,
+                    ProfilerActivity.CUDA
+                ],
+                profile_memory=True, record_shapes=True
+        ) as prof:
+            with record_function("model_inference"):
+                self.conv9(tmp_input)
+        prof_report = str(prof.key_averages().table()).split("\n")
+        prof_wrapper.mr.get_mem("nk_conv9", prof_report, usingcuda)
         x9 = self.conv9(x8)
+        x9 = self.conv9(x8)
+        x9 = self.conv9(x8)
+        prof_wrapper.tt.tic("nk_conv9")
+        self.conv9(x8)
+        prof_wrapper.tt.toc("nk_conv9")
+        prof_wrapper.tt.tic("nk_conv9")
+        self.conv9(x8)
+        prof_wrapper.tt.toc("nk_conv9")
+        prof_wrapper.scale.weight(tensor_src="nk_conv9", data=x9)
+        # ----------------------------------------------------------------
+
+        # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x9", src="nk_conv9", dest="nk_conv10")
+        tmp_input = torch.clone(x9)
+        with profile(
+                activities=
+                [
+                    ProfilerActivity.CPU
+                ] if not usingcuda else
+                [
+                    ProfilerActivity.CPU,
+                    ProfilerActivity.CUDA
+                ],
+                profile_memory=True, record_shapes=True
+        ) as prof:
+            with record_function("model_inference"):
+                self.conv10(tmp_input)
+        prof_report = str(prof.key_averages().table()).split("\n")
+        prof_wrapper.mr.get_mem("nk_conv10", prof_report, usingcuda)
         x10 = self.conv10(x9)
+        x10 = self.conv10(x9)
+        x10 = self.conv10(x9)
+        prof_wrapper.tt.tic("nk_conv10")
+        self.conv10(x9)
+        prof_wrapper.tt.toc("nk_conv10")
+        prof_wrapper.tt.tic("nk_conv10")
+        self.conv10(x9)
+        prof_wrapper.tt.toc("nk_conv10")
+        prof_wrapper.scale.weight(tensor_src="nk_conv10", data=x10)
+        # ----------------------------------------------------------------
+
+        # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x10", src="nk_conv10", dest="nk_conv11")
+        tmp_input = torch.clone(x10)
+        with profile(
+                activities=
+                [
+                    ProfilerActivity.CPU
+                ] if not usingcuda else
+                [
+                    ProfilerActivity.CPU,
+                    ProfilerActivity.CUDA
+                ],
+                profile_memory=True, record_shapes=True
+        ) as prof:
+            with record_function("model_inference"):
+                self.conv11(tmp_input)
+        prof_report = str(prof.key_averages().table()).split("\n")
+        prof_wrapper.mr.get_mem("nk_conv11", prof_report, usingcuda)
         x11 = self.conv11(x10)
-        x12 = self.conv12(x11)
+        x11 = self.conv11(x10)
+        x11 = self.conv11(x10)
+        prof_wrapper.tt.tic("nk_conv11")
+        self.conv11(x10)
+        prof_wrapper.tt.toc("nk_conv11")
+        prof_wrapper.tt.tic("nk_conv11")
+        self.conv11(x10)
+        prof_wrapper.tt.toc("nk_conv11")
+        prof_wrapper.scale.weight(tensor_src="nk_conv11", data=x11)
+        # ----------------------------------------------------------------
+
+        # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x11", src="nk_conv11", dest="nk_conv12")
+        tmp_input = torch.clone(x11)
+        with profile(
+                activities=
+                [
+                    ProfilerActivity.CPU
+                ] if not usingcuda else
+                [
+                    ProfilerActivity.CPU,
+                    ProfilerActivity.CUDA
+                ],
+                profile_memory=True, record_shapes=True
+        ) as prof:
+            with record_function("model_inference"):
+                self.conv12(tmp_input)
+        prof_report = str(prof.key_averages().table()).split("\n")
+        prof_wrapper.mr.get_mem("nk_conv12", prof_report, usingcuda)
+        # x12 = self.conv12(x11)
+        # x12 = self.conv12(x11)
+        # x12 = self.conv12(x11)
+
+        with profile(activities=[ProfilerActivity.CUDA], record_shapes=True) as prof:
+            with record_function("model_inference"):
+                x12 = self.conv12(x11)
+        print("==>> cuda_time_total")
+        print(prof.key_averages().table(sort_by="cuda_time_total", row_limit=20))
+
+        with profile(activities=[ProfilerActivity.CUDA], record_shapes=True) as prof:
+            with record_function("model_inference"):
+                self.conv12(x11)
+        print("==>> cuda_time_total")
+        print(prof.key_averages().table(sort_by="cuda_time_total", row_limit=20))
+
+        prof_wrapper.tt.tic("nk_conv12")
+        self.conv12(x11)
+        prof_wrapper.tt.toc("nk_conv12")
+        prof_wrapper.tt.tic("nk_conv12")
+        self.conv12(x11)
+        prof_wrapper.tt.toc("nk_conv12")
+        prof_wrapper.scale.weight(tensor_src="nk_conv12", data=x12)
+        # ----------------------------------------------------------------
+
+        # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x12", src="nk_conv12", dest="nk_conv13")
+        tmp_input = torch.clone(x12)
+        with profile(
+                activities=
+                [
+                    ProfilerActivity.CPU
+                ] if not usingcuda else
+                [
+                    ProfilerActivity.CPU,
+                    ProfilerActivity.CUDA
+                ],
+                profile_memory=True, record_shapes=True
+        ) as prof:
+            with record_function("model_inference"):
+                self.conv13(tmp_input)
+        prof_report = str(prof.key_averages().table()).split("\n")
+        prof_wrapper.mr.get_mem("nk_conv13", prof_report, usingcuda)
         x13 = self.conv13(x12)
+        x13 = self.conv13(x12)
+        x13 = self.conv13(x12)
+        prof_wrapper.tt.tic("nk_conv13")
+        self.conv13(x12)
+        prof_wrapper.tt.toc("nk_conv13")
+        prof_wrapper.tt.tic("nk_conv13")
+        self.conv13(x12)
+        prof_wrapper.tt.toc("nk_conv13")
+        prof_wrapper.scale.weight(tensor_src="nk_conv13", data=x13)
+        # ----------------------------------------------------------------
+
+        # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x13", src="nk_conv13", dest="nk_conv14")
+        tmp_input = torch.clone(x13)
+        with profile(
+                activities=
+                [
+                    ProfilerActivity.CPU
+                ] if not usingcuda else
+                [
+                    ProfilerActivity.CPU,
+                    ProfilerActivity.CUDA
+                ],
+                profile_memory=True, record_shapes=True
+        ) as prof:
+            with record_function("model_inference"):
+                self.conv14(tmp_input)
+        prof_report = str(prof.key_averages().table()).split("\n")
+        prof_wrapper.mr.get_mem("nk_conv14", prof_report, usingcuda)
         x14 = self.conv14(x13)
+        x14 = self.conv14(x13)
+        x14 = self.conv14(x13)
+        prof_wrapper.tt.tic("nk_conv14")
+        self.conv14(x13)
+        prof_wrapper.tt.toc("nk_conv14")
+        prof_wrapper.tt.tic("nk_conv14")
+        self.conv14(x13)
+        prof_wrapper.tt.toc("nk_conv14")
+        prof_wrapper.scale.weight(tensor_src="nk_conv14", data=x14)
+        # ----------------------------------------------------------------
 
-        # UP
+        # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x14", src="nk_conv14", dest="nk_upspl2")
+        tmp_input = torch.clone(x14)
+        with profile(
+                activities=
+                [
+                    ProfilerActivity.CPU
+                ] if not usingcuda else
+                [
+                    ProfilerActivity.CPU,
+                    ProfilerActivity.CUDA
+                ],
+                profile_memory=True, record_shapes=True
+        ) as prof:
+            with record_function("model_inference"):
+                self.upsample2(tmp_input, downsample3.size(), self.inference)
+        prof_report = str(prof.key_averages().table()).split("\n")
+        prof_wrapper.mr.get_mem("nk_upspl2", prof_report, usingcuda)
         up = self.upsample2(x14, downsample3.size(), self.inference)
-        # R 54
-        x15 = self.conv15(downsample3)
-        # R -1 -3
-        x15 = torch.cat([x15, up], dim=1)
+        up = self.upsample2(x14, downsample3.size(), self.inference)
+        up = self.upsample2(x14, downsample3.size(), self.inference)
+        prof_wrapper.tt.tic("nk_upspl2")
+        self.upsample2(x14, downsample3.size(), self.inference)
+        prof_wrapper.tt.toc("nk_upspl2")
+        prof_wrapper.tt.tic("nk_upspl2")
+        self.upsample2(x14, downsample3.size(), self.inference)
+        prof_wrapper.tt.toc("nk_upspl2")
+        prof_wrapper.scale.weight(tensor_src="nk_upspl2", data=up)
+        # ----------------------------------------------------------------
 
+        # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="downsample3", src="d3_conv5", dest="nk_conv15")
+        tmp_input = torch.clone(downsample3)
+        with profile(
+                activities=
+                [
+                    ProfilerActivity.CPU
+                ] if not usingcuda else
+                [
+                    ProfilerActivity.CPU,
+                    ProfilerActivity.CUDA
+                ],
+                profile_memory=True, record_shapes=True
+        ) as prof:
+            with record_function("model_inference"):
+                self.conv15(tmp_input)
+        prof_report = str(prof.key_averages().table()).split("\n")
+        prof_wrapper.mr.get_mem("nk_conv15", prof_report, usingcuda)
+        x15 = self.conv15(downsample3)
+        x15 = self.conv15(downsample3)
+        x15 = self.conv15(downsample3)
+        prof_wrapper.tt.tic("nk_conv15")
+        self.conv15(downsample3)
+        prof_wrapper.tt.toc("nk_conv15")
+        prof_wrapper.tt.tic("nk_conv15")
+        self.conv15(downsample3)
+        prof_wrapper.tt.toc("nk_conv15")
+        prof_wrapper.scale.weight(tensor_src="nk_conv15", data=x15)
+        # ----------------------------------------------------------------
+        x15 = torch.cat([x15, up], dim=1)
+        prof_wrapper.scale.dependency_check(tensor_name="x15", src="nk_conv15", dest="nk_conv16")
+        prof_wrapper.scale.dependency_check(tensor_name="up", src="nk_upspl2", dest="nk_conv16")
+        # ----------------------------------------------------------------
+        tmp_input = torch.clone(x15)
+        with profile(
+                activities=
+                [
+                    ProfilerActivity.CPU
+                ] if not usingcuda else
+                [
+                    ProfilerActivity.CPU,
+                    ProfilerActivity.CUDA
+                ],
+                profile_memory=True, record_shapes=True
+        ) as prof:
+            with record_function("model_inference"):
+                self.conv16(tmp_input)
+        prof_report = str(prof.key_averages().table()).split("\n")
+        prof_wrapper.mr.get_mem("nk_conv16", prof_report, usingcuda)
         x16 = self.conv16(x15)
+        x16 = self.conv16(x15)
+        x16 = self.conv16(x15)
+        prof_wrapper.tt.tic("nk_conv16")
+        self.conv16(x15)
+        prof_wrapper.tt.toc("nk_conv16")
+        prof_wrapper.tt.tic("nk_conv16")
+        self.conv16(x15)
+        prof_wrapper.tt.toc("nk_conv16")
+        prof_wrapper.scale.weight(tensor_src="nk_conv16", data=x16)
+        # ----------------------------------------------------------------
+
+        # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x16", src="nk_conv16", dest="nk_conv17")
+        tmp_input = torch.clone(x16)
+        with profile(
+                activities=
+                [
+                    ProfilerActivity.CPU
+                ] if not usingcuda else
+                [
+                    ProfilerActivity.CPU,
+                    ProfilerActivity.CUDA
+                ],
+                profile_memory=True, record_shapes=True
+        ) as prof:
+            with record_function("model_inference"):
+                self.conv17(tmp_input)
+        prof_report = str(prof.key_averages().table()).split("\n")
+        prof_wrapper.mr.get_mem("nk_conv17", prof_report, usingcuda)
         x17 = self.conv17(x16)
+        x17 = self.conv17(x16)
+        x17 = self.conv17(x16)
+        prof_wrapper.tt.tic("nk_conv17")
+        self.conv17(x16)
+        prof_wrapper.tt.toc("nk_conv17")
+        prof_wrapper.tt.tic("nk_conv17")
+        self.conv17(x16)
+        prof_wrapper.tt.toc("nk_conv17")
+        prof_wrapper.scale.weight(tensor_src="nk_conv17", data=x17)
+        # ----------------------------------------------------------------
+
+        # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x17", src="nk_conv17", dest="nk_conv18")
+        tmp_input = torch.clone(x17)
+        with profile(
+                activities=
+                [
+                    ProfilerActivity.CPU
+                ] if not usingcuda else
+                [
+                    ProfilerActivity.CPU,
+                    ProfilerActivity.CUDA
+                ],
+                profile_memory=True, record_shapes=True
+        ) as prof:
+            with record_function("model_inference"):
+                self.conv18(tmp_input)
+        prof_report = str(prof.key_averages().table()).split("\n")
+        prof_wrapper.mr.get_mem("nk_conv18", prof_report, usingcuda)
         x18 = self.conv18(x17)
+        x18 = self.conv18(x17)
+        x18 = self.conv18(x17)
+        prof_wrapper.tt.tic("nk_conv18")
+        self.conv18(x17)
+        prof_wrapper.tt.toc("nk_conv18")
+        prof_wrapper.tt.tic("nk_conv18")
+        self.conv18(x17)
+        prof_wrapper.tt.toc("nk_conv18")
+        prof_wrapper.scale.weight(tensor_src="nk_conv18", data=x18)
+        # ----------------------------------------------------------------
+
+        # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x18", src="nk_conv18", dest="nk_conv19")
+        tmp_input = torch.clone(x18)
+        with profile(
+                activities=
+                [
+                    ProfilerActivity.CPU
+                ] if not usingcuda else
+                [
+                    ProfilerActivity.CPU,
+                    ProfilerActivity.CUDA
+                ],
+                profile_memory=True, record_shapes=True
+        ) as prof:
+            with record_function("model_inference"):
+                self.conv19(tmp_input)
+        prof_report = str(prof.key_averages().table()).split("\n")
+        prof_wrapper.mr.get_mem("nk_conv19", prof_report, usingcuda)
         x19 = self.conv19(x18)
+        x19 = self.conv19(x18)
+        x19 = self.conv19(x18)
+        prof_wrapper.tt.tic("nk_conv19")
+        self.conv19(x18)
+        prof_wrapper.tt.toc("nk_conv19")
+        prof_wrapper.tt.tic("nk_conv19")
+        self.conv19(x18)
+        prof_wrapper.tt.toc("nk_conv19")
+        prof_wrapper.scale.weight(tensor_src="nk_conv19", data=x19)
+        # ----------------------------------------------------------------
+
+        # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x19", src="nk_conv19", dest="nk_conv20")
+        tmp_input = torch.clone(x19)
+        with profile(
+                activities=
+                [
+                    ProfilerActivity.CPU
+                ] if not usingcuda else
+                [
+                    ProfilerActivity.CPU,
+                    ProfilerActivity.CUDA
+                ],
+                profile_memory=True, record_shapes=True
+        ) as prof:
+            with record_function("model_inference"):
+                self.conv20(tmp_input)
+        prof_report = str(prof.key_averages().table()).split("\n")
+        prof_wrapper.mr.get_mem("nk_conv20", prof_report, usingcuda)
         x20 = self.conv20(x19)
+        x20 = self.conv20(x19)
+        prof_wrapper.tt.tic("nk_conv20")
+        self.conv20(x19)
+        prof_wrapper.tt.toc("nk_conv20")
+        prof_wrapper.tt.tic("nk_conv20")
+        self.conv20(x19)
+        prof_wrapper.tt.toc("nk_conv20")
+        prof_wrapper.tt.tic("nk_conv20")
+        self.conv20(x19)
+        prof_wrapper.tt.toc("nk_conv20")
+
+        prof_wrapper.scale.weight(tensor_src="nk_conv20", data=x20)
+        # ----------------------------------------------------------------
+
+        # x1 = self.conv1(input)
+        # x2 = self.conv2(x1)
+        # x3 = self.conv3(x2)
+        # # SPP
+        # m1 = self.maxpool1(x3)
+        # m2 = self.maxpool2(x3)
+        # m3 = self.maxpool3(x3)
+        # spp = torch.cat([m3, m2, m1, x3], dim=1)
+        # # SPP end
+        # x4 = self.conv4(spp)
+        # x5 = self.conv5(x4)
+        # x6 = self.conv6(x5)
+        # x7 = self.conv7(x6)
+        # # UP
+        # up = self.upsample1(x7, downsample4.size(), self.inference)
+        # # R 85
+        # x8 = self.conv8(downsample4)
+        # # R -1 -3
+        # x8 = torch.cat([x8, up], dim=1)
+        #
+        # x9 = self.conv9(x8)
+        # x10 = self.conv10(x9)
+        # x11 = self.conv11(x10)
+        # x12 = self.conv12(x11)
+        # x13 = self.conv13(x12)
+        # x14 = self.conv14(x13)
+        #
+        # # UP
+        # up = self.upsample2(x14, downsample3.size(), self.inference)
+        # # R 54
+        # x15 = self.conv15(downsample3)
+        # # R -1 -3
+        # x15 = torch.cat([x15, up], dim=1)
+        #
+        # x16 = self.conv16(x15)
+        # x17 = self.conv17(x16)
+        # x18 = self.conv18(x17)
+        # x19 = self.conv19(x18)
+        # x20 = self.conv20(x19)
         return x20, x13, x6
 
 
@@ -1205,41 +2073,677 @@ class Yolov4Head(nn.Module):
             num_anchors=9, stride=32)
 
     def forward(self, input1, input2, input3, prof_wrapper, usingcuda=False):
+
+        # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="input1", src="nk_conv20", dest="hd_conv1")
+        tmp_input = torch.clone(input1)
+        with profile(
+                activities=
+                [
+                    ProfilerActivity.CPU
+                ] if not usingcuda else
+                [
+                    ProfilerActivity.CPU,
+                    ProfilerActivity.CUDA
+                ],
+                profile_memory=True, record_shapes=True
+        ) as prof:
+            with record_function("model_inference"):
+                self.conv1(tmp_input)
+        prof_report = str(prof.key_averages().table()).split("\n")
+        prof_wrapper.mr.get_mem("hd_conv1", prof_report, usingcuda)
         x1 = self.conv1(input1)
+        x1 = self.conv1(input1)
+        prof_wrapper.tt.tic("hd_conv1")
+        self.conv1(input1)
+        prof_wrapper.tt.toc("hd_conv1")
+        prof_wrapper.tt.tic("hd_conv1")
+        self.conv1(input1)
+        prof_wrapper.tt.toc("hd_conv1")
+        prof_wrapper.scale.weight(tensor_src="hd_conv1", data=x1)
+        # ----------------------------------------------------------------
+
+        # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x1", src="hd_conv1", dest="hd_conv2")
+        tmp_input = torch.clone(x1)
+        with profile(
+                activities=
+                [
+                    ProfilerActivity.CPU
+                ] if not usingcuda else
+                [
+                    ProfilerActivity.CPU,
+                    ProfilerActivity.CUDA
+                ],
+                profile_memory=True, record_shapes=True
+        ) as prof:
+            with record_function("model_inference"):
+                self.conv2(tmp_input)
+        prof_report = str(prof.key_averages().table()).split("\n")
+        prof_wrapper.mr.get_mem("hd_conv2", prof_report, usingcuda)
         x2 = self.conv2(x1)
+        x2 = self.conv2(x1)
+        prof_wrapper.tt.tic("hd_conv2")
+        self.conv2(x1)
+        prof_wrapper.tt.toc("hd_conv2")
 
+        prof_wrapper.tt.tic("hd_conv2")
+        self.conv2(x1)
+        prof_wrapper.tt.toc("hd_conv2")
+
+        prof_wrapper.scale.weight(tensor_src="hd_conv2", data=x2)
+        # ----------------------------------------------------------------
+
+        # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="input1", src="nk_conv20", dest="hd_conv3")
+        tmp_input = torch.clone(input1)
+        with profile(
+                activities=
+                [
+                    ProfilerActivity.CPU
+                ] if not usingcuda else
+                [
+                    ProfilerActivity.CPU,
+                    ProfilerActivity.CUDA
+                ],
+                profile_memory=True, record_shapes=True
+        ) as prof:
+            with record_function("model_inference"):
+                self.conv3(tmp_input)
+        prof_report = str(prof.key_averages().table()).split("\n")
+        prof_wrapper.mr.get_mem("hd_conv3", prof_report, usingcuda)
         x3 = self.conv3(input1)
-        # R -1 -16
+        x3 = self.conv3(input1)
+        prof_wrapper.tt.tic("hd_conv3")
+        self.conv3(input1)
+        prof_wrapper.tt.toc("hd_conv3")
+
+        prof_wrapper.tt.tic("hd_conv3")
+        self.conv3(input1)
+        prof_wrapper.tt.toc("hd_conv3")
+
+        prof_wrapper.scale.weight(tensor_src="hd_conv3", data=x3)
+        # ----------------------------------------------------------------
         x3 = torch.cat([x3, input2], dim=1)
+        prof_wrapper.scale.dependency_check(tensor_name="x3", src="hd_conv3", dest="hd_conv4")
+        prof_wrapper.scale.dependency_check(tensor_name="input2", src="nk_conv13", dest="hd_conv4")
+        # ----------------------------------------------------------------
+        tmp_input = torch.clone(x3)
+        with profile(
+                activities=
+                [
+                    ProfilerActivity.CPU
+                ] if not usingcuda else
+                [
+                    ProfilerActivity.CPU,
+                    ProfilerActivity.CUDA
+                ],
+                profile_memory=True, record_shapes=True
+        ) as prof:
+            with record_function("model_inference"):
+                self.conv4(tmp_input)
+        prof_report = str(prof.key_averages().table()).split("\n")
+        prof_wrapper.mr.get_mem("hd_conv4", prof_report, usingcuda)
         x4 = self.conv4(x3)
+        x4 = self.conv4(x3)
+        prof_wrapper.tt.tic("hd_conv4")
+        self.conv4(x3)
+        prof_wrapper.tt.toc("hd_conv4")
+
+        prof_wrapper.tt.tic("hd_conv4")
+        self.conv4(x3)
+        prof_wrapper.tt.toc("hd_conv4")
+
+        prof_wrapper.scale.weight(tensor_src="hd_conv4", data=x4)
+        # ----------------------------------------------------------------
+
+        # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x4", src="hd_conv4", dest="hd_conv5")
+        tmp_input = torch.clone(x4)
+        with profile(
+                activities=
+                [
+                    ProfilerActivity.CPU
+                ] if not usingcuda else
+                [
+                    ProfilerActivity.CPU,
+                    ProfilerActivity.CUDA
+                ],
+                profile_memory=True, record_shapes=True
+        ) as prof:
+            with record_function("model_inference"):
+                self.conv5(tmp_input)
+        prof_report = str(prof.key_averages().table()).split("\n")
+        prof_wrapper.mr.get_mem("hd_conv5", prof_report, usingcuda)
         x5 = self.conv5(x4)
+        x5 = self.conv5(x4)
+        prof_wrapper.tt.tic("hd_conv5")
+        self.conv5(x4)
+        prof_wrapper.tt.toc("hd_conv5")
+
+        prof_wrapper.tt.tic("hd_conv5")
+        self.conv5(x4)
+        prof_wrapper.tt.toc("hd_conv5")
+
+        prof_wrapper.scale.weight(tensor_src="hd_conv5", data=x5)
+        # ----------------------------------------------------------------
+
+        # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x5", src="hd_conv5", dest="hd_conv6")
+        tmp_input = torch.clone(x5)
+        with profile(
+                activities=
+                [
+                    ProfilerActivity.CPU
+                ] if not usingcuda else
+                [
+                    ProfilerActivity.CPU,
+                    ProfilerActivity.CUDA
+                ],
+                profile_memory=True, record_shapes=True
+        ) as prof:
+            with record_function("model_inference"):
+                self.conv6(tmp_input)
+        prof_report = str(prof.key_averages().table()).split("\n")
+        prof_wrapper.mr.get_mem("hd_conv6", prof_report, usingcuda)
         x6 = self.conv6(x5)
+        x6 = self.conv6(x5)
+        prof_wrapper.tt.tic("hd_conv6")
+        self.conv6(x5)
+        prof_wrapper.tt.toc("hd_conv6")
+
+        prof_wrapper.tt.tic("hd_conv6")
+        self.conv6(x5)
+        prof_wrapper.tt.toc("hd_conv6")
+
+        prof_wrapper.scale.weight(tensor_src="hd_conv6", data=x6)
+        # ----------------------------------------------------------------
+
+        # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x6", src="hd_conv6", dest="hd_conv7")
+        tmp_input = torch.clone(x6)
+        with profile(
+                activities=
+                [
+                    ProfilerActivity.CPU
+                ] if not usingcuda else
+                [
+                    ProfilerActivity.CPU,
+                    ProfilerActivity.CUDA
+                ],
+                profile_memory=True, record_shapes=True
+        ) as prof:
+            with record_function("model_inference"):
+                self.conv7(tmp_input)
+        prof_report = str(prof.key_averages().table()).split("\n")
+        prof_wrapper.mr.get_mem("hd_conv7", prof_report, usingcuda)
         x7 = self.conv7(x6)
+        x7 = self.conv7(x6)
+        prof_wrapper.tt.tic("hd_conv7")
+        self.conv7(x6)
+        prof_wrapper.tt.toc("hd_conv7")
+
+        prof_wrapper.tt.tic("hd_conv7")
+        self.conv7(x6)
+        prof_wrapper.tt.toc("hd_conv7")
+
+        prof_wrapper.scale.weight(tensor_src="hd_conv7", data=x7)
+        # ----------------------------------------------------------------
+
+        # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x7", src="hd_conv7", dest="hd_conv8")
+        tmp_input = torch.clone(x7)
+        with profile(
+                activities=
+                [
+                    ProfilerActivity.CPU
+                ] if not usingcuda else
+                [
+                    ProfilerActivity.CPU,
+                    ProfilerActivity.CUDA
+                ],
+                profile_memory=True, record_shapes=True
+        ) as prof:
+            with record_function("model_inference"):
+                self.conv8(tmp_input)
+        prof_report = str(prof.key_averages().table()).split("\n")
+        prof_wrapper.mr.get_mem("hd_conv8", prof_report, usingcuda)
         x8 = self.conv8(x7)
+        x8 = self.conv8(x7)
+        prof_wrapper.tt.tic("hd_conv8")
+        self.conv8(x7)
+        prof_wrapper.tt.toc("hd_conv8")
+
+        prof_wrapper.tt.tic("hd_conv8")
+        self.conv8(x7)
+        prof_wrapper.tt.toc("hd_conv8")
+
+        prof_wrapper.scale.weight(tensor_src="hd_conv8", data=x8)
+        # ----------------------------------------------------------------
+
+        # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x8", src="hd_conv8", dest="hd_conv9")
+        tmp_input = torch.clone(x8)
+        with profile(
+                activities=
+                [
+                    ProfilerActivity.CPU
+                ] if not usingcuda else
+                [
+                    ProfilerActivity.CPU,
+                    ProfilerActivity.CUDA
+                ],
+                profile_memory=True, record_shapes=True
+        ) as prof:
+            with record_function("model_inference"):
+                self.conv9(tmp_input)
+        prof_report = str(prof.key_averages().table()).split("\n")
+        prof_wrapper.mr.get_mem("hd_conv9", prof_report, usingcuda)
         x9 = self.conv9(x8)
+        x9 = self.conv9(x8)
+        prof_wrapper.tt.tic("hd_conv9")
+        self.conv9(x8)
+        prof_wrapper.tt.toc("hd_conv9")
+
+        prof_wrapper.tt.tic("hd_conv9")
+        self.conv9(x8)
+        prof_wrapper.tt.toc("hd_conv9")
+
+        prof_wrapper.scale.weight(tensor_src="hd_conv9", data=x9)
+        # ----------------------------------------------------------------
+
+        # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x9", src="hd_conv9", dest="hd_conv10")
+        tmp_input = torch.clone(x9)
+        with profile(
+                activities=
+                [
+                    ProfilerActivity.CPU
+                ] if not usingcuda else
+                [
+                    ProfilerActivity.CPU,
+                    ProfilerActivity.CUDA
+                ],
+                profile_memory=True, record_shapes=True
+        ) as prof:
+            with record_function("model_inference"):
+                self.conv10(tmp_input)
+        prof_report = str(prof.key_averages().table()).split("\n")
+        prof_wrapper.mr.get_mem("hd_conv10", prof_report, usingcuda)
         x10 = self.conv10(x9)
+        x10 = self.conv10(x9)
+        prof_wrapper.tt.tic("hd_conv10")
+        self.conv10(x9)
+        prof_wrapper.tt.toc("hd_conv10")
 
-        # R -4
+        prof_wrapper.tt.tic("hd_conv10")
+        self.conv10(x9)
+        prof_wrapper.tt.toc("hd_conv10")
+
+        prof_wrapper.scale.weight(tensor_src="hd_conv10", data=x10)
+        # ----------------------------------------------------------------
+
+        # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x8", src="hd_conv8", dest="hd_conv11")
+        tmp_input = torch.clone(x8)
+        with profile(
+                activities=
+                [
+                    ProfilerActivity.CPU
+                ] if not usingcuda else
+                [
+                    ProfilerActivity.CPU,
+                    ProfilerActivity.CUDA
+                ],
+                profile_memory=True, record_shapes=True
+        ) as prof:
+            with record_function("model_inference"):
+                self.conv11(tmp_input)
+        prof_report = str(prof.key_averages().table()).split("\n")
+        prof_wrapper.mr.get_mem("hd_conv11", prof_report, usingcuda)
         x11 = self.conv11(x8)
-        # R -1 -37
-        x11 = torch.cat([x11, input3], dim=1)
+        x11 = self.conv11(x8)
+        prof_wrapper.tt.tic("hd_conv11")
+        self.conv11(x8)
+        prof_wrapper.tt.toc("hd_conv11")
 
+        prof_wrapper.tt.tic("hd_conv11")
+        self.conv11(x8)
+        prof_wrapper.tt.toc("hd_conv11")
+
+        prof_wrapper.scale.weight(tensor_src="hd_conv11", data=x11)
+        # ----------------------------------------------------------------
+        x11 = torch.cat([x11, input3], dim=1)
+        prof_wrapper.scale.dependency_check(tensor_name="x11", src="hd_conv11", dest="hd_conv12")
+        prof_wrapper.scale.dependency_check(tensor_name="input3", src="nk_conv6", dest="hd_conv12")
+        # ----------------------------------------------------------------
+        tmp_input = torch.clone(x11)
+        with profile(
+                activities=
+                [
+                    ProfilerActivity.CPU
+                ] if not usingcuda else
+                [
+                    ProfilerActivity.CPU,
+                    ProfilerActivity.CUDA
+                ],
+                profile_memory=True, record_shapes=True
+        ) as prof:
+            with record_function("model_inference"):
+                self.conv12(tmp_input)
+        prof_report = str(prof.key_averages().table()).split("\n")
+        prof_wrapper.mr.get_mem("hd_conv12", prof_report, usingcuda)
         x12 = self.conv12(x11)
+        x12 = self.conv12(x11)
+        prof_wrapper.tt.tic("hd_conv12")
+        self.conv12(x11)
+        prof_wrapper.tt.toc("hd_conv12")
+
+        prof_wrapper.tt.tic("hd_conv12")
+        self.conv12(x11)
+        prof_wrapper.tt.toc("hd_conv12")
+
+        prof_wrapper.scale.weight(tensor_src="hd_conv12", data=x12)
+        # ----------------------------------------------------------------
+
+        # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x12", src="hd_conv12", dest="hd_conv13")
+        tmp_input = torch.clone(x12)
+        with profile(
+                activities=
+                [
+                    ProfilerActivity.CPU
+                ] if not usingcuda else
+                [
+                    ProfilerActivity.CPU,
+                    ProfilerActivity.CUDA
+                ],
+                profile_memory=True, record_shapes=True
+        ) as prof:
+            with record_function("model_inference"):
+                self.conv13(tmp_input)
+        prof_report = str(prof.key_averages().table()).split("\n")
+        prof_wrapper.mr.get_mem("hd_conv13", prof_report, usingcuda)
         x13 = self.conv13(x12)
+        x13 = self.conv13(x12)
+        prof_wrapper.tt.tic("hd_conv13")
+        self.conv13(x12)
+        prof_wrapper.tt.toc("hd_conv13")
+
+        prof_wrapper.tt.tic("hd_conv13")
+        self.conv13(x12)
+        prof_wrapper.tt.toc("hd_conv13")
+
+        prof_wrapper.scale.weight(tensor_src="hd_conv13", data=x13)
+        # ----------------------------------------------------------------
+
+        # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x13", src="hd_conv13", dest="hd_conv14")
+        tmp_input = torch.clone(x13)
+        with profile(
+                activities=
+                [
+                    ProfilerActivity.CPU
+                ] if not usingcuda else
+                [
+                    ProfilerActivity.CPU,
+                    ProfilerActivity.CUDA
+                ],
+                profile_memory=True, record_shapes=True
+        ) as prof:
+            with record_function("model_inference"):
+                self.conv14(tmp_input)
+        prof_report = str(prof.key_averages().table()).split("\n")
+        prof_wrapper.mr.get_mem("hd_conv14", prof_report, usingcuda)
         x14 = self.conv14(x13)
+        x14 = self.conv14(x13)
+        prof_wrapper.tt.tic("hd_conv14")
+        self.conv14(x13)
+        prof_wrapper.tt.toc("hd_conv14")
+
+        prof_wrapper.tt.tic("hd_conv14")
+        self.conv14(x13)
+        prof_wrapper.tt.toc("hd_conv14")
+
+        prof_wrapper.scale.weight(tensor_src="hd_conv14", data=x14)
+        # ----------------------------------------------------------------
+
+        # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x14", src="hd_conv14", dest="hd_conv15")
+        tmp_input = torch.clone(x14)
+        with profile(
+                activities=
+                [
+                    ProfilerActivity.CPU
+                ] if not usingcuda else
+                [
+                    ProfilerActivity.CPU,
+                    ProfilerActivity.CUDA
+                ],
+                profile_memory=True, record_shapes=True
+        ) as prof:
+            with record_function("model_inference"):
+                self.conv15(tmp_input)
+        prof_report = str(prof.key_averages().table()).split("\n")
+        prof_wrapper.mr.get_mem("hd_conv15", prof_report, usingcuda)
         x15 = self.conv15(x14)
+        x15 = self.conv15(x14)
+        prof_wrapper.tt.tic("hd_conv15")
+        self.conv15(x14)
+        prof_wrapper.tt.toc("hd_conv15")
+
+        prof_wrapper.tt.tic("hd_conv15")
+        self.conv15(x14)
+        prof_wrapper.tt.toc("hd_conv15")
+
+        prof_wrapper.scale.weight(tensor_src="hd_conv15", data=x15)
+        # ----------------------------------------------------------------
+
+        # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x15", src="hd_conv15", dest="hd_conv16")
+        tmp_input = torch.clone(x15)
+        with profile(
+                activities=
+                [
+                    ProfilerActivity.CPU
+                ] if not usingcuda else
+                [
+                    ProfilerActivity.CPU,
+                    ProfilerActivity.CUDA
+                ],
+                profile_memory=True, record_shapes=True
+        ) as prof:
+            with record_function("model_inference"):
+                self.conv16(tmp_input)
+        prof_report = str(prof.key_averages().table()).split("\n")
+        prof_wrapper.mr.get_mem("hd_conv16", prof_report, usingcuda)
         x16 = self.conv16(x15)
-        x17 = self.conv17(x16)
+        x16 = self.conv16(x15)
+        prof_wrapper.tt.tic("hd_conv16")
+        self.conv16(x15)
+        prof_wrapper.tt.toc("hd_conv16")
+
+        prof_wrapper.tt.tic("hd_conv16")
+        self.conv16(x15)
+        prof_wrapper.tt.toc("hd_conv16")
+
+        prof_wrapper.scale.weight(tensor_src="hd_conv16", data=x16)
+        # ----------------------------------------------------------------
+
+        # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x16", src="hd_conv16", dest="hd_conv17")
+        tmp_input = torch.clone(x16)
+        with profile(
+                activities=
+                [
+                    ProfilerActivity.CPU
+                ] if not usingcuda else
+                [
+                    ProfilerActivity.CPU,
+                    ProfilerActivity.CUDA
+                ],
+                profile_memory=True, record_shapes=True
+        ) as prof:
+            with record_function("model_inference"):
+                self.conv17(tmp_input)
+        prof_report = str(prof.key_averages().table()).split("\n")
+        prof_wrapper.mr.get_mem("hd_conv17", prof_report, usingcuda)
+
+        with profile(activities=[ProfilerActivity.CUDA], record_shapes=True) as prof:
+            with record_function("model_inference"):
+                x17 = self.conv17(x16)
+        prof_wrapper.tt.get_time("hd_conv17", (prof.key_averages().self_cpu_time_total + sum([item.cuda_time for item in prof.events()])) / 1000)
+        prof_wrapper.scale.weight(tensor_src="hd_conv17", data=x17)
+        # ----------------------------------------------------------------
+
+        # ----------------------------------------------------------------
+        prof_wrapper.scale.dependency_check(tensor_name="x17", src="hd_conv17", dest="hd_conv18")
+        tmp_input = torch.clone(x17)
+        with profile(
+                activities=
+                [
+                    ProfilerActivity.CPU
+                ] if not usingcuda else
+                [
+                    ProfilerActivity.CPU,
+                    ProfilerActivity.CUDA
+                ],
+                profile_memory=True, record_shapes=True
+        ) as prof:
+            with record_function("model_inference"):
+                self.conv18(tmp_input)
+        prof_report = str(prof.key_averages().table()).split("\n")
+        prof_wrapper.mr.get_mem("hd_conv18", prof_report, usingcuda)
         x18 = self.conv18(x17)
+        x18 = self.conv18(x17)
+        prof_wrapper.tt.tic("hd_conv18")
+        self.conv18(x17)
+        prof_wrapper.tt.toc("hd_conv18")
+
+        prof_wrapper.tt.tic("hd_conv18")
+        self.conv18(x17)
+        prof_wrapper.tt.toc("hd_conv18")
+
+        prof_wrapper.scale.weight(tensor_src="hd_conv18", data=x18)
+        # ----------------------------------------------------------------
+
+        # x1 = self.conv1(input1)
+        # x2 = self.conv2(x1)
+        #
+        # x3 = self.conv3(input1)
+        # # R -1 -16
+        # x3 = torch.cat([x3, input2], dim=1)
+        # x4 = self.conv4(x3)
+        # x5 = self.conv5(x4)
+        # x6 = self.conv6(x5)
+        # x7 = self.conv7(x6)
+        # x8 = self.conv8(x7)
+        # x9 = self.conv9(x8)
+        # x10 = self.conv10(x9)
+        #
+        # # R -4
+        # x11 = self.conv11(x8)
+        # # R -1 -37
+        # x11 = torch.cat([x11, input3], dim=1)
+        #
+        # x12 = self.conv12(x11)
+        # x13 = self.conv13(x12)
+        # x14 = self.conv14(x13)
+        # x15 = self.conv15(x14)
+        # x16 = self.conv16(x15)
+        # x17 = self.conv17(x16)
+        # x18 = self.conv18(x17)
 
         if self.inference:
+            # ----------------------------------------------------------------
+            prof_wrapper.scale.dependency_check(tensor_name="x2", src="hd_conv2", dest="yolo1")
+            tmp_input = torch.clone(x2)
+            with profile(
+                    activities=
+                    [
+                        ProfilerActivity.CPU
+                    ] if not usingcuda else
+                    [
+                        ProfilerActivity.CPU,
+                        ProfilerActivity.CUDA
+                    ],
+                    profile_memory=True, record_shapes=True
+            ) as prof:
+                with record_function("model_inference"):
+                    self.yolo1(tmp_input)
+            prof_report = str(prof.key_averages().table()).split("\n")
+            prof_wrapper.mr.get_mem("yolo1", prof_report, usingcuda)
+
+            prof_wrapper.tt.tic("yolo1")
             y1 = self.yolo1(x2)
+            prof_wrapper.tt.toc("yolo1")
+            prof_wrapper.scale.weight(tensor_src="yolo1", data=y1)
+            # ----------------------------------------------------------------
+
+            # ----------------------------------------------------------------
+            prof_wrapper.scale.dependency_check(tensor_name="x10", src="hd_conv10", dest="yolo2")
+            tmp_input = torch.clone(x10)
+            with profile(
+                    activities=
+                    [
+                        ProfilerActivity.CPU
+                    ] if not usingcuda else
+                    [
+                        ProfilerActivity.CPU,
+                        ProfilerActivity.CUDA
+                    ],
+                    profile_memory=True, record_shapes=True
+            ) as prof:
+                with record_function("model_inference"):
+                    self.yolo2(tmp_input)
+            prof_report = str(prof.key_averages().table()).split("\n")
+            prof_wrapper.mr.get_mem("yolo2", prof_report, usingcuda)
+
+            prof_wrapper.tt.tic("yolo2")
             y2 = self.yolo2(x10)
+            prof_wrapper.tt.toc("yolo2")
+            prof_wrapper.scale.weight(tensor_src="yolo2", data=y2)
+            # ----------------------------------------------------------------
+
+            # ----------------------------------------------------------------
+            prof_wrapper.scale.dependency_check(tensor_name="x18", src="hd_conv18", dest="yolo3")
+            tmp_input = torch.clone(x18)
+            with profile(
+                    activities=
+                    [
+                        ProfilerActivity.CPU
+                    ] if not usingcuda else
+                    [
+                        ProfilerActivity.CPU,
+                        ProfilerActivity.CUDA
+                    ],
+                    profile_memory=True, record_shapes=True
+            ) as prof:
+                with record_function("model_inference"):
+                    self.yolo3(tmp_input)
+            prof_report = str(prof.key_averages().table()).split("\n")
+            prof_wrapper.mr.get_mem("yolo3", prof_report, usingcuda)
+
+            prof_wrapper.tt.tic("yolo3")
             y3 = self.yolo3(x18)
+            prof_wrapper.tt.toc("yolo3")
+            prof_wrapper.scale.weight(tensor_src="yolo3", data=y3)
+            # ----------------------------------------------------------------
+
+            # y1 = self.yolo1(x2)
+            # y2 = self.yolo2(x10)
+            # y3 = self.yolo3(x18)
+            prof_wrapper.scale.dependency_check(tensor_name="y1", src="yolo1", dest="inference_output")
+            prof_wrapper.scale.dependency_check(tensor_name="y2", src="yolo2", dest="inference_output")
+            prof_wrapper.scale.dependency_check(tensor_name="y3", src="yolo3", dest="inference_output")
 
             return get_region_boxes([y1, y2, y3])
 
         else:
+            prof_wrapper.scale.dependency_check(tensor_name="x2", src="hd_conv2", dest="head_output")
+            prof_wrapper.scale.dependency_check(tensor_name="x10", src="hd_conv10", dest="head_output")
+            prof_wrapper.scale.dependency_check(tensor_name="x18", src="hd_conv18", dest="head_output")
+
             return [x2, x10, x18]
 
 
@@ -1274,12 +2778,12 @@ class Yolov4(nn.Module):
 
     def forward(self, input, prof_wrapper, usingcuda=False):
         d1 = self.down1(input, prof_wrapper, usingcuda)
-        d2 = self.down2(d1, prof_wrapper, usingcuda)
-        d3 = self.down3(d2, prof_wrapper, usingcuda)
-        d4 = self.down4(d3, prof_wrapper, usingcuda)
-        d5 = self.down5(d4, prof_wrapper, usingcuda)
-        x20, x13, x6 = self.neck(d5, d4, d3, prof_wrapper, usingcuda)
-        output = self.head(x20, x13, x6, prof_wrapper, usingcuda)
+        d2 = self.down2(d1, prof_wrapper, usingcuda=usingcuda)
+        d3 = self.down3(d2, prof_wrapper, usingcuda=usingcuda)
+        d4 = self.down4(d3, prof_wrapper, usingcuda=usingcuda)
+        d5 = self.down5(d4, prof_wrapper, usingcuda=usingcuda)
+        x20, x13, x6 = self.neck(d5, d4, d3, prof_wrapper, usingcuda=usingcuda)
+        output = self.head(x20, x13, x6, prof_wrapper, usingcuda=usingcuda)
         return output
 
 
