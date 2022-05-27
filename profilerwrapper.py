@@ -22,13 +22,15 @@ class ProfilerWrapper(object):
                 writer.writerow([key,
                                  "%.4f" % (min(self.tt.time_records[key]) * 1000),
                                  "%.4f" % (self.scale.scaleRec[key] / (1024 ** 2)),
-                                 "%.4f" % (sum(self.mr.mem_cuda[key]) / len(self.mr.mem_cuda[key]))])
+                                 "%.4f" % (sum(self.mr.mem_cuda[key]) / len(self.mr.mem_cuda[key])),
+                                 self.scale.flopRec[key]])
         else:
             for key, value in self.tt.time_records.items():
                 writer.writerow([key,
                                  "%.4f" % sum(self.tt.time_records[key]) / len(self.tt.time_records[key]),
                                  "%.4f" % (self.scale.scaleRec[key] / (1024 ** 2)),
-                                 "%.4f" % (sum(self.mr.mem_cpu[key]) / len(self.mr.mem_cpu[key]))])
+                                 "%.4f" % (sum(self.mr.mem_cpu[key]) / len(self.mr.mem_cpu[key])),
+                                 self.scale.flopRec[key]])
         file.close()
         file = open("table_2.csv", "w")
         writer = csv.writer(file)

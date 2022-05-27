@@ -145,6 +145,7 @@ class DownSample1(nn.Module):
                 self.conv1(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d1_conv1", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("d1_conv1", sum([item.flops for item in prof.events()]))
         x1 = self.conv1(input)
         x1 = self.conv1(input)
 
@@ -178,6 +179,8 @@ class DownSample1(nn.Module):
                 self.conv2(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d1_conv2", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("d1_conv2", sum([item.flops for item in prof.events()]))
+
         x2 = self.conv2(x1)
         x2 = self.conv2(x1)
 
@@ -210,6 +213,8 @@ class DownSample1(nn.Module):
                 self.conv3(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d1_conv3", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("d1_conv3", sum([item.flops for item in prof.events()]))
+
         x3 = self.conv3(x2)
         x3 = self.conv3(x2)
 
@@ -243,6 +248,7 @@ class DownSample1(nn.Module):
                 self.conv4(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d1_conv4", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("d1_conv4", sum([item.flops for item in prof.events()]))
         x4 = self.conv4(x2)
         x4 = self.conv4(x2)
 
@@ -275,6 +281,7 @@ class DownSample1(nn.Module):
                 self.conv5(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d1_conv5", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("d1_conv5", sum([item.flops for item in prof.events()]))
         x5 = self.conv5(x4)
         x5 = self.conv5(x4)
 
@@ -308,6 +315,7 @@ class DownSample1(nn.Module):
                 self.conv6(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d1_conv6", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("d1_conv6", sum([item.flops for item in prof.events()]))
         x6 = self.conv6(x5)
         x6 = self.conv6(x5)
 
@@ -342,6 +350,7 @@ class DownSample1(nn.Module):
 
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d1_conv7", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("d1_conv7", sum([item.flops for item in prof.events()]))
         x7 = self.conv7(x6)
         x7 = self.conv7(x6)
 
@@ -378,6 +387,8 @@ class DownSample1(nn.Module):
                 self.conv8(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d1_conv8", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("d1_conv8", sum([item.flops for item in prof.events()]))
+
         x8 = self.conv8(x7)
         x8 = self.conv8(x7)
 
@@ -430,6 +441,7 @@ class DownSample2(nn.Module):
                 self.conv1(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d2_conv1", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("d2_conv1", sum([item.flops for item in prof.events()]))
         x1 = self.conv1(input)
         x1 = self.conv1(input)
 
@@ -463,6 +475,7 @@ class DownSample2(nn.Module):
                 self.conv2(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d2_conv2", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("d2_conv2", sum([item.flops for item in prof.events()]))
         x2 = self.conv2(x1)
         x2 = self.conv2(x1)
 
@@ -495,6 +508,7 @@ class DownSample2(nn.Module):
                 self.conv3(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d2_conv3", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("d2_conv3", sum([item.flops for item in prof.events()]))
         x3 = self.conv3(x1)
         x3 = self.conv3(x1)
 
@@ -527,6 +541,7 @@ class DownSample2(nn.Module):
                 self.resblock(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d2_resblock", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("d2_resblock", sum([item.flops for item in prof.events()]))
         r = self.resblock(x3)
         r = self.resblock(x3)
 
@@ -561,6 +576,7 @@ class DownSample2(nn.Module):
 
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d2_conv4", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("d2_conv4", sum([item.flops for item in prof.events()]))
         x4 = self.conv4(r)
         x4 = self.conv4(r)
 
@@ -595,6 +611,8 @@ class DownSample2(nn.Module):
                 self.conv5(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d2_conv5", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("d2_conv5", sum([item.flops for item in prof.events()]))
+
         x5 = self.conv5(x4)
         x5 = self.conv5(x4)
 
@@ -651,6 +669,8 @@ class DownSample3(nn.Module):
                 self.conv1(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d3_conv1", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("d3_conv1", sum([item.flops for item in prof.events()]))
+
         x1 = self.conv1(input)
         x1 = self.conv1(input)
 
@@ -683,6 +703,8 @@ class DownSample3(nn.Module):
                 self.conv2(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d3_conv2", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("d3_conv2", sum([item.flops for item in prof.events()]))
+
         x2 = self.conv2(x1)
         x2 = self.conv2(x1)
 
@@ -716,6 +738,8 @@ class DownSample3(nn.Module):
                 self.conv3(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d3_conv3", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("d3_conv3", sum([item.flops for item in prof.events()]))
+
         x3 = self.conv3(x1)
         x3 = self.conv3(x1)
 
@@ -749,6 +773,8 @@ class DownSample3(nn.Module):
                 self.resblock(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d3_resblock", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("d3_resblock", sum([item.flops for item in prof.events()]))
+
         r = self.resblock(x3)
         r = self.resblock(x3)
 
@@ -783,6 +809,8 @@ class DownSample3(nn.Module):
 
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d3_conv4", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("d3_conv4", sum([item.flops for item in prof.events()]))
+
         x4 = self.conv4(r)
         x4 = self.conv4(r)
 
@@ -817,6 +845,8 @@ class DownSample3(nn.Module):
                 self.conv5(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d3_conv5", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("d3_conv5", sum([item.flops for item in prof.events()]))
+
         x5 = self.conv5(x4)
         x5 = self.conv5(x4)
 
@@ -874,6 +904,8 @@ class DownSample4(nn.Module):
                 self.conv1(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d4_conv1", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("d4_conv1", sum([item.flops for item in prof.events()]))
+
         x1 = self.conv1(input)
         x1 = self.conv1(input)
 
@@ -906,6 +938,8 @@ class DownSample4(nn.Module):
                 self.conv2(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d4_conv2", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("d4_conv2", sum([item.flops for item in prof.events()]))
+
         x2 = self.conv2(x1)
         x2 = self.conv2(x1)
 
@@ -939,6 +973,8 @@ class DownSample4(nn.Module):
                 self.conv3(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d4_conv3", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("d4_conv3", sum([item.flops for item in prof.events()]))
+
         x3 = self.conv3(x1)
         x3 = self.conv3(x1)
 
@@ -971,6 +1007,8 @@ class DownSample4(nn.Module):
                 self.resblock(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d4_resblock", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("d4_resblock", sum([item.flops for item in prof.events()]))
+
         r = self.resblock(x3)
         r = self.resblock(x3)
 
@@ -1004,6 +1042,8 @@ class DownSample4(nn.Module):
                 self.conv4(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d4_conv4", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("d4_conv4", sum([item.flops for item in prof.events()]))
+
         x4 = self.conv4(r)
         x4 = self.conv4(r)
 
@@ -1037,6 +1077,8 @@ class DownSample4(nn.Module):
                 self.conv5(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d4_conv5", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("d4_conv5", sum([item.flops for item in prof.events()]))
+
         x5 = self.conv5(x4)
         x5 = self.conv5(x4)
 
@@ -1093,6 +1135,8 @@ class DownSample5(nn.Module):
                 self.conv1(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d5_conv1", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("d5_conv1", sum([item.flops for item in prof.events()]))
+
         x1 = self.conv1(input)
         prof_wrapper.tt.tic("d5_conv1")
         self.conv1(input)
@@ -1127,6 +1171,8 @@ class DownSample5(nn.Module):
                 self.conv2(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d5_conv2", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("d5_conv2", sum([item.flops for item in prof.events()]))
+
         x2 = self.conv2(x1)
         prof_wrapper.tt.tic("d5_conv2")
         self.conv2(x1)
@@ -1160,6 +1206,8 @@ class DownSample5(nn.Module):
                 self.conv3(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d5_conv3", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("d5_conv3", sum([item.flops for item in prof.events()]))
+
         x3 = self.conv3(x1)
         prof_wrapper.tt.tic("d5_conv3")
         self.conv3(x1)
@@ -1193,6 +1241,8 @@ class DownSample5(nn.Module):
                 self.resblock(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d5_resblock", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("d5_resblock", sum([item.flops for item in prof.events()]))
+
         r = self.resblock(x3)
         prof_wrapper.tt.tic("d5_resblock")
         self.resblock(x3)
@@ -1227,6 +1277,8 @@ class DownSample5(nn.Module):
                 self.conv4(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d5_conv4", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("d5_conv4", sum([item.flops for item in prof.events()]))
+
         x4 = self.conv4(r)
         prof_wrapper.tt.tic("d5_conv4")
         self.conv4(r)
@@ -1261,6 +1313,8 @@ class DownSample5(nn.Module):
                 self.conv5(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d5_conv5", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("d5_conv5", sum([item.flops for item in prof.events()]))
+
         x5 = self.conv5(x4)
         prof_wrapper.tt.tic("d5_conv5")
         self.conv5(x4)
@@ -1348,6 +1402,8 @@ class Neck(nn.Module):
                 self.conv1(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("nk_conv1", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("nk_conv1", sum([item.flops for item in prof.events()]))
+
         x1 = self.conv1(input)
 
         prof_wrapper.tt.tic("nk_conv1")
@@ -1386,6 +1442,8 @@ class Neck(nn.Module):
                 self.conv2(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("nk_conv2", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("nk_conv2", sum([item.flops for item in prof.events()]))
+
         x2 = self.conv2(x1)
         prof_wrapper.tt.tic("nk_conv2")
         self.conv2(x1)
@@ -1420,6 +1478,8 @@ class Neck(nn.Module):
                 self.conv3(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("nk_conv3", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("nk_conv3", sum([item.flops for item in prof.events()]))
+
         x3 = self.conv3(x2)
         prof_wrapper.tt.tic("nk_conv3")
         self.conv3(x2)
@@ -1457,6 +1517,8 @@ class Neck(nn.Module):
                 self.maxpool1(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("nk_maxpl1", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("nk_maxpl1", sum([item.flops for item in prof.events()]))
+
         m1 = self.maxpool1(x3)
         prof_wrapper.tt.tic("nk_maxpl1")
         self.maxpool1(x3)
@@ -1486,6 +1548,8 @@ class Neck(nn.Module):
                 self.maxpool2(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("nk_maxpl2", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("nk_maxpl2", sum([item.flops for item in prof.events()]))
+
         m2 = self.maxpool2(x3)
         prof_wrapper.tt.tic("nk_maxpl2")
         self.maxpool2(x3)
@@ -1523,6 +1587,8 @@ class Neck(nn.Module):
                 self.maxpool3(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("nk_maxpl3", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("nk_maxpl3", sum([item.flops for item in prof.events()]))
+
         m3 = self.maxpool3(x3)
         prof_wrapper.tt.tic("nk_maxpl3")
         self.maxpool3(x3)
@@ -1564,6 +1630,8 @@ class Neck(nn.Module):
                 self.conv4(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("nk_conv4", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("nk_conv4", sum([item.flops for item in prof.events()]))
+
         x4 = self.conv4(spp)
         x4 = self.conv4(spp)
         x4 = self.conv4(spp)
@@ -1594,6 +1662,8 @@ class Neck(nn.Module):
                 self.conv5(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("nk_conv5", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("nk_conv5", sum([item.flops for item in prof.events()]))
+
         x5 = self.conv5(x4)
         prof_wrapper.tt.tic("nk_conv5")
         self.conv5(x4)
@@ -1631,6 +1701,8 @@ class Neck(nn.Module):
                 self.conv6(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("nk_conv6", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("nk_conv6", sum([item.flops for item in prof.events()]))
+
         x6 = self.conv6(x5)
         prof_wrapper.tt.tic("nk_conv6")
         self.conv6(x5)
@@ -1669,6 +1741,8 @@ class Neck(nn.Module):
                 self.conv7(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("nk_conv7", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("nk_conv7", sum([item.flops for item in prof.events()]))
+
         x7 = self.conv7(x6)
         prof_wrapper.tt.tic("nk_conv7")
         self.conv7(x6)
@@ -1706,6 +1780,8 @@ class Neck(nn.Module):
                 self.upsample1(tmp_input, downsample4.size(), self.inference)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("nk_upspl1", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("nk_upspl1", sum([item.flops for item in prof.events()]))
+
         up = self.upsample1(x7, downsample4.size(), self.inference)
         prof_wrapper.tt.tic("nk_upspl1")
         self.upsample1(x7, downsample4.size(), self.inference)
@@ -1743,6 +1819,8 @@ class Neck(nn.Module):
                 self.conv8(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("nk_conv8", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("nk_conv8", sum([item.flops for item in prof.events()]))
+
         x8 = self.conv8(downsample4)
         prof_wrapper.tt.tic("nk_conv8")
         self.conv8(downsample4)
@@ -1781,6 +1859,8 @@ class Neck(nn.Module):
                 self.conv9(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("nk_conv9", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("nk_conv9", sum([item.flops for item in prof.events()]))
+
         x9 = self.conv9(x8)
         prof_wrapper.tt.tic("nk_conv9")
         self.conv9(x8)
@@ -1818,6 +1898,8 @@ class Neck(nn.Module):
                 self.conv10(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("nk_conv10", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("nk_conv10", sum([item.flops for item in prof.events()]))
+
         x10 = self.conv10(x9)
         prof_wrapper.tt.tic("nk_conv10")
         self.conv10(x9)
@@ -1855,6 +1937,8 @@ class Neck(nn.Module):
                 self.conv11(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("nk_conv11", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("nk_conv11", sum([item.flops for item in prof.events()]))
+
         x11 = self.conv11(x10)
         prof_wrapper.tt.tic("nk_conv11")
         self.conv11(x10)
@@ -1892,6 +1976,8 @@ class Neck(nn.Module):
                 self.conv12(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("nk_conv12", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("nk_conv12", sum([item.flops for item in prof.events()]))
+
         x12 = self.conv12(x11)
 
         prof_wrapper.tt.tic("nk_conv12")
@@ -1930,6 +2016,8 @@ class Neck(nn.Module):
                 self.conv13(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("nk_conv13", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("nk_conv13", sum([item.flops for item in prof.events()]))
+
         x13 = self.conv13(x12)
         prof_wrapper.tt.tic("nk_conv13")
         self.conv13(x12)
@@ -1967,6 +2055,8 @@ class Neck(nn.Module):
                 self.conv14(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("nk_conv14", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("nk_conv14", sum([item.flops for item in prof.events()]))
+
         x14 = self.conv14(x13)
         prof_wrapper.tt.tic("nk_conv14")
         self.conv14(x13)
@@ -2004,6 +2094,8 @@ class Neck(nn.Module):
                 self.upsample2(tmp_input, downsample3.size(), self.inference)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("nk_upspl2", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("nk_upspl2", sum([item.flops for item in prof.events()]))
+
         up = self.upsample2(x14, downsample3.size(), self.inference)
         prof_wrapper.tt.tic("nk_upspl2")
         self.upsample2(x14, downsample3.size(), self.inference)
@@ -2041,6 +2133,8 @@ class Neck(nn.Module):
                 self.conv15(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("nk_conv15", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("nk_conv15", sum([item.flops for item in prof.events()]))
+
         x15 = self.conv15(downsample3)
         prof_wrapper.tt.tic("nk_conv15")
         self.conv15(downsample3)
@@ -2079,6 +2173,8 @@ class Neck(nn.Module):
                 self.conv16(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("nk_conv16", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("nk_conv16", sum([item.flops for item in prof.events()]))
+
         x16 = self.conv16(x15)
         prof_wrapper.tt.tic("nk_conv16")
         self.conv16(x15)
@@ -2116,6 +2212,8 @@ class Neck(nn.Module):
                 self.conv17(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("nk_conv17", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("nk_conv17", sum([item.flops for item in prof.events()]))
+
         x17 = self.conv17(x16)
         prof_wrapper.tt.tic("nk_conv17")
         self.conv17(x16)
@@ -2153,6 +2251,8 @@ class Neck(nn.Module):
                 self.conv18(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("nk_conv18", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("nk_conv18", sum([item.flops for item in prof.events()]))
+
         x18 = self.conv18(x17)
         prof_wrapper.tt.tic("nk_conv18")
         self.conv18(x17)
@@ -2190,6 +2290,8 @@ class Neck(nn.Module):
                 self.conv19(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("nk_conv19", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("nk_conv19", sum([item.flops for item in prof.events()]))
+
         x19 = self.conv19(x18)
         prof_wrapper.tt.tic("nk_conv19")
         self.conv19(x18)
@@ -2227,6 +2329,8 @@ class Neck(nn.Module):
                 self.conv20(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("nk_conv20", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("nk_conv20", sum([item.flops for item in prof.events()]))
+
         x20 = self.conv20(x19)
         x20 = self.conv20(x19)
         prof_wrapper.tt.tic("nk_conv20")
@@ -2351,6 +2455,8 @@ class Yolov4Head(nn.Module):
                 self.conv1(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("hd_conv1", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("hd_conv1", sum([item.flops for item in prof.events()]))
+
         x1 = self.conv1(input1)
         x1 = self.conv1(input1)
         prof_wrapper.tt.tic("hd_conv1")
@@ -2387,6 +2493,8 @@ class Yolov4Head(nn.Module):
                 self.conv2(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("hd_conv2", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("hd_conv2", sum([item.flops for item in prof.events()]))
+
         x2 = self.conv2(x1)
         prof_wrapper.tt.tic("hd_conv2")
         self.conv2(x1)
@@ -2421,6 +2529,8 @@ class Yolov4Head(nn.Module):
                 self.conv3(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("hd_conv3", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("hd_conv3", sum([item.flops for item in prof.events()]))
+
         x3 = self.conv3(input1)
         x3 = self.conv3(input1)
         prof_wrapper.tt.tic("hd_conv3")
@@ -2458,6 +2568,8 @@ class Yolov4Head(nn.Module):
                 self.conv4(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("hd_conv4", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("hd_conv4", sum([item.flops for item in prof.events()]))
+
         x4 = self.conv4(x3)
         prof_wrapper.tt.tic("hd_conv4")
         self.conv4(x3)
@@ -2496,6 +2608,8 @@ class Yolov4Head(nn.Module):
                 self.conv5(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("hd_conv5", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("hd_conv5", sum([item.flops for item in prof.events()]))
+
         x5 = self.conv5(x4)
         prof_wrapper.tt.tic("hd_conv5")
         self.conv5(x4)
@@ -2535,6 +2649,8 @@ class Yolov4Head(nn.Module):
                 self.conv6(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("hd_conv6", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("hd_conv6", sum([item.flops for item in prof.events()]))
+
         x6 = self.conv6(x5)
         prof_wrapper.tt.tic("hd_conv6")
         self.conv6(x5)
@@ -2574,6 +2690,8 @@ class Yolov4Head(nn.Module):
                 self.conv7(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("hd_conv7", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("hd_conv7", sum([item.flops for item in prof.events()]))
+
         x7 = self.conv7(x6)
         prof_wrapper.tt.tic("hd_conv7")
         self.conv7(x6)
@@ -2613,6 +2731,8 @@ class Yolov4Head(nn.Module):
                 self.conv8(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("hd_conv8", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("hd_conv8", sum([item.flops for item in prof.events()]))
+
         x8 = self.conv8(x7)
         prof_wrapper.tt.tic("hd_conv8")
         self.conv8(x7)
@@ -2652,6 +2772,8 @@ class Yolov4Head(nn.Module):
                 self.conv9(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("hd_conv9", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("hd_conv9", sum([item.flops for item in prof.events()]))
+
         x9 = self.conv9(x8)
         prof_wrapper.tt.tic("hd_conv9")
         self.conv9(x8)
@@ -2691,6 +2813,8 @@ class Yolov4Head(nn.Module):
                 self.conv10(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("hd_conv10", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("hd_conv10", sum([item.flops for item in prof.events()]))
+
         x10 = self.conv10(x9)
         prof_wrapper.tt.tic("hd_conv10")
         self.conv10(x9)
@@ -2730,6 +2854,8 @@ class Yolov4Head(nn.Module):
                 self.conv11(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("hd_conv11", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("hd_conv11", sum([item.flops for item in prof.events()]))
+
         x11 = self.conv11(x8)
         x11 = self.conv11(x8)
         prof_wrapper.tt.tic("hd_conv11")
@@ -2771,6 +2897,8 @@ class Yolov4Head(nn.Module):
                 self.conv12(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("hd_conv12", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("hd_conv12", sum([item.flops for item in prof.events()]))
+
         x12 = self.conv12(x11)
         prof_wrapper.tt.tic("hd_conv12")
         self.conv12(x11)
@@ -2805,6 +2933,8 @@ class Yolov4Head(nn.Module):
                 self.conv13(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("hd_conv13", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("hd_conv13", sum([item.flops for item in prof.events()]))
+
         x13 = self.conv13(x12)
         prof_wrapper.tt.tic("hd_conv13")
         self.conv13(x12)
@@ -2839,6 +2969,8 @@ class Yolov4Head(nn.Module):
                 self.conv14(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("hd_conv14", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("hd_conv14", sum([item.flops for item in prof.events()]))
+
         x14 = self.conv14(x13)
         prof_wrapper.tt.tic("hd_conv14")
         self.conv14(x13)
@@ -2873,6 +3005,8 @@ class Yolov4Head(nn.Module):
                 self.conv15(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("hd_conv15", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("hd_conv15", sum([item.flops for item in prof.events()]))
+
         x15 = self.conv15(x14)
         prof_wrapper.tt.tic("hd_conv15")
         self.conv15(x14)
@@ -2907,6 +3041,8 @@ class Yolov4Head(nn.Module):
                 self.conv16(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("hd_conv16", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("hd_conv16", sum([item.flops for item in prof.events()]))
+
         x16 = self.conv16(x15)
         prof_wrapper.tt.tic("hd_conv16")
         self.conv16(x15)
@@ -2941,6 +3077,8 @@ class Yolov4Head(nn.Module):
                 self.conv17(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("hd_conv17", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("hd_conv17", sum([item.flops for item in prof.events()]))
+
         x17 = self.conv17(x16)
 
         prof_wrapper.tt.tic("hd_conv17")
@@ -2980,6 +3118,8 @@ class Yolov4Head(nn.Module):
                 self.conv18(tmp_input)
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("hd_conv18", prof_report, usingcuda)
+        prof_wrapper.scale.flop_count("hd_conv18", sum([item.flops for item in prof.events()]))
+
         x18 = self.conv18(x17)
         x18 = self.conv18(x17)
         prof_wrapper.tt.tic("hd_conv18")
