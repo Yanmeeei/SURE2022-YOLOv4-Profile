@@ -47,7 +47,7 @@ class MemRec(object):
         self.mem_self_cpu[layername].append(self.get_mem_helper(ret_list, "Self CPU Mem"))
         self.mem_cpu[layername].append(self.get_mem_helper(ret_list, "CPU Mem"))
         if usingcuda:
-            self.mem_self_cuda[layername].append(self.get_mem_helper(ret_list, "Self CUDA Me"))
+            self.mem_self_cuda[layername].append(self.get_mem_helper(ret_list, "Self CUDA Mem"))
             self.mem_cuda[layername].append(self.get_mem_helper(ret_list, "CUDA Mem"))
 
     def report(self, sample=False):
@@ -123,9 +123,11 @@ class MemRec(object):
             layernames = []
             avg_mems = []
             print("mem_self_cuda | Average Mem Consumption of Each Layer")
+            print(self.mem_self_cuda)
             for key, value in self.mem_self_cuda.items():
                 # value.pop(0)
-                print("{:<15} {:<20}".format(key, sum(value) / len(value)))
+                if key != "wrapping_up":
+                    print("{:<15} {:<20}".format(key, sum(value) / len(value)))
                 # print(f"{key} :: {sum(value) / len(value)}")
             #     layernames.append(key)
             #     avg_mems.append(sum(value) / len(value))
@@ -197,3 +199,5 @@ def parse_prof_table(prof_report):
         ret_list.append(head_str_list)
 
     return ret_list
+
+###########

@@ -20,7 +20,8 @@ class DataScale(object):
 
     def weight(self, tensor_src, data):
         if tensor_src not in self.scaleRec:
-            self.scaleRec[tensor_src] = sys.getsizeof(data.storage())
+            self.scaleRec[tensor_src] = data.numel() * data.element_size() / 4
+            # self.scaleRec[tensor_src] = sys.getsizeof(data.storage())
 
     def dependency_check(self, tensor_name, src, dest):
         src_name = src + "_" + tensor_name

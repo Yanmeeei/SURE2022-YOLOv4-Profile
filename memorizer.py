@@ -1,4 +1,4 @@
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 
 
 class MemRec(object):
@@ -46,7 +46,8 @@ class MemRec(object):
 
         self.mem_self_cpu[layername].append(self.get_mem_helper(ret_list, "Self CPU Mem"))
         self.mem_cpu[layername].append(self.get_mem_helper(ret_list, "CPU Mem"))
-        if usingcuda:
+        if usingcuda and layername != "wrapping_up":
+            print(ret_list[0])
             self.mem_self_cuda[layername].append(self.get_mem_helper(ret_list, "Self CUDA Me"))
             self.mem_cuda[layername].append(self.get_mem_helper(ret_list, "CUDA Mem"))
 

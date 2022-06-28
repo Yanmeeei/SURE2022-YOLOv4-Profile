@@ -1,5 +1,5 @@
 import time
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 
 
 class Clock(object):
@@ -23,7 +23,7 @@ class Clock(object):
         self.time_records[layername].append(diff)
 
     def report(self, sample=False):
-        plt.rcParams.update({'font.size': 8})
+        # plt.rcParams.update({'font.size': 8})
         if sample:
             for key, value in self.time_records.items():
                 # print("{:<15} {:<20}".format(key, value))

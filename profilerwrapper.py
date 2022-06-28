@@ -27,7 +27,7 @@ class ProfilerWrapper(object):
         else:
             for key, value in self.tt.time_records.items():
                 writer.writerow([key,
-                                 "%.4f" % sum(self.tt.time_records[key]) / len(self.tt.time_records[key]),
+                                 "%.4f" % (min(self.tt.time_records[key]) * 1000),
                                  "%.4f" % (self.scale.scaleRec[key] / (1024 ** 2)),
                                  "%.4f" % (sum(self.mr.mem_cpu[key]) / len(self.mr.mem_cpu[key])),
                                  self.scale.flopRec[key]])

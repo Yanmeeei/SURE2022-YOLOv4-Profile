@@ -1,5 +1,4 @@
 import time
-
 import torch
 from torch import nn
 import torch.nn.functional as F
@@ -143,9 +142,10 @@ class DownSample1(nn.Module):
         ) as prof:
             with record_function("model_inference"):
                 self.conv1(tmp_input)
+        prof_wrapper.scale.flop_count("d1_conv1", sum([item.flops for item in prof.events()]))
         prof_report = str(prof.key_averages().table()).split("\n")
         prof_wrapper.mr.get_mem("d1_conv1", prof_report, usingcuda)
-        prof_wrapper.scale.flop_count("d1_conv1", sum([item.flops for item in prof.events()]))
+
         x1 = self.conv1(input)
         x1 = self.conv1(input)
 
