@@ -291,6 +291,7 @@ class_names, num_classes = get_classes("coco_classes.txt")
 bbox_util = DecodeBox(anchors, num_classes, (416, 416), [[6, 7, 8], [3, 4, 5], [0, 1, 2]])
 outputs = bbox_util.decode_box(outputs)
 
+prof_wrapper.scale.report()
 
 with profile(
         activities=

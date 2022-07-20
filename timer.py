@@ -30,7 +30,6 @@ class Clock(object):
                 print(key, end=' :: ')
                 print(value, flush=True)
 
-
         layernames = []
         avg_times = []
         print("Average Time of Each Layer")

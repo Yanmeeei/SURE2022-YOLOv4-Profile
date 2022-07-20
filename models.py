@@ -158,6 +158,14 @@ class DownSample1(nn.Module):
         self.conv1(input)
         prof_wrapper.tt.toc("d1_conv1")
 
+        prof_wrapper.tt.tic("d1_conv1")
+        self.conv1(input)
+        prof_wrapper.tt.toc("d1_conv1")
+
+        prof_wrapper.tt.tic("d1_conv1")
+        self.conv1(input)
+        prof_wrapper.tt.toc("d1_conv1")
+
         prof_wrapper.scale.weight(tensor_src="d1_conv1", data=x1)
         # ----------------------------------------------------------------
 
@@ -183,6 +191,16 @@ class DownSample1(nn.Module):
 
         x2 = self.conv2(x1)
         x2 = self.conv2(x1)
+
+        time_starts = time.time()
+        self.conv2(x1)
+        diff = time.time() - time_starts
+        prof_wrapper.tt.get_time("d1_conv2", diff)
+
+        time_starts = time.time()
+        self.conv2(x1)
+        diff = time.time() - time_starts
+        prof_wrapper.tt.get_time("d1_conv2", diff)
 
         time_starts = time.time()
         self.conv2(x1)

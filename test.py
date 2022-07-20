@@ -13,6 +13,9 @@ if device != 'cpu':
 else:
     usingcuda = False
 
+device = "cpu"
+usingcuda = False
+
 # create a model
 model = Yolov4()
 model.to(device)
